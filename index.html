@@ -1,0 +1,6858 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Хидролукс Груп | Онлайн магазин за Хидравлични и Пневматични решения Монтана</title>
+  <meta name="description" id="meta-description" content="Хидролукс Груп предлага производство на маркучи за високо налягане, хидравлика, пневматика, фитинги, уплътнители и накрайници в град Монтана. Професионално качество от 2019 г.">
+  
+  <!-- OpenGraph Metadata for Social Sharing -->
+  <meta property="og:title" id="og-title" content="Хидролукс Груп | Онлайн магазин за Хидравлични и Пневматични решения Монтана">
+  <meta property="og:description" id="og-description" content="Хидролукс Груп предлага производство на маркучи за високо налягане, хидравлика, пневматика, фитинги, уплътнители и накрайници в град Монтана. Професионално качество от 2019 г.">
+  <meta property="og:image" id="og-image" content="https://hydrolux.bg/assets/logo.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:url" id="og-url" content="https://hydrolux.bg/">
+  <meta property="og:site_name" content="Хидролукс Груп">
+  
+  <!-- Canonical Link -->
+  <link rel="canonical" id="canonical-link" href="https://hydrolux.bg/">
+  
+  <!-- Structured Data JSON-LD Container -->
+  <script type="application/ld+json" id="schema-jsonld"></script>
+
+  <!-- Preconnect & Preload Fonts / LCP Assets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Load fonts without blocking render; display=swap shows text immediately in
+       a fallback font and swaps to Outfit when it arrives. -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"></noscript>
+  <link rel="preload" href="assets/hero_bg.webp" as="image" type="image/webp" fetchpriority="high">
+  <!-- First category card image (LCP candidate). It's injected by JS after the
+       deferred scripts run, so preloading lets it download in parallel instead
+       of waiting, pulling LCP earlier. -->
+  <link rel="preload" href="assets/cat_73.jpg" as="image">
+  <!-- styles.css inlined to remove the render-blocking CSS request (single-page app; source of truth: css/styles.css). -->
+  <style>
+/* 
+   Hydrolux Group Premium CSS Design System
+   Bright, beautiful, and professional light-themed design
+   Aligned precisely with desktop & mobile screenshot layouts
+*/
+
+/* ==========================================================================
+   CSS CUSTOM VARIABLES & COLOR PALETTE (HSL)
+   ========================================================================== */
+:root {
+  --primary-h: 205; /* Corporate Blue hue */
+  --primary-s: 85%;
+  --primary-l: 46%;
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+  --primary-hover: hsl(var(--primary-h), var(--primary-s), 38%);
+  --primary-light: hsl(var(--primary-h), var(--primary-s), 95%);
+  --primary-dark: #156cae;
+
+  --accent-h: 24; 
+  --accent-s: 100%;
+  --accent-l: 50%;
+  --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  --accent-hover: hsl(var(--accent-h), var(--accent-s), 42%);
+
+  --bg-pure: #ffffff;
+  --bg-subtle: #f8fafc;
+  --border-color: #e2e8f0;
+  --border-light: #e2e8f0; /* Alias for admin panel components */
+  
+  --text-dark: #1e293b;
+  --text-muted: #4b5563; /* Improved contrast for accessibility */
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  
+  --font-family: 'Outfit', sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.1);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --transition: all 0.25s ease-in-out;
+}
+
+/* ==========================================================================
+   RESET & BASE STYLES
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-pure);
+  color: var(--text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.2;
+  margin-bottom: 0.4em;
+}
+
+p {
+  margin-bottom: 0.8em;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 15px 0;
+}
+
+/* ==========================================================================
+   GLOBAL UTILITIES
+   ========================================================================== */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.card {
+  background-color: var(--bg-pure);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-primary { color: var(--primary); }
+.text-primary-dark { color: #1669aa; }
+.text-muted-dark { color: #334155; }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--text-muted); }
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+.font-xs { font-size: 0.75rem; }
+.font-small { font-size: 0.875rem; }
+.font-large { font-size: 1.25rem; }
+.font-huge { font-size: 2rem; }
+
+.py-20 { padding-top: 20px; padding-bottom: 20px; }
+.py-40 { padding-top: 40px; padding-bottom: 40px; }
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+.mt-40 { margin-top: 40px; }
+.mb-10 { margin-bottom: 10px; }
+.mb-15 { margin-bottom: 15px; }
+.mb-30 { margin-bottom: 30px; }
+.hidden { display: none !important; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  gap: 8px;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--bg-pure);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--bg-pure);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-dark-rect {
+  background-color: #1f2421;
+  color: var(--bg-pure);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+
+.btn-dark-rect:hover {
+  background-color: #000;
+}
+
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.btn-icon.small {
+  width: 24px;
+  height: 24px;
+  font-size: 0.7rem;
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+.btn-large {
+  padding: 12px 28px;
+  font-size: 1rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 50px;
+}
+
+.badge-warning {
+  background-color: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fef3c7;
+}
+
+.stock-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.stock-badge.in-stock {
+  background-color: #ecfdf5;
+  color: var(--success);
+}
+
+.stock-badge.out-of-stock {
+  background-color: #fef2f2;
+  color: var(--danger);
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #334155;
+}
+
+.form-control {
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-pure);
+  color: var(--text-dark);
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-group-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   HEADER TOP BAR (Matches screenshot layout)
+   ========================================================================== */
+.header-top {
+  background-color: #081c36;
+  font-size: 0.72rem;
+  padding: 4px 0;
+  color: #ffffff;
+  border-bottom: none;
+}
+
+.header-top .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-top-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-top-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-top-item svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.header-top-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.header-top-right a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.header-top-right a[href^="tel"] {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.header-top-right a svg {
+  width: 14px;
+  height: 14px;
+}
+
+.header-top-right a:hover {
+  color: #ff9d00;
+}
+
+.header-top-divider {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   MAIN HEADER (Logo, Search, Actions)
+   ========================================================================== */
+.header-main {
+  background-color: #ffffff;
+  padding: 10px 0;
+  z-index: 1200;
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid #f1f5f9;
+  overflow: visible !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-main.header-hidden {
+  transform: translateY(-100%);
+  box-shadow: none;
+}
+
+.header-main.header-scrolled {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.header-main .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  overflow: visible !important;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brand-logo-img {
+  display: block;
+  height: 78px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Search Bar in Middle Header */
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 50px;
+  flex-grow: 1;
+  max-width: 540px;
+  position: relative;
+  overflow: visible;
+  padding: 2px 4px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  transition: var(--transition);
+}
+
+.search-bar-wrapper:focus-within {
+  border-color: #0088cc;
+  box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.15);
+}
+
+.search-field {
+  flex-grow: 1;
+  border: none;
+  padding: 6px 12px;
+  font-family: var(--font-family);
+  font-size: 0.82rem;
+  color: var(--text-dark);
+  outline: none;
+  background: transparent;
+}
+
+.search-field::placeholder {
+  color: #94a3b8;
+}
+
+.search-submit-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.search-submit-btn:hover {
+  color: #0088cc;
+  transform: scale(1.1);
+}
+
+/* Header Actions (Login, Wishlist, Cart) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.header-action-btn {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  color: #334155;
+  font-family: var(--font-family);
+  transition: var(--transition);
+  position: relative;
+  padding: 4px;
+}
+
+.header-action-btn:hover {
+  color: #0088cc;
+}
+
+.header-action-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.header-action-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  transition: var(--transition);
+}
+
+.header-action-btn:hover svg {
+  transform: translateY(-2px);
+}
+
+.header-action-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background-color: #ea580c;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1.5px solid #ffffff;
+}
+
+.header-action-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+/* ==========================================================================
+   NAVIGATION BAR (Categories Dropdown + Nav Links)
+   ========================================================================== */
+.header-nav-row {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 5px 0;
+  position: relative;
+  z-index: 90;
+}
+
+.header-nav-row .container {
+  display: flex;
+  align-items: center;
+}
+
+/* Categories Trigger Button */
+.categories-nav-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #1e293b;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+}
+
+.categories-nav-trigger:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.categories-nav-trigger svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  fill: none;
+}
+
+.categories-nav-trigger .caret-down {
+  margin-left: 4px;
+  font-size: 0.75rem;
+}
+
+/* Nav Menu Links list */
+.nav-links-list {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-left: 32px;
+}
+
+.nav-link {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  padding: 6px 4px;
+  letter-spacing: 0.2px;
+  position: relative;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: #0088cc;
+}
+
+.nav-link.active {
+  color: #1e293b;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #ea580c;
+  border-radius: 2px;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 5px;
+  color: #334155;
+}
+
+/* ==========================================================================
+   SPA ROUTED VIEWS
+   ========================================================================== */
+.spa-view {
+  display: none;
+  padding: 20px 0 40px 0;
+  min-height: calc(100vh - 350px);
+}
+
+#home-view {
+  padding-top: 0;
+}
+
+.spa-view.active {
+  display: block;
+}
+
+/* ==========================================================================
+   MODERN INDUSTRIAL HERO SECTION (Matches Attached Image 1:1)
+   ========================================================================== */
+.modern-hero-section {
+  position: relative;
+  min-height: 420px;
+  padding: 35px 0 110px 0;
+  background-image: url('../assets/hero_bg.webp');
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 0;
+  margin-bottom: 0;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(6, 28, 54, 0.97) 0%, rgba(6, 28, 54, 0.85) 35%, rgba(6, 28, 54, 0.3) 60%, rgba(6, 28, 54, 0) 80%);
+  z-index: 1;
+}
+
+.hero-container {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+}
+
+.hero-left {
+  flex: 1;
+  max-width: 620px;
+  text-align: left;
+}
+
+.hero-right {
+  flex-shrink: 0;
+  position: relative;
+  width: 400px;
+  height: 260px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.4px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.hero-subtitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.35;
+  margin-bottom: 12px;
+  max-width: 580px;
+}
+
+.hero-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.benefit-icon {
+  width: 18px;
+  height: 18px;
+  background-color: #ea580c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.btn-orange {
+  background-color: #ea580c;
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  font-size: 0.88rem;
+}
+
+.btn-orange:hover {
+  background-color: #c2410c;
+  transform: translateY(-2px);
+}
+
+.btn-outline-white {
+  background-color: rgba(6, 28, 54, 0.4);
+  border: 1.5px solid #ffffff;
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  font-size: 0.88rem;
+}
+
+.btn-outline-white:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Floating badge card on the right */
+.crimping-badge {
+  background: rgba(6, 28, 54, 0.85);
+  border: 2px solid #ea580c;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: floating 4s ease-in-out infinite;
+  max-width: 280px;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.crimping-badge-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #ea580c;
+  background-color: rgba(234, 88, 12, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ea580c;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.crimping-badge-text h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ea580c;
+  margin: 0 0 1px 0;
+}
+
+.crimping-badge-text p {
+  font-size: 0.76rem;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+/* 6 Category Cards Grid below Hero */
+.home-categories-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 20;
+}
+
+.category-card-6 {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03), 0 2px 4px -1px rgba(0,0,0,0.01);
+  transition: var(--transition);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.category-card-6:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px -3px rgba(0,0,0,0.08), 0 3px 6px -2px rgba(0,0,0,0.03);
+}
+
+.category-card-6-img-wrapper {
+  aspect-ratio: 1 / 1.15;
+  height: auto;
+  overflow: hidden;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+}
+
+.category-card-6-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px 14px 0 0;
+  border: none;
+  transition: var(--transition);
+}
+
+.category-card-6:hover .category-card-6-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.category-card-6-icon {
+  position: absolute;
+  bottom: -10px;
+  left: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #081c36;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 5;
+}
+
+.category-card-6-icon svg {
+  width: 12px;
+  height: 12px;
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  fill: none;
+  display: block;
+}
+
+.category-card-6-body {
+  padding: 12px 10px 8px 10px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.category-card-6-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.25;
+  height: 30px;
+  overflow: hidden;
+}
+
+.category-card-6-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.category-card-6-arrow {
+  color: var(--text-muted);
+  font-weight: bold;
+  font-size: 0.88rem;
+  transition: var(--transition);
+}
+
+.category-card-6:hover .category-card-6-arrow {
+  color: #ea580c;
+  transform: translateX(3px);
+}
+
+/* Features Bar under Categories Grid */
+.home-features-bar-5 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.feature-bar-item-5 {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01);
+  transition: var(--transition);
+}
+
+.feature-bar-item-5:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.03);
+}
+
+.feature-bar-icon-5 {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #fff8f5;
+  border: 1.5px solid #ffedd5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.feature-bar-item-5:hover .feature-bar-icon-5 {
+  background-color: #ffedd5;
+  transform: scale(1.05);
+}
+
+.feature-bar-icon-5 svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.feature-bar-content-5 {
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-bar-title-5 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1px;
+  line-height: 1.2;
+}
+
+.feature-bar-desc-5 {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+/* Responsive configurations for hero section and new components */
+@media (max-width: 1100px) {
+  .home-categories-grid-6 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .home-features-bar-5 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .hero-left {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-right {
+    justify-content: center;
+    width: 100%;
+    height: auto;
+  }
+  .modern-hero-section {
+    min-height: auto;
+    padding: 40px 0 90px 0;
+    background-position: 70% center;
+  }
+  .hero-bg-overlay {
+    background: linear-gradient(180deg, rgba(6, 28, 54, 0.95) 0%, rgba(6, 28, 54, 0.7) 50%, rgba(6, 28, 54, 0.2) 100%) !important;
+  }
+  .hero-benefits-grid {
+    justify-content: center;
+  }
+  .hero-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-categories-grid-6 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+  .category-card-6-img-wrapper {
+    height: auto;
+    aspect-ratio: 1 / 1.15;
+  }
+  .category-card-6-title {
+    font-size: 0.75rem;
+    height: 28px;
+  }
+  .category-card-6-body {
+    padding: 10px 8px 6px 8px;
+  }
+  .category-card-6-icon {
+    width: 20px;
+    height: 20px;
+    bottom: -8px;
+    left: 8px;
+    border: 1px solid #ffffff;
+  }
+  .category-card-6-icon svg {
+    width: 10px;
+    height: 10px;
+  }
+  .home-features-bar-5 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .feature-bar-item-5 {
+    padding: 10px;
+  }
+  .hero-benefits-grid {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    margin-left: 20px;
+    gap: 6px;
+  }
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    padding: 0 20px;
+  }
+  .btn-orange, .btn-outline-white {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   QUICK CATEGORIES
+   ========================================================================== */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  margin-top: 4px;
+}
+
+.quick-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 15px;
+}
+
+.category-card .cat-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+
+.category-card:hover .cat-icon {
+  transform: scale(1.1);
+}
+
+.category-card h4 {
+  font-size: 0.85rem;
+  margin: 0;
+  color: #334155;
+  font-weight: 600;
+}
+
+/* Callout banner */
+.promo-banner {
+  background: linear-gradient(135deg, var(--primary), #0f5287);
+  color: var(--bg-pure);
+  border-radius: var(--radius-sm);
+  padding: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.promo-text h3 {
+  color: var(--bg-pure);
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+
+.promo-text p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 24px;
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.feature-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.feature-card p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ==========================================================================
+   CATALOG VIEW (Sidebar Categories)
+   ========================================================================== */
+.catalog-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Sidebar Categories Tree */
+.sidebar-cat-group {
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 0;
+}
+
+.sidebar-cat-group:last-child {
+  border-bottom: none;
+}
+
+.sidebar-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.sidebar-cat-header:hover {
+  background-color: var(--bg-subtle);
+}
+
+.sidebar-cat-header.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.sidebar-cat-header .cat-toggle-arrow {
+  margin-left: auto;
+  font-size: 0.55rem;
+  transition: var(--transition);
+}
+
+.sidebar-cat-group.expanded .sidebar-cat-header .cat-toggle-arrow {
+  transform: rotate(180deg);
+}
+
+.sidebar-cat-subs {
+  display: none;
+  padding-left: 24px;
+  margin-top: 4px;
+}
+
+.sidebar-cat-group.expanded .sidebar-cat-subs {
+  display: block;
+}
+
+.sidebar-sub-group {
+  margin-bottom: 4px;
+}
+
+.sidebar-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.sidebar-sub-header:hover {
+  color: var(--text-dark);
+  background-color: #f1f5f9;
+}
+
+.sidebar-sub-header.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Products grid & cards */
+.catalog-content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.catalog-content-header h2 {
+  font-size: 1.4rem;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  min-height: 400px; /* Placeholder height to prevent Cumulative Layout Shift */
+}
+
+.product-card {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.product-card .product-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: var(--text-dark);
+  color: var(--bg-pure);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  z-index: 2;
+}
+
+.product-card-img-wrapper {
+  background-color: #f1f5f9;
+  height: 180px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.product-card:hover .product-card-img {
+  transform: scale(1.04);
+}
+
+.product-card-body {
+  padding: 16px;
+}
+
+.product-card-brand {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.product-card-title {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.product-card-rating .stars {
+  color: #fbbf24;
+  font-size: 0.8rem;
+}
+
+.product-card-rating .rating-val {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.product-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-card-price {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   PRODUCT DETAIL VIEW
+   ========================================================================== */
+.breadcrumb {
+  margin-bottom: 18px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb a {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Gallery */
+.gallery-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.main-image-wrapper {
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gallery-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1.5px solid var(--border-color);
+  color: var(--text-dark);
+  font-size: 1.8rem;
+  font-weight: 700;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  user-select: none;
+}
+
+.gallery-nav-btn:hover {
+  background: var(--bg-pure);
+  color: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.gallery-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.gallery-nav-btn.prev {
+  left: 12px;
+}
+
+.gallery-nav-btn.next {
+  right: 12px;
+}
+
+.thumbnails-list {
+  display: flex;
+  gap: 8px;
+}
+
+.thumb-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  background-color: var(--bg-pure);
+  transition: var(--transition);
+}
+
+.thumb-img:hover, .thumb-img.active {
+  border-color: var(--primary);
+}
+
+/* Info Column */
+.product-info-panel h2 {
+  font-size: 1.8rem;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.meta-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+
+.meta-stats strong {
+  color: var(--text-dark);
+}
+
+/* Tabs & Description */
+.tabs-navigation {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1.5px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background-color: #f8fafc;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+
+.spec-key {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.spec-val {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.tags-section {
+  margin-top: 24px;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 50px;
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tag:hover {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* 🔥 Variants Table */
+.variants-panel {
+  margin-bottom: 30px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-pure);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.table th {
+  background-color: #f1f5f9;
+  font-weight: 700;
+  color: var(--text-dark);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.75rem;
+}
+
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.table-price-bgn {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Quantity input */
+.quantity-input-wrapper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-pure);
+  overflow: hidden;
+}
+
+.quantity-input-wrapper.small {
+  border-radius: 3px;
+}
+
+.qty-input {
+  width: 40px;
+  border: none;
+  text-align: center;
+  padding: 4px;
+  font-weight: 600;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Bulk Variant Actions */
+.variants-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  background-color: #f0f7fc;
+  border: 1px dashed var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   INTERACTIVE HOSE BUILDER (CONFIQURATOR)
+   ========================================================================== */
+.builder-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.builder-grid-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.builder-grid-options.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-option {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  background-color: var(--bg-pure);
+  transition: var(--transition);
+}
+
+.grid-option:hover {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.grid-option.active {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.grid-option .option-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.grid-option .option-name.font-large {
+  font-size: 1rem;
+}
+
+.grid-option .option-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.length-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.length-input {
+  width: 80px;
+}
+
+.length-unit {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Graphic preview panel */
+.builder-preview-panel {
+  position: sticky;
+  top: 30px;
+}
+
+.preview-card {
+  padding: 24px 20px;
+}
+
+.hose-schematic {
+  height: 100px;
+  margin: 20px 0;
+  background-color: #f8fafc;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 15px;
+  gap: 2px;
+}
+
+.fitting-graphic {
+  width: 30px;
+  height: 30px;
+  background-color: #94a3b8;
+  border-radius: 3px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.fitting-graphic.has-fitting {
+  background: linear-gradient(135deg, #cbd5e1, #64748b);
+  border: 1.5px solid #475569;
+}
+
+.left-fitting { border-radius: 6px 3px 3px 6px; }
+.right-fitting { border-radius: 3px 6px 6px 3px; }
+
+.hose-graphic {
+  flex-grow: 1;
+  height: 16px;
+  background-color: #0f172a;
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hose-graphic.sleeved {
+  background: repeating-linear-gradient(
+    45deg,
+    #fbbf24,
+    #fbbf24 8px,
+    #1e293b 8px,
+    #1e293b 16px
+  );
+  height: 20px;
+  border-radius: 3px;
+}
+
+.hose-length-tag {
+  position: absolute;
+  top: -20px;
+  background-color: var(--primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.specs-summary {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spec-badge {
+  background-color: #f1f5f9;
+  border: 1px solid var(--border-color);
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.spec-badge .label {
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.spec-badge.badge-warning {
+  background-color: #fffbeb;
+  border-color: #fef3c7;
+  color: #d97706;
+}
+
+.pricing-panel {
+  padding: 10px 0;
+}
+
+.pricing-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   CART DRAWER & SLIDE-OUT PANEL
+   ========================================================================== */
+.cart-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 1500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  background-color: var(--bg-pure);
+  box-shadow: var(--shadow-lg);
+  z-index: 1501;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cart-drawer.open {
+  right: 0;
+}
+
+.cart-drawer.open ~ .cart-drawer-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cart-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-close-drawer {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.cart-items-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-info {
+  flex-grow: 1;
+  padding-right: 12px;
+}
+
+.cart-item-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cart-item-variant {
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.cart-footer {
+  padding: 20px;
+  background-color: #f8fafc;
+  border-top: 1px solid var(--border-color);
+}
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+/* ==========================================================================
+   MODAL WINDOWS & CHECKOUT LAYOUT
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-window {
+  background-color: var(--bg-pure);
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 780px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  position: relative;
+  transform: translateY(15px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.open .modal-window {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-pure);
+  z-index: 10;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+/* Checkout Form Layout */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.client-type-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.client-type-option {
+  flex-grow: 1;
+}
+
+.client-type-option input {
+  display: none;
+}
+
+.client-type-option label {
+  display: block;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.client-type-option input:checked + label {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Success Modal Details */
+.success-check-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #ecfdf5;
+  color: var(--success);
+  border-radius: 50%;
+  font-size: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.invoice-box {
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.invoice-title {
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.invoice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.invoice-items {
+  margin: 12px 0;
+}
+
+.invoice-item-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.invoice-footer-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.invoice-footer-totals .row {
+  display: flex;
+  justify-content: space-between;
+  width: 220px;
+}
+
+/* Floating Chat Button styles relocated to the bottom of the file */
+
+/* Toast float notification */
+.toast-notification {
+  position: fixed;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0f172a;
+  color: var(--bg-pure);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 5000;
+  opacity: 0;
+  transition: bottom 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+}
+
+.toast-notification.show {
+  bottom: 25px;
+  opacity: 1;
+}
+
+/* ==========================================================================
+   FOOTER SECTION
+   ========================================================================== */
+footer {
+  background-color: #1e293b;
+  color: #f8fafc;
+  padding: 40px 0 20px 0;
+  margin-top: 40px;
+  border-top: 3px solid var(--primary);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-col h4 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 6px;
+}
+
+.footer-col h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 30px;
+  height: 2px;
+  background-color: var(--accent);
+}
+
+.footer-col p {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+}
+
+.footer-bottom {
+  border-top: 1px solid #334155;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .hero-banners-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .banner-main {
+    height: 320px;
+  }
+  
+  .banner-right-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .banner-sub {
+    height: 160px;
+  }
+
+  .catalog-layout, .product-detail-layout, .builder-layout, .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .builder-preview-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-top {
+    display: block !important;
+    padding: 4px 0 !important;
+  }
+  .header-top-left {
+    display: none !important;
+  }
+  .header-top-right {
+    justify-content: center;
+    width: 100%;
+    gap: 15px;
+  }
+
+  .header-main {
+    position: sticky;
+    top: 0;
+    z-index: 1200;
+    padding: 10px 0;
+  }
+
+  .header-main .container {
+    padding: 0 15px;
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  .brand-logo-img {
+    height: 58px;
+  }
+
+  .search-bar-wrapper {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .header-action-label {
+    display: none; /* Hide button text labels, show icons only */
+  }
+
+  .header-actions {
+    gap: 16px;
+  }
+
+  .header-nav-row .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+  }
+
+  .nav-links-list {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    gap: 12px;
+    z-index: 1000;
+  }
+  
+  #main-nav-links.open .nav-links-list {
+    display: flex;
+  }
+  
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .nav-link.active::after {
+    bottom: -4px;
+    height: 2px;
+  }
+
+  /* Stack banners vertically on mobile */
+  .banner-right-column {
+    grid-template-columns: 1fr;
+  }
+
+  .banner-main {
+    height: 280px;
+    padding: 24px;
+  }
+
+  .banner-brand-title {
+    font-size: 1.8rem;
+  }
+
+  .banner-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+  }
+
+  .banner-hose-image-wrapper {
+    width: 50%;
+  }
+
+  .floating-chat-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+  }
+
+  .header-top {
+    padding: 4px 0 !important;
+    font-size: 0.68rem !important;
+  }
+}
+
+/* ==========================================================================
+   REDESIGNED GORGEOUS ABOUT US SECTION
+   ========================================================================== */
+.about-us-container {
+  margin-top: 50px;
+}
+
+.about-us-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.about-us-left {
+  padding: 40px;
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.about-checklist {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+}
+
+.check-icon {
+  width: 22px;
+  height: 22px;
+  background-color: #ecfdf5;
+  color: var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.about-us-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stats-metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.metric-card {
+  text-align: center;
+  padding: 24px 15px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+}
+
+.metric-num {
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.quality-badge-panel {
+  padding: 24px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.quality-badge-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+/* ==========================================================================
+   CATALOG TOP COLLAPSIBLE CATEGORIES DROPDOWN & WIDE LAYOUT
+   ========================================================================== */
+.catalog-wide-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.products-grid.full-width {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.catalog-filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.categories-dropdown-container {
+  position: relative;
+}
+
+.categories-dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+  width: 560px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  transition: var(--transition);
+}
+
+.categories-dropdown-menu.hidden {
+  display: none !important;
+}
+
+.dropdown-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-col-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dropdown-col-title:hover {
+  color: var(--primary-hover);
+}
+
+.dropdown-sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dropdown-sub-item {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.dropdown-sub-item:hover {
+  color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.dropdown-all-item {
+  grid-column: span 2;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #334155;
+  padding: 10px;
+  border-top: 1px dashed var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dropdown-all-item:hover {
+  color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+/* Responsive Overrides for new elements */
+@media (max-width: 768px) {
+  .about-us-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .categories-dropdown-menu {
+    width: 280px;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .dropdown-all-item {
+    grid-column: span 1;
+  }
+}
+
+/* Smart Search Suggestions Autocomplete */
+.search-suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px 0;
+  display: none;
+}
+.search-suggestions-section {
+  margin-bottom: 10px;
+}
+.search-suggestions-section:last-child {
+  margin-bottom: 0;
+}
+.search-suggestions-section-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--accent);
+  padding: 6px 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 5px;
+}
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.search-suggestion-item:hover {
+  background-color: #f1f5f9;
+}
+.search-suggestion-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border-light);
+}
+.search-suggestion-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.search-suggestion-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+}
+.search-suggestion-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.search-suggestion-price {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.search-no-suggestions {
+  padding: 15px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   ADMIN VIEW - Prevent horizontal page overflow
+   ========================================================================== */
+#admin-view {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+#admin-view-content {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure admin container never causes horizontal page scroll */
+.admin-container {
+  box-sizing: border-box;
+}
+
+/* Admin form controls sizing fix */
+.admin-content .form-control {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Admin table — internal scroll wrapper */
+.admin-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Category action buttons in the list */
+td .admin-actions-cell {
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   PREMIUM 3D HOSE CONFIGURATOR SPLIT LAYOUT (Matches Attached Image 2:1)
+   ========================================================================== */
+.builder-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 50px;
+  align-items: center;
+  margin-top: 30px;
+  color: #ffffff;
+  background-color: #0b1320;
+  border-radius: var(--radius-sm);
+  padding: 50px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(0, 187, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.builder-layout::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(0, 187, 255, 0.08) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.builder-graphic-column {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hose-cutaway-container {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.hose-cutaway-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
+}
+
+/* Pointer labels styling matching the custom design annotations */
+.pointer-label {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.pointer-line {
+  width: 2px;
+  background: linear-gradient(to bottom, #00bbff 50%, rgba(0, 187, 255, 0));
+  position: relative;
+}
+
+.pointer-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #00bbff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00bbff, 0 0 20px #00bbff;
+}
+
+.label-text {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  background-color: rgba(11, 19, 32, 0.88);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 187, 255, 0.35);
+  white-space: nowrap;
+  letter-spacing: 0.8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.label-inner {
+  text-align: right;
+}
+
+.label-braid {
+  text-align: left;
+}
+
+.label-flex {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label-flex .pointer-dot {
+  animation: pulse-dot 2s infinite alternate;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(1); box-shadow: 0 0 8px #00bbff; }
+  100% { transform: scale(1.3); box-shadow: 0 0 16px #00bbff, 0 0 25px #00bbff; }
+}
+
+.builder-specs-column {
+  position: relative;
+  z-index: 5;
+}
+
+.config-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 22px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.25;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Parameters specs table styling */
+.specs-table-container {
+  width: 100%;
+  margin-bottom: 25px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid rgba(0, 187, 255, 0.25);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.specs-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.specs-data-table th, .specs-data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(0, 187, 255, 0.12);
+}
+
+.specs-data-table th {
+  background-color: rgba(0, 187, 255, 0.16);
+  color: #00bbff;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.specs-data-table td {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.specs-data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.specs-data-table tr:hover td {
+  background-color: rgba(0, 187, 255, 0.06);
+}
+
+.specs-data-table td:first-child {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Selectors grid */
+.config-selectors-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 20px;
+  margin-bottom: 25px;
+}
+
+.config-select {
+  background-color: #0b1320 !important;
+  border: 1px solid rgba(0, 187, 255, 0.35) !important;
+  color: #ffffff !important;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.config-select:focus {
+  border-color: #00bbff !important;
+  box-shadow: 0 0 10px rgba(0, 187, 255, 0.4) !important;
+}
+
+/* Action button row */
+.config-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  border-top: 1px solid rgba(0, 187, 255, 0.15);
+  padding-top: 20px;
+}
+
+.btn-config-cyan {
+  background: linear-gradient(135deg, #0088cc 0%, #00bbff 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 14px 35px;
+  border-radius: var(--radius-sm);
+  border: none;
+  box-shadow: 0 0 15px rgba(0, 187, 255, 0.5);
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.btn-config-cyan:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 187, 255, 0.8);
+  background: linear-gradient(135deg, #0099ff 0%, #2bd5ff 100%);
+}
+
+.availability-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #ffffff;
+}
+
+.check-circle-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(0, 187, 255, 0.15);
+  border: 2px solid #00bbff;
+  color: #00bbff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.text-green {
+  color: #2be885;
+}
+
+.btn-config-outline {
+  background: transparent;
+  border: 1.5px solid rgba(0, 187, 255, 0.5);
+  color: #00bbff;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 187, 255, 0.1);
+}
+
+.btn-config-outline:hover {
+  background-color: rgba(0, 187, 255, 0.12);
+  border-color: #00bbff;
+  box-shadow: 0 0 15px rgba(0, 187, 255, 0.3);
+}
+
+/* Responsiveness for builder split layout */
+@media (max-width: 991px) {
+  .builder-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 30px 20px;
+  }
+  .hose-cutaway-container {
+    max-width: 520px;
+  }
+}
+
+/* ==========================================================================
+   🔥 REDESIGNED SECTIONS & POPULAR PRODUCTS LAYOUT
+   ========================================================================== */
+
+/* Section headers on Home Page */
+.section-header-popular {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+
+.section-header-popular h2 {
+  font-size: 1.8rem;
+  color: #0f172a;
+  font-weight: 800;
+  position: relative;
+}
+
+.section-header-popular h2::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background-color: var(--color-accent, #ea580c);
+  border-radius: 2px;
+}
+
+.view-all-link {
+  color: var(--color-accent, #ea580c);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.view-all-link:hover {
+  color: #c2410c;
+  transform: translateX(4px);
+}
+
+/* 2-Column Popular Layout */
+.popular-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* Filters Sidebar */
+.popular-sidebar {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md, 12px);
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-title {
+  font-size: 1.2rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 10px;
+}
+
+.filter-group {
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.filter-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #f8fafc;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filter-group-header:hover {
+  background-color: #f1f5f9;
+}
+
+.filter-group-header .chevron {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.btn-filter-submit {
+  width: 100%;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  background-color: var(--color-accent, #ea580c);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-filter-submit:hover {
+  background-color: #c2410c;
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Premium Product Cards in Popular Grid */
+.popular-layout .products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Re-styled card overrides */
+.popular-layout .product-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  overflow: visible;
+}
+
+.popular-layout .product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08), 0 8px 8px -5px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+}
+
+/* Heart Wishlist Button */
+.wishlist-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  padding: 0;
+}
+
+.wishlist-btn:hover {
+  background-color: #f8fafc;
+  color: #ef4444;
+  border-color: #fca5a5;
+  transform: scale(1.05);
+}
+
+.wishlist-btn.active {
+  background-color: #fef2f2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+/* Wishlist SVG transitions */
+.wishlist-btn svg, .wishlist-btn-overlay svg, .wishlist-btn-detail svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+.wishlist-btn.active svg, .wishlist-btn-overlay.active svg, .wishlist-btn-detail.active svg {
+  fill: #ef4444;
+  stroke: #ef4444;
+}
+
+/* Hover Overlay for product card images */
+.product-card-img-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+/* On desktop, show the overlay when hovering the card */
+@media (min-width: 1025px) {
+  .product-card:hover .product-card-hover-overlay {
+    opacity: 1;
+  }
+}
+
+.wishlist-btn-overlay {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: none;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 0;
+}
+
+.wishlist-btn-overlay:hover {
+  transform: scale(1.1);
+  color: #ef4444;
+}
+
+.wishlist-btn-overlay.active {
+  color: #ef4444;
+}
+
+.wishlist-btn-detail {
+  transition: all 0.2s ease;
+}
+
+.wishlist-btn-detail:hover {
+  background-color: #fef2f2 !important;
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+}
+
+.wishlist-btn-detail.active {
+  background-color: #fef2f2 !important;
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+}
+
+/* Badge styling override */
+.product-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  z-index: 10;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-green {
+  background-color: #e2fbe8;
+  color: #15803d;
+}
+
+.badge-orange {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.popular-layout .product-card-img-wrapper {
+  height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding: 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.popular-layout .product-card-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.popular-layout .product-card:hover .product-card-img {
+  transform: scale(1.04);
+}
+
+/* Card Body & Title */
+.popular-layout .product-card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.popular-layout .product-card-title {
+  font-size: 0.95rem;
+  color: #1e293b;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  height: 42px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Spec bullet list inside card */
+.product-card-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+  background-color: #f8fafc;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #f1f5f9;
+}
+
+.spec-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.3;
+}
+
+.spec-checkmark {
+  color: var(--color-accent, #ea580c);
+  font-weight: 800;
+  margin-right: 6px;
+}
+
+.spec-label {
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.spec-value {
+  color: #1e293b;
+}
+
+/* Price block */
+.product-card-price-row {
+  margin-top: auto;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+}
+
+.price-bgn {
+  font-size: 1.3rem;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* Buy now CTA button spanning bottom */
+.btn-buy-now {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--color-accent, #ea580c);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 15px;
+  box-shadow: 0 2px 4px rgba(234, 88, 12, 0.1);
+}
+
+.btn-buy-now:hover {
+  background-color: #c2410c;
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   💥 INDUSTRIES & APPLICATIONS GRID
+   ========================================== */
+.industries-section {
+  background-color: #ffffff;
+}
+
+.industries-section-title {
+  font-size: 1.6rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.industries-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.industry-card {
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  cursor: default;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.industry-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform 0.3s ease;
+}
+
+.industry-card:hover img {
+  transform: scale(1.05);
+}
+
+.industry-card:hover {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.industry-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 20%, rgba(15, 23, 42, 0.3) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+  transition: background 0.3s ease;
+}
+
+.industry-card:hover .industry-overlay {
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 30%, rgba(15, 23, 42, 0.4) 100%);
+}
+
+.industry-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.industry-icon {
+  font-size: 1.2rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.industry-info h4 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff !important;
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================
+   💥 DARK BLUE CTA BANNER
+   ========================================== */
+.cta-banner {
+  background: linear-gradient(135deg, #0b1a30 0%, #1a365d 100%);
+  border-radius: 12px;
+  padding: 30px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  box-shadow: 0 10px 25px -5px rgba(26, 54, 93, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cta-banner-content {
+  color: #ffffff;
+  max-width: 60%;
+}
+
+.cta-banner-content h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.cta-banner-content p {
+  color: #93c5fd;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cta-banner-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-cta-outline {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cta-outline:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-cta-solid {
+  background-color: var(--color-accent, #ea580c);
+  color: #ffffff;
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+}
+
+.btn-cta-solid:hover {
+  background-color: #c2410c;
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.45);
+  transform: translateY(-1px);
+}
+
+.cta-icon {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   💥 MOBILE RESPONSIVENESS MEDIA QUERIES OVERRIDES
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .popular-layout .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .industries-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 991px) {
+  .popular-layout {
+    grid-template-columns: 1fr;
+  }
+  .popular-sidebar {
+    max-width: 100%;
+  }
+  .cta-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px;
+  }
+  .cta-banner-content {
+    max-width: 100%;
+  }
+  .cta-banner-buttons {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .popular-layout .products-grid {
+    grid-template-columns: 1fr;
+  }
+  .industries-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cta-banner-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .section-header-popular {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+
+/* ==========================================================================
+   MOBILE HOMEPAGE STYLE ALIGNMENT OVERRIDES (Mockup Matches 1:1)
+   ========================================================================== */
+
+/* Utility classes for responsive text switching */
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: inline-block !important;
+  }
+  
+  /* Header Top Bar Mobile Styles */
+  .header-top {
+    display: block !important;
+    padding: 6px 0 !important;
+    background-color: #061c36 !important;
+  }
+  .header-top .container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 15px !important;
+  }
+  .header-top-left {
+    display: flex !important;
+    gap: 0 !important;
+  }
+  .header-top-left .header-top-item:not(:first-child),
+  .header-top-left .header-top-divider {
+    display: none !important;
+  }
+  .header-top-right {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: auto !important;
+    gap: 0 !important;
+  }
+  .header-top-right a:not(.mobile-only),
+  .header-top-right .header-top-divider {
+    display: none !important;
+  }
+  .header-top-right a.mobile-only {
+    display: flex !important;
+    align-items: center;
+    color: #ffffff;
+    text-decoration: none;
+    gap: 6px;
+  }
+
+  /* Header main button overrides */
+  .header-actions .header-action-btn:nth-child(2) {
+    /* Keep Wishlist visible on mobile */
+  }
+  
+  /* Categories list bar overrides */
+  .categories-nav-trigger {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background-color: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+  }
+  .categories-nav-trigger .caret-down {
+    margin-left: auto !important;
+  }
+  .mobile-menu-btn {
+    display: none !important; /* Hide hamburger menu icon as per mockup */
+  }
+
+  /* Hero Section card formatting */
+  .modern-hero-section {
+    width: calc(100% - 20px) !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 16px !important;
+    padding: 30px 20px 85px 20px !important;
+    min-height: auto !important;
+    background-position: 80% center !important;
+  }
+  .hero-bg-overlay {
+    background: linear-gradient(90deg, rgba(6, 28, 54, 0.96) 0%, rgba(6, 28, 54, 0.85) 50%, rgba(6, 28, 54, 0.4) 100%) !important;
+    border-radius: 16px !important;
+  }
+  .hero-container {
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  .hero-left {
+    align-items: flex-start !important;
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+  .hero-title {
+    font-size: 1.6rem !important;
+    text-align: left !important;
+  }
+  .hero-subtitle {
+    font-size: 0.85rem !important;
+    text-align: left !important;
+    line-height: 1.4 !important;
+  }
+  .hero-benefits-grid {
+    grid-template-columns: 1fr !important;
+    justify-items: start !important;
+    gap: 8px !important;
+  }
+  .hero-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+  .hero-buttons .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .hero-right {
+    display: none !important; /* Hide badge on mobile */
+  }
+
+  /* 6 Categories Grid mobile alignment */
+  .home-categories-grid-6 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-top: -20px !important;
+    margin-bottom: 25px !important;
+    padding: 0 10px !important;
+  }
+  
+  /* Category card overlays style reinstatement */
+  .category-card-6-icon {
+    display: flex !important;
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #081c36;
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 5;
+  }
+  .category-card-6-icon svg {
+    width: 12px;
+    height: 12px;
+    stroke: #ffffff;
+    stroke-width: 2.5;
+    fill: none;
+    display: block;
+  }
+  .category-card-6-body {
+    padding: 10px 8px 6px 8px !important;
+  }
+  .category-card-6-title {
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    height: 32px !important;
+    line-height: 1.2 !important;
+  }
+  .category-card-6-footer {
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+
+  /* Features vertical list overrides */
+  .home-features-bar-5 {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding: 0 10px !important;
+    border-top: 1px solid #f1f5f9;
+  }
+  .feature-bar-item-5 {
+    border: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 14px 0 !important;
+    background-color: transparent !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
+  }
+  .feature-bar-item-5:last-child {
+    border-bottom: none !important;
+  }
+  .feature-bar-icon-5 {
+    background: none !important;
+    border: none !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .feature-bar-icon-5 svg {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .feature-bar-title-5 {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+  }
+  .feature-bar-desc-5 {
+    font-size: 0.78rem !important;
+    color: var(--text-muted) !important;
+  }
+
+  /* Popular Products 2-Column Grid on Mobile */
+  .popular-layout .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+  .popular-layout .product-card {
+    padding: 10px !important;
+    border-radius: 8px !important;
+  }
+  .popular-layout .product-card-img-wrapper {
+    height: 120px !important;
+    margin-bottom: 8px !important;
+  }
+  .popular-layout .product-card-title {
+    font-size: 0.82rem !important;
+    height: 34px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 8px !important;
+  }
+  .spec-item {
+    font-size: 0.72rem !important;
+    gap: 4px !important;
+  }
+  .spec-checkmark {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 6px !important;
+    height: 6px !important;
+    border: 1.5px solid #ea580c !important;
+    border-radius: 50% !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    margin-right: 6px !important;
+    flex-shrink: 0 !important;
+  }
+  .spec-label {
+    margin-right: 2px !important;
+  }
+  .btn-buy-now {
+    padding: 8px 10px !important;
+    font-size: 0.78rem !important;
+    margin-top: 10px !important;
+    gap: 4px !important;
+  }
+  
+  /* CTA Banner Style overrides */
+  .cta-banner {
+    padding: 24px 20px !important;
+    text-align: left !important;
+    align-items: flex-start !important;
+  }
+  .cta-banner-content {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+  .cta-banner-content h3 {
+    font-size: 1.35rem !important;
+    text-align: left !important;
+  }
+  .cta-banner-content p {
+    font-size: 0.85rem !important;
+    text-align: left !important;
+  }
+  .cta-banner-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    gap: 10px !important;
+    margin-top: 15px !important;
+  }
+  .cta-banner-buttons .btn {
+    flex: 1 !important;
+    width: 50% !important;
+    padding: 10px 8px !important;
+    font-size: 0.76rem !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+  }
+}
+
+
+/* ==========================================================================
+   ROUND 2 OVERRIDES - NO HEROTO OVERLAPS, MOBILE FILTERS TOGGLING, COMPACT CARDS & Direct selector
+   ========================================================================== */
+
+.home-categories-grid-6 {
+  margin-top: 25px !important; /* Move categories grid below hero on all screen sizes */
+}
+
+/* Catalog categories pills tag list style */
+.catalog-categories-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.category-tag-btn {
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.category-tag-btn:hover {
+  background-color: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.category-tag-btn.active {
+  background-color: #ea580c;
+  color: #ffffff;
+  border-color: #ea580c;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.2);
+}
+
+/* Mobile filter sidebar layout rules */
+@media (max-width: 991px) {
+  .popular-sidebar {
+    display: none !important;
+  }
+  .popular-sidebar.open {
+    display: block !important;
+    margin-bottom: 20px;
+  }
+}
+
+/* Compact Product Card styling on mobile devices to prevent excessive spacing */
+@media (max-width: 768px) {
+  .home-categories-grid-6 {
+    margin-top: 20px !important;
+  }
+  
+  .popular-layout .product-card {
+    padding: 8px !important;
+    border-radius: 8px !important;
+  }
+  
+  .popular-layout .product-card-img-wrapper {
+    height: 100px !important;
+    margin-bottom: 6px !important;
+  }
+  
+  .popular-layout .product-card-title {
+    font-size: 0.78rem !important;
+    height: 30px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+  }
+  
+  .product-card-specs {
+    padding: 6px 8px !important;
+    margin-bottom: 6px !important;
+    gap: 4px !important;
+  }
+  
+  .spec-item {
+    font-size: 0.7rem !important;
+    gap: 3px !important;
+  }
+  
+  .spec-checkmark {
+    width: 5px !important;
+    height: 5px !important;
+    margin-right: 4px !important;
+    border-width: 1px !important;
+  }
+  
+  .price-bgn {
+    font-size: 1.15rem !important;
+  }
+  
+  .btn-buy-now {
+    padding: 7px 8px !important;
+    font-size: 0.75rem !important;
+    margin-top: 8px !important;
+    gap: 4px !important;
+  }
+}
+
+
+/* ==========================================================================
+   ROUND 3 OVERRIDES - DUAL CURRENCY, NAV MENU SCROLL FIX, HOVER DROPDOWN, RECTANGULAR CATEGORIES & SUBCATEGORIES
+   ========================================================================== */
+
+/* Fix navigation row height / vertical scrollbar issue */
+.header-nav-row,
+.header-nav-row .container {
+  overflow: visible !important;
+  overflow-y: visible !important;
+}
+
+/* Remove popular products sidebar columns to allow full-width products grid on homepage */
+.popular-layout {
+  display: block !important;
+}
+
+.popular-layout .products-grid {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+@media (max-width: 991px) {
+  .popular-layout .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Desktop header categories dropdown hover styles */
+.categories-nav-wrapper {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+}
+
+.categories-nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  width: 760px; /* Wide for horizontal megamenu layout */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  display: none;
+  padding: 18px;
+  margin-top: 5px;
+  z-index: 1100;
+  
+  /* Grid configuration for horizontal items layout */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 16px;
+}
+
+@media (min-width: 769px) {
+  .categories-nav-wrapper:hover .categories-nav-dropdown-menu {
+    display: grid !important; /* Display as grid on hover */
+  }
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: 8px 12px;
+  color: #1e293b;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.8rem; /* Compact size */
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+}
+
+.nav-dropdown-item:hover {
+  background-color: #f1f5f9;
+  color: #ea580c;
+}
+
+/* Catalog categories rectangular grids layout */
+.catalog-categories-tags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.catalog-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.catalog-subcategories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+/* Compact rectangular category buttons overrides */
+.category-tag-btn {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 6px !important;
+  padding: 8px 14px !important; /* Compact padding */
+  font-size: 0.8rem !important; /* Compact font-size */
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+
+.category-tag-btn:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  transform: translateY(-1px);
+}
+
+.category-tag-btn.active {
+  background-color: #ea580c !important;
+  color: #ffffff !important;
+  border-color: #ea580c !important;
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.22) !important;
+}
+
+/* Subcategory tag buttons layout */
+.subcategory-tag-btn {
+  background-color: #f8fafc;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 12px; /* Compact padding */
+  font-size: 0.76rem; /* Compact font-size */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.subcategory-tag-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.subcategory-tag-btn.active {
+  background-color: #1e293b;
+  color: #ffffff;
+  border-color: #1e293b;
+}
+
+/* Admin subcategories visual additions */
+.admin-badge-category {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
+/* Custom bottom fade gradient overlay for the hero section background */
+.modern-hero-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px; /* Tall smooth fade transition */
+  background: linear-gradient(180deg, rgba(6, 28, 54, 0) 0%, #ffffff 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Shift category cards grid margin to sit higher overlapping the transition overlay */
+.home-categories-grid-6 {
+  margin-top: -65px !important; /* Overlap transition overlay on desktop */
+}
+
+@media (max-width: 768px) {
+  .home-categories-grid-6 {
+    margin-top: -45px !important; /* Overlap transition overlay on mobile */
+  }
+}
+
+/* Rich text editor styling for admin panel product descriptions */
+.rich-text-editor-container {
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  overflow: hidden !important;
+  margin-top: 5px !important;
+  box-shadow: var(--shadow-sm) !important;
+  display: block !important;
+  width: 100% !important;
+}
+.editor-toolbar {
+  background-color: #f8fafc !important;
+  border-bottom: 1.5px solid #e2e8f0 !important;
+  padding: 8px 12px !important;
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.editor-btn {
+  width: 34px !important;
+  height: 34px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  background-color: #ffffff !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  color: #475569 !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.editor-btn:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+.editor-btn:active {
+  transform: scale(0.95) !important;
+}
+.editor-content {
+  min-height: 160px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  padding: 14px !important;
+  outline: none !important;
+  line-height: 1.6 !important;
+  font-size: 0.95rem !important;
+  color: #334155 !important;
+  background-color: #ffffff !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+.editor-content[placeholder]:empty:before {
+  content: attr(placeholder) !important;
+  color: #94a3b8 !important;
+  cursor: text !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   VERTICAL CATEGORY TREE & SIDEBAR FILTERS
+   ========================================================================== */
+.catalog-sidebar {
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 20px;
+}
+
+.catalog-tree-container {
+  padding: 5px 0;
+}
+
+.catalog-tree-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.catalog-tree-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.catalog-tree-menu li {
+  margin: 0;
+  position: relative;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  color: #475569;
+  font-weight: 500;
+}
+
+.tree-row:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.tree-item.active > .tree-row {
+  background-color: #f1f5f9;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.tree-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.tree-toggle:hover {
+  color: #ea580c;
+  background-color: #e2e8f0;
+}
+
+.tree-toggle-spacer {
+  width: 28px;
+  display: inline-block;
+}
+
+.tree-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.tree-icon {
+  font-size: 1.1rem;
+}
+
+.tree-label {
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+
+/* Nested Subcategories */
+.tree-sub-list {
+  display: none;
+  padding-left: 12px;
+  margin-top: 2px;
+  border-left: 1px dashed #e2e8f0;
+  margin-left: 15px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tree-sub-list.open {
+  display: flex;
+  animation: treeFadeIn 0.2s ease-out;
+}
+
+/* Nested Sub-subcategories */
+.tree-sub-sub-list {
+  display: none;
+  padding-left: 10px;
+  margin-top: 2px;
+  border-left: 1px dashed #cbd5e1;
+  margin-left: 12px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tree-sub-sub-list.open {
+  display: flex;
+  animation: treeFadeIn 0.2s ease-out;
+}
+
+@keyframes treeFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   CATALOG ROOT CATEGORY CARDS GRID
+   ========================================================================== */
+.catalog-categories-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+.category-card-card {
+  position: relative;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  background-color: #1e293b;
+}
+
+.category-card-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 8px 16px -6px rgba(0, 0, 0, 0.12), 0 3px 8px -2px rgba(0, 0, 0, 0.06);
+}
+
+.category-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.45) 60%, rgba(15, 23, 42, 0.25) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 15px;
+  transition: background 0.3s ease;
+}
+
+.category-card-card:hover .category-card-overlay {
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.55) 60%, rgba(15, 23, 42, 0.35) 100%);
+}
+
+.category-card-info {
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.category-card-icon {
+  font-size: 1.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.category-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE LAYOUTS
+   ========================================================================== */
+@media (max-width: 991px) {
+  .catalog-wide-layout {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    padding: 0 15px !important;
+  }
+
+  .popular-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -320px !important;
+    width: 290px !important;
+    height: 100vh !important;
+    z-index: 10000 !important;
+    background-color: #ffffff !important;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15) !important;
+    transition: left 0.3s ease-in-out !important;
+    display: block !important;
+    overflow-y: auto !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 25px 20px !important;
+  }
+  
+  .popular-sidebar.open {
+    left: 0 !important;
+    display: block !important;
+  }
+
+  #mobile-filter-toggle-btn {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .catalog-categories-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+    gap: 12px !important;
+  }
+  
+  .category-card-card {
+    height: 100px !important;
+  }
+  
+  .category-card-icon {
+    font-size: 1.6rem !important;
+  }
+  
+  .category-card-title {
+    font-size: 0.95rem !important;
+  }
+  
+  .category-card-overlay {
+    padding: 12px !important;
+  }
+}
+
+/* Categories Carousel Styles */
+.categories-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.home-categories-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 5px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+  min-height: 220px; /* Placeholder height to prevent Cumulative Layout Shift */
+}
+
+.home-categories-carousel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.home-categories-carousel .category-card-6 {
+  flex: 0 0 calc(16.666% - 10px);
+  min-width: 170px;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  color: #1e293b;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-arrow:hover {
+  background-color: #f8fafc;
+  color: #ea580c;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.carousel-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-arrow.prev-arrow {
+  left: -22px;
+}
+
+.carousel-arrow.next-arrow {
+  right: -22px;
+}
+
+.action-buttons-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1250px) {
+  .carousel-arrow.prev-arrow {
+    left: -10px;
+  }
+  .carousel-arrow.next-arrow {
+    right: -10px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .home-categories-carousel .category-card-6 {
+    flex: 0 0 calc(25% - 9px);
+  }
+}
+
+@media (max-width: 900px) {
+  .home-categories-carousel .category-card-6 {
+    flex: 0 0 calc(33.333% - 8px);
+  }
+}
+
+@media (max-width: 600px) {
+  .home-categories-carousel .category-card-6 {
+    flex: 0 0 calc(50% - 6px);
+    min-width: 130px;
+  }
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  .carousel-arrow.prev-arrow {
+    left: -5px;
+  }
+  .carousel-arrow.next-arrow {
+    right: -5px;
+  }
+}
+
+.categories-carousel-container {
+  margin-top: -15px !important;
+  position: relative;
+  z-index: 20;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 1100px) {
+  .categories-carousel-container {
+    margin-top: -10px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .categories-carousel-container {
+    margin-top: -5px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .categories-carousel-container {
+    margin-top: 0 !important;
+  }
+}
+
+/* Econt Office Locator Modal Styles */
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  animation: econtFadeIn 0.25s ease forwards;
+}
+
+.econt-locator-modal-container {
+  background: #ffffff;
+  border-radius: 18px;
+  width: 90%;
+  max-width: 900px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  animation: econtScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.econt-locator-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #f8fafc;
+}
+
+.econt-locator-modal-header h3 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+.econt-locator-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.econt-locator-close-btn:hover {
+  color: #0f172a;
+}
+
+.econt-locator-modal-body {
+  position: relative;
+  min-height: 400px;
+  background: #f8fafc;
+}
+
+.econt-spinner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  z-index: 10;
+  border-radius: 0 0 18px 18px;
+}
+
+.econt-spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid rgba(15, 61, 112, 0.1);
+  border-top-color: #0f3d70;
+  border-radius: 50%;
+  animation: econtSpin 1s infinite linear;
+  margin-bottom: 12px;
+}
+
+@keyframes econtSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes econtFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes econtScaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .econt-locator-modal-container {
+    width: 95%;
+  }
+}
+
+/* AI Chatbot Widget Styles */
+.floating-chat-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #0f3d70 0%, #1e5ba3 100%);
+  color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(15, 61, 112, 0.4);
+  cursor: pointer;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+.floating-chat-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(15, 61, 112, 0.6);
+}
+
+.chatbot-avatar-btn-img {
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.chatbot-header-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+
+.chatbot-window {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  width: 380px;
+  height: 520px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 99999;
+  border: 1px solid #e2e8f0;
+  font-family: 'Outfit', sans-serif;
+  animation: chatbotSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes chatbotSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.chatbot-header {
+  background: #0f3d70;
+  color: #ffffff;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chatbot-header-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatbot-header-status {
+  width: 8px;
+  height: 8px;
+  background-color: #2be885;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #2be885;
+}
+
+.chatbot-header h4 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff !important;
+}
+
+.chatbot-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+  line-height: 1;
+}
+
+.chatbot-close-btn:hover {
+  color: #ffffff;
+}
+
+.chatbot-messages {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f8fafc;
+  position: relative; /* Ensure offsetParent for children elements offsetTop calculation */
+}
+
+.chatbot-message {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.chatbot-message.user {
+  background-color: #0f3d70;
+  color: #ffffff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.chatbot-message.bot {
+  background-color: #ffffff;
+  color: #0f172a;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* AI Chatbot Horizontal Products Carousel */
+.chatbot-products-carousel-wrapper {
+  position: relative;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chatbot-products-carousel {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+  padding: 4px 2px;
+  scrollbar-width: none; /* Firefox */
+  box-sizing: border-box;
+}
+.chatbot-products-carousel::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.chatbot-recommended-product {
+  flex: 0 0 calc(50% - 4px); /* Exactly 2 products per row */
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-width: 120px;
+}
+.chatbot-recommended-product:hover {
+  border-color: #0f3d70;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chatbot-rec-img {
+  width: 100%;
+  height: 70px;
+  border-radius: 6px;
+  object-fit: cover;
+  margin-bottom: 6px;
+}
+
+.chatbot-rec-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.chatbot-rec-name {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #0f172a;
+  margin-bottom: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 30px;
+  line-height: 1.2;
+}
+
+.chatbot-rec-brand {
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.chatbot-rec-price {
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #0f3d70;
+  margin-top: auto;
+}
+
+/* Carousel navigation buttons */
+.chatbot-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 61, 112, 0.9);
+  color: #ffffff;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  z-index: 5;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background 0.2s;
+}
+.chatbot-carousel-btn:hover {
+  background: #1e5ba3;
+}
+.chatbot-carousel-btn.prev {
+  left: -12px;
+}
+.chatbot-carousel-btn.next {
+  right: -12px;
+}
+
+.chatbot-typing {
+  padding: 12px 20px;
+  display: flex;
+  gap: 4px;
+  align-self: flex-start;
+  background: rgba(15, 61, 112, 0.05);
+  border-radius: 12px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #64748b;
+  border-radius: 50%;
+  animation: chatbotTypingAnimation 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes chatbotTypingAnimation {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.chatbot-input-container {
+  padding: 12px 16px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.chatbot-input-container input {
+  flex-grow: 1;
+  border: 1px solid #e2e8f0;
+  padding: 10px 14px;
+  border-radius: 24px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chatbot-input-container input:focus {
+  border-color: #0f3d70;
+}
+
+#chatbot-send-btn {
+  background-color: #0f3d70;
+  color: #ffffff;
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+#chatbot-send-btn:hover {
+  background-color: #1e5ba3;
+}
+
+@media (max-width: 450px) {
+  .chatbot-window {
+    width: calc(100% - 40px);
+    right: 20px;
+    left: 20px;
+    bottom: 80px;
+    height: 480px;
+  }
+}
+
+/* Touch scrolling and zoom fix for chatbot */
+.chatbot-messages {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .chatbot-input-container input {
+    font-size: 16px !important;
+  }
+}
+
+/* Homepage popular products grid fix for small screens */
+@media (max-width: 480px) {
+  .popular-layout .products-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    padding: 0 10px !important;
+  }
+}
+
+/* ==========================================================================
+   ABOUT US VIEW STYLING
+   ========================================================================== */
+.about-hero-section {
+  position: relative;
+  background: linear-gradient(135deg, #0f2d4a 0%, #081a2e 100%);
+  padding: 80px 20px;
+  text-align: center;
+  border-radius: 16px;
+  color: #ffffff;
+  margin-bottom: 40px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.about-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 80% 20%, rgba(234, 88, 12, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+.about-hero-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  margin-bottom: 15px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #ffffff, #f1f5f9, #ea580c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.about-hero-subtitle {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.about-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 55px;
+}
+.about-card-premium {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 35px 30px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+.about-card-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #0f3d70, #ea580c);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.about-card-premium:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+.about-card-premium:hover::before {
+  opacity: 1;
+}
+.about-card-icon {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(234, 88, 12, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  color: #ea580c;
+  transition: transform 0.3s ease;
+}
+.about-card-premium:hover .about-card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+.about-card-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 15px;
+}
+.about-card-text {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+/* Partners Section */
+.partners-container {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 50px 40px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 50px;
+}
+.partners-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.partners-header h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+.partners-header p {
+  color: #64748b;
+  font-size: 1rem;
+}
+.partners-cat-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #475569;
+  margin-bottom: 20px;
+  border-left: 4px solid #ea580c;
+  padding-left: 12px;
+}
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.partner-logo-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 10px;
+  text-align: center;
+  font-weight: 700;
+  color: #334155;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+.partner-logo-card:hover {
+  transform: translateY(-3px);
+  border-color: #ea580c;
+  box-shadow: 0 6px 12px rgba(234, 88, 12, 0.08);
+  color: #ea580c;
+}
+.partner-origin {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.partner-logo-card:hover .partner-origin {
+  color: #f97316;
+}
+
+/* ==========================================================================
+   CONTACTS VIEW STYLING
+   ========================================================================== */
+.contact-layout-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+.contact-info-panel-premium {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.contact-detail-card-premium {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+}
+.contact-detail-card-premium:hover {
+  transform: translateX(5px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.04);
+}
+.contact-icon-wrapper-premium {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(15, 61, 112, 0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f3d70;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.contact-detail-card-premium:hover .contact-icon-wrapper-premium {
+  background-color: rgba(234, 88, 12, 0.1);
+  color: #ea580c;
+}
+.contact-text-wrapper-premium h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+.contact-text-wrapper-premium p,
+.contact-text-wrapper-premium a {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.contact-text-wrapper-premium a:hover {
+  color: #ea580c;
+  text-decoration: underline;
+}
+.contact-map-wrapper-premium {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  height: 100%;
+  min-height: 450px;
+  position: relative;
+}
+.contact-map-wrapper-premium iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (max-width: 992px) {
+  .about-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .contact-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-map-wrapper-premium {
+    min-height: 380px;
+  }
+}
+@media (max-width: 768px) {
+  .about-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .partners-container {
+    padding: 30px 20px;
+  }
+  .about-hero-title {
+    font-size: 2rem;
+  }
+}
+
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HEADER TOP BAR (Optimized & Clean)
+       ========================================================================== -->
+  <div class="header-top">
+    <div class="container">
+      <div class="header-top-left">
+        <div class="header-top-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          <span class="desktop-only">Бърза доставка в цяла България</span>
+          <span class="mobile-only">Бърза доставка до 48 часа</span>
+        </div>
+        <span class="header-top-divider">|</span>
+        <div class="header-top-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 11 2 2 4-4"></path></svg>
+          <span>Гарантирано качество</span>
+        </div>
+        <span class="header-top-divider">|</span>
+        <div class="header-top-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Кримпване по поръчка</span>
+        </div>
+      </div>
+      <div class="header-top-right">
+        <a href="tel:+359892484337" class="desktop-only">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span>0892 484 337</span>
+        </a>
+        <a href="tel:0892484337" class="mobile-only">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span>0892 484 337</span>
+        </a>
+        <span class="header-top-divider">|</span>
+        <a href="mailto:hydroluxgroup@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span>office@hydrolux.bg</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN MIDDLE HEADER (Logo, Search Bar, Actions)
+       ========================================================================== -->
+  <header class="header-main">
+    <div class="container">
+      <!-- Official Brand Logo Image -->
+      <a onclick="App.navigate('home')" class="logo-link" title="Хидролукс Груп" href="#home">
+        <img src="assets/logo.webp" width="200" height="78" alt="Хидролукс Груп - Производство и запресоване на хидравлични и пневматични маркучи Монтана" class="brand-logo-img" fetchpriority="high">
+      </a>
+
+      <!-- Center Search Bar -->
+      <div class="search-bar-wrapper">
+        <input type="text" id="search-input-blue" class="search-field" placeholder="Търсене по продукт, марка, диаметър..." oninput="Catalog.handleSearchInput(this.value)" onfocus="if(typeof CONFIG !== 'undefined' && typeof CONFIG.loadCatalog === 'function') CONFIG.loadCatalog()" aria-label="Търсене на продукти">
+        <button class="search-submit-btn" onclick="if(App.currentView !== 'catalog') App.navigate('catalog'); Catalog.applyFiltersAndRender();" aria-label="Търси">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <!-- Account -->
+        <button class="header-action-btn" onclick="Auth.showAuthModal()" title="Вход / Регистрация" aria-label="Вход / Регистрация">
+          <div class="header-action-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <span class="header-action-label">Вход / Регистрация</span>
+        </button>
+
+        <!-- Wishlist -->
+        <button class="header-action-btn" onclick="App.navigate('wishlist')" title="Любими" aria-label="Любими">
+          <div class="header-action-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span class="header-action-badge" id="wishlist-badge">0</span>
+          </div>
+          <span class="header-action-label">Любими</span>
+        </button>
+
+        <!-- Shopping Cart -->
+        <button class="header-action-btn btn-cart-trigger" onclick="Cart.openDrawer()" title="Количка" aria-label="Количка">
+          <div class="header-action-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="header-action-badge cart-count-badge-inline">0</span>
+          </div>
+          <span class="header-action-label">Количка</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       NAVIGATION BAR ROW (Categories Menu and Navigation Links)
+       ========================================================================== -->
+  <div class="header-nav-row">
+    <div class="container">
+      <!-- Categories Wrapper with dropdown -->
+      <div class="categories-nav-wrapper">
+        <div class="categories-nav-trigger" onclick="Catalog.resetFilters(); App.navigate('catalog')" role="button" tabindex="0" aria-label="Всички категории">
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          <span>Всички категории</span>
+          <span class="caret-down">▼</span>
+        </div>
+        <div class="categories-nav-dropdown-menu" id="categories-nav-dropdown-menu"></div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav id="main-nav-links">
+        <ul class="nav-links-list">
+          <li><a class="nav-link active" href="#home" onclick="App.navigate('home')">Начало</a></li>
+          <li><a class="nav-link" href="#catalog" onclick="Catalog.resetFilters(); App.navigate('catalog')">Продукти</a></li>
+          <li><a class="nav-link" href="#builder" onclick="App.navigate('builder')">Кримпване</a></li>
+          <li><a class="nav-link" href="#services" onclick="App.navigate('services')">Услуги</a></li>
+          <li><a class="nav-link" href="#brands" onclick="event.preventDefault(); Cart.showToast('Изборът на марки ще бъде достъпен скоро!')">Марки</a></li>
+          <li><a class="nav-link" href="#about" onclick="App.navigate('about')">За нас</a></li>
+          <li><a class="nav-link" href="#contacts" onclick="App.navigate('contacts')">Контакти</a></li>
+        </ul>
+      </nav>
+
+      <!-- Mobile hamburger menu toggle -->
+      <button class="mobile-menu-btn" onclick="App.toggleMobileMenu()" aria-label="Отвори мобилно меню" style="margin-left: auto;">☰</button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN CONTENT (SPA RENDERED VIEWS)
+       ========================================================================== -->
+  <main style="overflow-x: hidden;">
+
+    <!-- 1. HOME VIEW (Matches Screenshot Layout) -->
+    <section id="home-view" class="spa-view active">
+      <!-- Redesigned Industrial Hero Section (Matches Attached Image 1:1) -->
+      <div class="modern-hero-section">
+        <div class="hero-bg-overlay"></div>
+        
+        <!-- Inner Hero Content Container -->
+        <div class="hero-container">
+          <div class="hero-row">
+            <!-- Left Side Content -->
+            <div class="hero-left">
+              <h1 class="hero-title">Индустриални маркучи и решения</h1>
+              <p class="hero-subtitle">
+                Надеждни продукти. Професионално обслужване.<br>Изработка по размер.
+              </p>
+              
+              <!-- Benefits 2x2 Grid -->
+              <div class="hero-benefits-grid">
+                <div class="benefit-item">
+                  <span class="benefit-icon">✓</span>
+                  <span>Над 5000 продукта на склад</span>
+                </div>
+                 <div class="benefit-item">
+                   <span class="benefit-icon">✓</span>
+                   <span>Доставка до 48 часа</span>
+                 </div>
+                <div class="benefit-item">
+                  <span class="benefit-icon">✓</span>
+                  <span>Кримпване до DN51 – 2"</span>
+                </div>
+                <div class="benefit-item">
+                  <span class="benefit-icon">✓</span>
+                  <span>Техническа консултация</span>
+                </div>
+              </div>
+              
+              <!-- Hero Buttons -->
+              <div class="hero-buttons">
+                <button class="btn btn-orange" onclick="App.navigate('catalog')">
+                  <span>Разгледай продуктите</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+                <button class="btn btn-outline-white" onclick="App.navigate('services')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                  <span>Изпрати запитване</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Side Content: Floating Badge -->
+            <div class="hero-right">
+              <div class="crimping-badge" onclick="App.navigate('builder')">
+                <div class="crimping-badge-icon">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                </div>
+                <div class="crimping-badge-text">
+                  <h4>Кримпване по поръчка</h4>
+                  <p>Бързо и прецизно</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Carousel -->
+      <div class="container categories-carousel-container">
+        <div class="categories-carousel-wrapper">
+          <button class="carousel-arrow prev-arrow" aria-label="Предишна категория" onclick="Catalog.slideCategories(-1)">&#10094;</button>
+          <div class="home-categories-carousel" id="home-categories-carousel">
+            <!-- Dynamically populated categories by App.renderHomeCategories() -->
+          </div>
+          <button class="carousel-arrow next-arrow" aria-label="Следваща категория" onclick="Catalog.slideCategories(1)">&#10095;</button>
+        </div>
+      </div>
+
+      <!-- 5-item Features Bar -->
+      <div class="container" style="margin-top: 35px; margin-bottom: 35px;">
+        <div class="home-features-bar-5" style="margin-bottom: 0;">
+          <!-- Item 1: Stock -->
+          <div class="feature-bar-item-5">
+            <div class="feature-bar-icon-5">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="2" height="18" fill="#1e293b"/>
+                <rect x="19" y="3" width="2" height="18" fill="#1e293b"/>
+                <rect x="5" y="11" width="14" height="2" fill="#1e293b"/>
+                <rect x="5" y="19" width="14" height="2" fill="#1e293b"/>
+                <rect x="6" y="6" width="5" height="5" rx="1" fill="#ea580c"/>
+                <rect x="13" y="6" width="5" height="5" rx="1" fill="#ea580c"/>
+                <rect x="7" y="14" width="10" height="5" rx="1" fill="#ea580c"/>
+              </svg>
+            </div>
+            <div class="feature-bar-content-5">
+              <h4 class="feature-bar-title-5">Голяма складова наличност</h4>
+              <span class="feature-bar-desc-5">Всички налични продукти са на склад</span>
+            </div>
+          </div>
+
+          <!-- Item 2: Custom Crimping -->
+          <div class="feature-bar-item-5" onclick="App.navigate('builder')" style="cursor: pointer;">
+            <div class="feature-bar-icon-5">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" aria-hidden="true">
+                <circle cx="12" cy="11" r="7" stroke="#1e293b" stroke-width="2.5"/>
+                <path d="M12 4v3M12 18v-3M5 11h3M19 11h-3M7 6l2 2M17 16l-2-2M17 6l-2 2M7 16l2-2" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+                <rect x="8" y="9.5" width="8" height="3" rx="1" fill="#1e293b"/>
+                <path d="M12 18v3" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M9 21h6" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="feature-bar-content-5">
+              <h4 class="feature-bar-title-5">Кримпване по поръчка</h4>
+              <span class="feature-bar-desc-5">Хидравлични маркучи до DN51 (2")</span>
+            </div>
+          </div>
+
+          <!-- Item 3: Fast Shipping -->
+          <div class="feature-bar-item-5">
+            <div class="feature-bar-icon-5">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" aria-hidden="true">
+                <path d="M2 7h5M1 11h4M3 15h3" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+                <rect x="8" y="5" width="10" height="11" rx="1" fill="#ea580c"/>
+                <path d="M18 8h3l2 3v5h-5V8z" fill="#1e293b"/>
+                <circle cx="10.5" cy="18.5" r="2.5" fill="#1e293b" stroke="#ffffff" stroke-width="1.5"/>
+                <circle cx="19.5" cy="18.5" r="2.5" fill="#1e293b" stroke="#ffffff" stroke-width="1.5"/>
+              </svg>
+            </div>
+             <div class="feature-bar-content-5">
+               <h4 class="feature-bar-title-5">Бърза доставка</h4>
+               <span class="feature-bar-desc-5">До 48 часа в цялата страна</span>
+             </div>
+          </div>
+
+          <!-- Item 4: Consulting -->
+          <div class="feature-bar-item-5" onclick="App.navigate('services')" style="cursor: pointer;">
+            <div class="feature-bar-icon-5">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none" aria-hidden="true">
+                <path d="M16 14a4 4 0 0 1-8 0v-2a4 4 0 0 1 8 0v2z" fill="#1e293b"/>
+                <path d="M6 20a6 6 0 0 1 12 0" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M7 13a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2" stroke="#ea580c" stroke-width="2" fill="none"/>
+                <rect x="5" y="11" width="3" height="4" rx="1" fill="#ea580c"/>
+                <rect x="16" y="11" width="3" height="4" rx="1" fill="#ea580c"/>
+                <path d="M17 14c0 1.5-1.5 2-2.5 2" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="feature-bar-content-5">
+              <h4 class="feature-bar-title-5">Техническа консултация</h4>
+              <span class="feature-bar-desc-5">Експертна помощ при избор и приложение</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container" style="margin-top: 35px;">
+
+      <!-- Special Offers Section -->
+      <div class="popular-section" id="home-special-section" style="margin-top: 0; display: none; margin-bottom: 30px;">
+        <div class="section-header-popular">
+          <h2 style="color: var(--accent); display: flex; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="color: var(--accent);">
+              <path d="M17.557 6.852c-2.245.216-4.107-1.123-4.832-3.003-.541 1.637-.25 3.512.875 4.88 1.134 1.378 1.11 3.125-.136 4.31-.38.36-.88.62-1.42.71a5.617 5.617 0 0 1-5.111-3.23c-.34.66-.533 1.397-.533 2.181 0 3.753 3.205 6.8 7.158 6.8 3.953 0 7.158-3.047 7.158-6.8 0-2.316-1.221-4.372-3.159-5.848zm-4.664 12.822c-1.397 0-2.53-1.077-2.53-2.406 0-1.05.71-1.91 1.7-2.26.1-.56.41-1.05.86-1.36.08-.06.19-.01.2.09.28 1.83 1.94 2.18 1.94 3.53 0 1.329-1.133 2.406-2.17 2.406z"/>
+            </svg>
+            Специални предложения
+          </h2>
+        </div>
+        <div class="popular-layout">
+          <div class="products-grid" id="home-special-products-grid">
+            <!-- Populated dynamically by App.renderFeaturedProductsHome() -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Popular Products Section -->
+      <div class="popular-section" style="margin-top: 0;">
+        <div class="section-header-popular">
+          <h2>Популярни продукти</h2>
+          <a class="view-all-link" onclick="Catalog.selectCategory('')"><span class="desktop-only">Виж всички продукти ➔</span><span class="mobile-only">Виж всички ➔</span></a>
+        </div>
+        
+        <div class="popular-layout">
+          
+          <!-- Products Grid -->
+          <div class="products-grid" id="home-featured-products-grid">
+            <!-- Populated dynamically by App.renderFeaturedProductsHome() -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Industries and Applications Section -->
+      <div class="industries-section mt-40">
+        <h2 class="industries-section-title">Индустрии и приложения</h2>
+        
+        <div class="industries-grid">
+          <div class="industry-card">
+            <img src="assets/industry_agriculture.webp" alt="Земеделие" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">🚜</div>
+                <h4>Земеделие</h4>
+              </div>
+            </div>
+          </div>
+          
+          <div class="industry-card">
+            <img src="assets/industry_construction.webp" alt="Строителство" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">🏗️</div>
+                <h4>Строителство</h4>
+              </div>
+            </div>
+          </div>
+          
+          <div class="industry-card">
+            <img src="assets/industry_mining.webp" alt="Минна индустрия" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">🚛</div>
+                <h4>Минна индустрия</h4>
+              </div>
+            </div>
+          </div>
+          
+          <div class="industry-card">
+            <img src="assets/industry_manufacturing.webp" alt="Производство" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">⚙️</div>
+                <h4>Производство</h4>
+              </div>
+            </div>
+          </div>
+          
+          <div class="industry-card">
+            <img src="assets/industry_transport.webp" alt="Транспорт" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">🚚</div>
+                <h4>Транспорт</h4>
+              </div>
+            </div>
+          </div>
+          
+          <div class="industry-card">
+            <img src="assets/industry_food.webp" alt="Хранително-вкусова промишленост" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">🏭</div>
+                <h4>Хранително-вкусова промишленост</h4>
+              </div>
+            </div>
+          </div>
+          
+          <div class="industry-card">
+            <img src="assets/industry_chemical.webp" alt="Химическа индустрия" loading="lazy" width="400" height="200">
+            <div class="industry-overlay" style="z-index: 1;">
+              <div class="industry-info">
+                <div class="industry-icon">🧪</div>
+                <h4>Химическа индустрия</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Dark Blue Banner Section -->
+      <div class="cta-banner mt-40">
+        <div class="cta-banner-content">
+          <h3>Нуждаете се от маркуч по размер?</h3>
+          <p>Изпратете ни запитване или се обадете – ще получите оферта бързо!</p>
+        </div>
+        <div class="cta-banner-buttons">
+          <button class="btn btn-cta-outline" onclick="App.navigate('services')">
+            <svg viewBox="0 0 24 24" width="18" height="18" class="cta-icon" aria-hidden="true">
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/>
+            </svg>
+            Изпрати запитване
+          </button>
+          <a href="tel:0892484337" class="btn btn-cta-solid desktop-only">
+            <svg viewBox="0 0 24 24" width="18" height="18" class="cta-icon" aria-hidden="true">
+              <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4.01c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.59c0-.55-.45-1-1-1z" fill="currentColor"/>
+            </svg>
+            Свържи се с нас
+          </a>
+          <a href="tel:0892484337" class="btn btn-cta-solid mobile-only">
+            <svg viewBox="0 0 24 24" width="18" height="18" class="cta-icon" aria-hidden="true">
+              <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4.01c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.59c0-.55-.45-1-1-1z" fill="currentColor"/>
+            </svg>
+            Свържи се с нас
+          </a>
+        </div>
+      </div>
+
+      <!-- Old features grid removed as it is replaced by the new 5-item features bar -->
+
+      <!-- REDESIGNED HIGH-END "ABOUT US" SECTION REMOVED -->
+      </div> <!-- end of container -->
+    </section>
+
+    <!-- 2. CATALOG VIEW (Sidebar Filters & Category Tree - Wide Products) -->
+    <section id="catalog-view" class="spa-view container mt-20">
+      <div class="catalog-wide-layout">
+        
+        <!-- Sidebar Filters (Desktop left, Mobile drawer) -->
+        <aside class="catalog-sidebar popular-sidebar card">
+          <div class="sidebar-header mobile-only" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #0f172a; font-weight: 800;">Филтри</h3>
+            <button class="close-sidebar-btn" onclick="Catalog.toggleMobileFilters()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">✕</button>
+          </div>
+          
+          <div class="sidebar-section mb-20">
+            <div class="catalog-categories-tags-list" id="catalog-categories-tags-list">
+              <!-- Dynamically populated vertical tree by catalog.js -->
+            </div>
+          </div>
+          
+          <div class="sidebar-section mb-20" style="border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+            <div class="catalog-specs-filters" id="catalog-specs-filters" style="display: flex; flex-direction: column; gap: 15px;">
+              <!-- Dynamically populated spec filters -->
+            </div>
+          </div>
+          
+          <button class="btn btn-secondary btn-block mt-20" onclick="Catalog.resetFilters()" style="width: 100%;">Изчисти Филтрите</button>
+        </aside>
+
+        <!-- Catalog main content -->
+        <div class="catalog-main">
+          <div class="catalog-content-header" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <button id="mobile-filter-toggle-btn" class="btn btn-secondary mobile-only" onclick="Catalog.toggleMobileFilters()" style="display: none; align-items: center; gap: 8px;">
+              <span>Покажи Филтри</span>
+            </button>
+            <h2 id="catalog-active-title" style="margin: 0;">Всички продукти</h2>
+            <div id="catalog-sort-container" style="display: none; align-items: center; gap: 8px; margin-left: auto;">
+              <span class="text-muted font-small" style="font-weight: 600;">Подредба:</span>
+              <select id="catalog-sort-select" onchange="Catalog.changeSort(this.value)" style="height: 34px; padding: 4px 8px; font-size: 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: white; font-weight: 800; color: var(--primary); outline: none; cursor: pointer;">
+                <option value="default">Препоръчани</option>
+                <option value="best_sellers">Най-продавани</option>
+                <option value="price_asc">Цена: възходяща</option>
+                <option value="price_desc">Цена: низходяща</option>
+                <option value="name_asc">Име: А-Я</option>
+              </select>
+            </div>
+            <div class="text-muted font-small" id="catalog-count-container" style="margin-left: 10px;">Намерени решения: <strong class="text-dark" id="catalog-count">8</strong></div>
+          </div>
+          
+          <!-- Horizontal Subcategories tags bar above products grid -->
+          <div id="catalog-subcategories-container" style="display: none; margin-bottom: 20px; flex-direction: column; gap: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 15px;">
+            <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Подкатегории:</div>
+            <div class="catalog-subcategories-tags" id="catalog-subcategories-tags" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+            <div class="catalog-subsubcategories-tags" id="catalog-subsubcategories-tags" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;"></div>
+          </div>
+
+          <div class="products-grid full-width" id="products-grid">
+            <!-- Dynamically Rendered Products or Category Cards -->
+          </div>
+          <div id="catalog-load-more-container" style="display: none; justify-content: center; margin-top: 30px; margin-bottom: 20px;">
+            <button onclick="Catalog.loadMore()" class="btn btn-primary" style="padding: 10px 30px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">Зареди още решения</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PRODUCT DETAIL VIEW -->
+    <section id="product-detail-view" class="spa-view container mt-20">
+      <div class="breadcrumb" id="product-detail-breadcrumb">
+        <!-- Breadcrumbs -->
+      </div>
+
+      <div class="product-detail-layout">
+        <!-- Product Images Gallery -->
+        <div class="gallery-panel">
+          <div class="main-image-wrapper">
+            <button type="button" class="gallery-nav-btn prev" onclick="Catalog.navigateGallery(-1)" aria-label="Previous image">‹</button>
+            <img src="" id="prod-main-image" width="500" height="500" alt="Product Image">
+            <button type="button" class="gallery-nav-btn next" onclick="Catalog.navigateGallery(1)" aria-label="Next image">›</button>
+          </div>
+          <div class="thumbnails-list" id="prod-thumbnails">
+            <!-- Dynamically populated thumbs -->
+          </div>
+        </div>
+
+        <!-- Product Core Info -->
+        <div class="product-info-panel">
+          <h2 id="prod-title">Маркуч за въздух и вода SEMPERIT - PLW 20</h2>
+          
+          <div class="meta-stats">
+            <div>Артикулен код: <strong id="prod-sku">PLW20</strong></div>
+            <div>|</div>
+            <div id="prod-stock" class="stock-badge in-stock">В наличност</div>
+            <div>|</div>
+            <div>Видян: <strong id="prod-views">0</strong> пъти</div>
+            <div>|</div>
+            <div><a onclick="Catalog.openInquiryModal()" style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px; text-decoration: underline;"><span style="font-size: 0.95rem;">❓</span> Задай въпрос</a></div>
+          </div>
+
+          <div id="prod-brand-container" style="margin-top: 10px; font-size: 0.9rem; color: var(--text-dark); font-weight: 500;">
+            Марка: <span class="text-accent font-bold text-uppercase" id="prod-brand">Semperit</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Description and Specs Tabs -->
+          <div class="tabs-navigation">
+            <button class="tab-btn active" onclick="document.getElementById('prod-desc-panel').classList.remove('hidden'); document.getElementById('prod-specs-panel').classList.add('hidden'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active')">Описание</button>
+            <button class="tab-btn" onclick="document.getElementById('prod-desc-panel').classList.add('hidden'); document.getElementById('prod-specs-panel').classList.remove('hidden'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active')">Характеристики</button>
+          </div>
+
+          <div id="prod-desc-panel" class="tab-panel">
+            <p id="prod-desc-text" class="text-muted font-small">Описание...</p>
+          </div>
+
+          <div id="prod-specs-panel" class="tab-panel hidden">
+            <div class="specs-list" id="prod-specs-list">
+              <!-- Technical key-value spec rows -->
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="action-buttons-row">
+            <button class="btn btn-orange" onclick="Catalog.openQuickOrderModal()">⚡ Бърза поръчка</button>
+            <button class="btn btn-primary" onclick="Catalog.addToCartFromDetails()" style="background-color: var(--primary); color: white; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+              </svg>
+              Добави в количката
+            </button>
+          </div>
+
+          <div class="tags-section">
+            <div class="font-xs font-bold text-muted mb-10">Етикети:</div>
+            <div class="tags-list" id="prod-tags-container">
+              <!-- Clickable Search Tags -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Variants Table Area -->
+      <div class="variants-panel card">
+        <h3 class="section-title">📏 Изберете размер и заявете количество</h3>
+        <p class="text-muted font-small">Всички размери се поддържат в наличност. Цените са за линеен метър или брой.</p>
+        <div class="divider"></div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Код на раздав</th>
+                <th>Вътр. ø (мм)</th>
+                <th>Инч</th>
+                <th>Външ. ø (мм)</th>
+                <th>Работно нал.</th>
+                <th>Радиус огъване</th>
+                <th>Тегло кг/м</th>
+                <th>Дълж. ролка</th>
+                <th>Цена</th>
+                <th>Количество (м)</th>
+                <th>Действие</th>
+              </tr>
+            </thead>
+            <tbody id="prod-variants-tbody">
+              <!-- Dynamically rendered variant rows with inline qty selectors -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="variants-actions-bar">
+          <div class="font-small text-muted text-left">
+            💡 Можете да поръчате <strong>различни размери едновременно</strong>, като попълните количествата на съответните редове и натиснете бутона вдясно.
+          </div>
+          <button class="btn btn-primary btn-large" id="prod-bulk-add-btn">📥 Добави избраните размери в количката</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. HOSE BUILDER VIEW -->
+    <section id="builder-view" class="spa-view container mt-20">
+      <div class="text-center mb-30">
+        <span class="hero-tag">ПРОФЕСИОНАЛНО ЗАПРЕСОВАНЕ</span>
+        <h2>Интерактивен Конфигуратор на Маркучи</h2>
+        <p class="text-muted max-w-600">
+          Сглобете собствен маркуч по индивидуални размери с бързи изчисления и изберете накрайници с резби за Вашата инсталация.
+        </p>
+      </div>
+      <div id="hose-builder-container">
+        <!-- Renders automatically from components/builder.js -->
+      </div>
+    </section>
+
+    <!-- 5. SERVICES & CONTACT VIEW -->
+    <section id="services-view" class="spa-view container mt-20">
+      <div class="catalog-layout">
+        <!-- Direct Form Column -->
+        <div class="card">
+          <h3 class="section-title">✉️ Бърза връзка и Консултация</h3>
+          <p class="text-muted font-small">Попълнете формата и наш инженер ще се свърже с вас за безплатна техническа консултация.</p>
+          <div class="divider"></div>
+
+          <form onsubmit="Catalog.submitInquiry(event)">
+            <div class="form-group">
+              <label for="services-name">Вашето Име</label>
+              <input type="text" id="services-name" class="form-control" required placeholder="Иван Иванов">
+            </div>
+            <div class="form-group">
+              <label for="services-phone">Телефон за връзка</label>
+              <input type="tel" id="services-phone" class="form-control" required placeholder="+359 888 888 888">
+            </div>
+            <div class="form-group">
+              <label for="services-email">Имейл адрес</label>
+              <input type="email" id="services-email" class="form-control" required placeholder="example@gmail.com">
+            </div>
+            <div class="form-group">
+              <label for="services-message">Вашето съобщение / Спецификация</label>
+              <textarea id="services-message" class="form-control" rows="4" required placeholder="Опишете каква машина обслужвате, диаметър на маркуча или накрайниците..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Изпрати Запитване</button>
+          </form>
+        </div>
+
+        <!-- Info Services Column -->
+        <div class="card p-30">
+          <h3 class="section-title">🔩 Пълна Сервизна Дейност</h3>
+          <p class="text-muted font-small">Нашият сервиз е разположен в гр. Монтана на ул. „Индустриална“ 32г и разполага с най-ново поколение оборудване.</p>
+          <div class="divider"></div>
+
+          <div class="info-item mt-10">
+            <span>⚙️</span> <span><strong>Запресоване на маркучи за високо налягане</strong>: За всякакъв вид строителна, селскостопанска и горска техника (трактори, багери, комбайни).</span>
+          </div>
+          <div class="info-item mt-10">
+            <span>⚙️</span> <span><strong>Ремонт и изработка на хидравлични цилиндри</strong>: Смяна на уплътнения, бутални пръти и тръби.</span>
+          </div>
+          <div class="info-item mt-10">
+            <span>⚙️</span> <span><strong>Пневматични системи</strong>: Консултации, изграждане, доставка на шлаухи, цанги, регулатори и пневмоподготвящи групи.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5.1. ABOUT US VIEW -->
+    <section id="about-view" class="spa-view container mt-20">
+      <!-- Premium Hero Section -->
+      <div class="about-hero-section">
+        <h2 class="about-hero-title">Лидер в Хидравликата и Пневматиката</h2>
+        <p class="about-hero-subtitle">
+          Хидролукс Груп ЕООД – дългогодишен опит, безкомпромисно качество и надеждни индустриални решения за леката и тежка промишленост.
+        </p>
+      </div>
+
+      <!-- Core Highlights (History, Mission, Team) -->
+      <div class="about-grid-3">
+        <!-- Card 1: History & Experience -->
+        <div class="about-card-premium">
+          <div class="about-card-icon">📈</div>
+          <h3 class="about-card-title">История и развитие</h3>
+          <p class="about-card-text">
+            Развиваме своята дейност успешно от 2019 година. През годините непрекъснато разширяваме нашия асортимент, за да предложим гъвкави и модерни решения за всяка специфична нужда на пазара. Днес разполагаме с богато оборудвана складова база и съвременно сервизно оборудване.
+          </p>
+        </div>
+
+        <!-- Card 2: Mission & Commitment -->
+        <div class="about-card-premium">
+          <div class="about-card-icon">🎯</div>
+          <h3 class="about-card-title">Нашата мисия</h3>
+          <p class="about-card-text">
+            Стремим се да осигурим на нашите клиенти цялостен затворен цикъл на обслужване – от професионално проектиране и изграждане до доставка и дългосрочна техническа поддръжка. С нашите индивидуални инженерни решения спестявате време, оптимизирате разходи и гарантирате сигурност.
+          </p>
+        </div>
+
+        <!-- Card 3: Dedicated Team -->
+        <div class="about-card-premium">
+          <div class="about-card-icon">🤝</div>
+          <h3 class="about-card-title">Екип от професионалисти</h3>
+          <p class="about-card-text">
+            Ние сме екип от висококвалифицирани и мотивирани специалисти с индивидуален подход към всеки клиент. Ежедневно проучваме пазарните тенденции и технологичните новости, превръщайки опита и знанията си в реални, висококачествени крайни продукти за Вашата дейност.
+          </p>
+        </div>
+      </div>
+
+      <!-- World Class Brand Partners Section -->
+      <div class="partners-container">
+        <div class="partners-header">
+          <h3>Нашите глобални партньори</h3>
+          <p>Работим с доказани производители в световен мащаб, чиито имена са международен еталон за качество.</p>
+        </div>
+
+        <!-- Category: Hoses -->
+        <div class="partners-category">
+          <h4 class="partners-cat-title">Индустриални и хидравлични маркучи</h4>
+          <div class="partners-grid">
+            <div class="partner-logo-card">Continental <span class="partner-origin">USA</span></div>
+            <div class="partner-logo-card">Alfagomma <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">Semperit <span class="partner-origin">Czech Republic</span></div>
+            <div class="partner-logo-card">EATON / SEL <span class="partner-origin">USA / Germany</span></div>
+            <div class="partner-logo-card">Trelleborg <span class="partner-origin">France</span></div>
+            <div class="partner-logo-card">Vitillo <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">Gasso <span class="partner-origin">Spain</span></div>
+            <div class="partner-logo-card">Transfer Oil <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">IVG <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">Tubigomma <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">Dunlop <span class="partner-origin">UK</span></div>
+            <div class="partner-logo-card">Norres <span class="partner-origin">Germany</span></div>
+            <div class="partner-logo-card">Schauenburg <span class="partner-origin">Germany</span></div>
+            <div class="partner-logo-card">APDatec <span class="partner-origin">Germany</span></div>
+          </div>
+        </div>
+
+        <!-- Category: Fittings & Clamps -->
+        <div class="partners-category" style="margin-top: 30px;">
+          <h4 class="partners-cat-title">Накрайници, фитинги и скоби</h4>
+          <div class="partners-grid">
+            <div class="partner-logo-card">MCC <span class="partner-origin">Germany</span></div>
+            <div class="partner-logo-card">Vitillo <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">Atlantic Man <span class="partner-origin">Italy</span></div>
+            <div class="partner-logo-card">Guffero <span class="partner-origin">Czech Republic</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5.2. CONTACTS VIEW -->
+    <section id="contacts-view" class="spa-view container mt-20">
+      <div class="text-center mb-40">
+        <span class="hero-tag">СВЪРЖЕТЕ СЕ С НАС</span>
+        <h2>Контакти и Местоположение</h2>
+        <p class="text-muted max-w-600">
+          Свържете се с наш консултант за поръчки, запитвания или професионална техническа консултация.
+        </p>
+      </div>
+
+      <div class="contact-layout-grid">
+        <!-- Left Column: Contact Cards -->
+        <div class="contact-info-panel-premium">
+          <!-- Card 1: Phone -->
+          <div class="contact-detail-card-premium">
+            <div class="contact-icon-wrapper-premium">📞</div>
+            <div class="contact-text-wrapper-premium">
+              <h4>Телефон за връзка</h4>
+              <p>Наш оператор ще приеме Вашето запитване, ще Ви консултира и ще пристъпи към изпълнение на поръчката.</p>
+              <a href="tel:+359892483337" style="font-weight: 800; font-size: 1.1rem; color: #ea580c; display: block; margin-top: 6px;">0892 483 337</a>
+            </div>
+          </div>
+
+          <!-- Card 2: Email -->
+          <div class="contact-detail-card-premium">
+            <div class="contact-icon-wrapper-premium">✉️</div>
+            <div class="contact-text-wrapper-premium">
+              <h4>Електронна поща</h4>
+              <p>Изпратете ни спецификации, запитвания за оферти или чертежи по имейл по всяко удобно за Вас време.</p>
+              <a href="mailto:hydroluxgroup@gmail.com" style="font-weight: 800; font-size: 1.1rem; color: #ea580c; display: block; margin-top: 6px;">hydroluxgroup@gmail.com</a>
+            </div>
+          </div>
+
+          <!-- Card 3: Address & Base -->
+          <div class="contact-detail-card-premium">
+            <div class="contact-icon-wrapper-premium">📍</div>
+            <div class="contact-text-wrapper-premium">
+              <h4>Производствена база и склад</h4>
+              <p>гр. Монтана, ПК 3400</p>
+              <p style="font-weight: 800; color: #0f172a; margin-top: 4px;">ул. Индустриална № 32Г</p>
+            </div>
+          </div>
+
+          <!-- Card 4: Working Hours -->
+          <div class="contact-detail-card-premium">
+            <div class="contact-icon-wrapper-premium">🕒</div>
+            <div class="contact-text-wrapper-premium">
+              <h4>Работно време</h4>
+              <p>Понеделник - Петък: <strong>08:30 - 17:30</strong></p>
+              <p>Събота: <strong>09:00 - 13:00</strong></p>
+              <p>Неделя: Почивен ден</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Interactive Map -->
+        <div class="contact-map-wrapper-premium">
+          <iframe 
+            src="https://maps.google.com/maps?q=%D0%B3%D1%80.%20%D0%9C%D0%BE%D0%BD%D1%82%D0%B0%D0%BD%D0%B0%2C%20%D1%83%D0%BB.%20%D0%98%D0%BD%D0%B4%D1%83%D1%81%D1%82%D1%80%D0%B8%D0%B0%D0%BB%D0%BD%D0%B0%20%E2%84%96%2032%D0%93&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+            allowfullscreen="" 
+            loading="lazy" 
+            title="Хидролукс Груп ЕООД - гр. Монтана, ул. Индустриална 32Г">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ADMIN VIEW -->
+    <section id="admin-view" class="spa-view container mt-20">
+      <div id="admin-view-content"></div>
+    </section>
+
+    <!-- 7. CHECKOUT VIEW -->
+    <section id="checkout-view" class="spa-view container mt-20">
+      <div class="card p-30">
+        <h3 class="section-title">🛒 Финализиране на поръчката</h3>
+        <div class="divider"></div>
+        <form id="checkout-form" onsubmit="Cart.submitOrder(event)">
+          <div class="checkout-grid">
+            <!-- Form Fields -->
+            <div>
+              <!-- General client info -->
+              <h4 style="margin-bottom: 15px; font-weight: 700; color: var(--text-dark);">👤 Данни за получателя</h4>
+              
+              <div class="form-group">
+                <label for="checkout-name">Име и Фамилия</label>
+                <input type="text" name="client_name" id="checkout-name" class="form-control" required placeholder="Георги Георгиев">
+              </div>
+              <div class="form-group-split">
+                <div class="form-group">
+                  <label for="checkout-phone">Телефон</label>
+                  <input type="tel" name="client_phone" id="checkout-phone" class="form-control" required placeholder="+359 89...">
+                </div>
+                <div class="form-group">
+                  <label for="checkout-email">Е-мейл</label>
+                  <input type="email" name="client_email" id="checkout-email" class="form-control" required placeholder="georgi@gmail.com">
+                </div>
+              </div>
+
+              <!-- Delivery details -->
+              <h4 style="margin-top: 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark);">🚚 Начин на доставка</h4>
+              
+              <div class="form-group">
+                <label for="delivery-method-select">Изберете начин на доставка</label>
+                <select name="delivery_method" id="delivery-method-select" class="form-control" onchange="Cart.onDeliveryMethodChange(this.value)">
+                  <option value="address">🚚 Доставка до личен / служебен адрес</option>
+                  <option value="office">🏢 Доставка до офис на Еконт</option>
+                </select>
+              </div>
+
+              <div id="delivery-details-container">
+                <div class="form-group-split">
+                  <div class="form-group">
+                    <label for="checkout-city">Град</label>
+                    <input type="text" name="client_city" id="checkout-city" class="form-control" required placeholder="гр. София">
+                  </div>
+                  <div class="form-group">
+                    <label for="checkout-postcode">Пощенски код</label>
+                    <input type="text" name="client_postcode" id="checkout-postcode" class="form-control" required placeholder="1000">
+                  </div>
+                </div>
+
+                <div class="form-group" id="econt-office-btn-container" style="display: none; margin-bottom: 15px;">
+                  <button type="button" class="btn btn-accent btn-block" id="econt-office-select-btn" onclick="Cart.openEcontLocator()" style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; background: linear-gradient(135deg, #0f3d70 0%, #1e5ba3 100%); border: none; padding: 12px; border-radius: 8px; color: white; width: 100%; cursor: pointer;">
+                    🏢 Избери офис на Еконт от картата
+                  </button>
+                </div>
+
+                <div class="form-group">
+                  <label for="checkout-address" id="delivery-address-label">Точен адрес за доставка</label>
+                  <input type="text" name="delivery_address" id="checkout-address" class="form-control" required placeholder="ул. Примерна №5, вх. А, ап. 2">
+                </div>
+              </div>
+
+
+
+              <!-- Payment details -->
+              <h4 style="margin-top: 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark);">💳 Начин на плащане</h4>
+              
+              <div class="form-group">
+                <label>Изберете начин на плащане</label>
+                <select name="payment_method" id="payment-method-select" class="form-control" onchange="Cart.onPaymentMethodChange(this.value)">
+                  <option value="cod">💵 Наложен платеж (при получаване)</option>
+                  <option value="bank">🏦 Банков превод (по проформа)</option>
+                  <option value="card">💳 С дебитна / кредитна карта (myPOS)</option>
+                </select>
+              </div>
+
+              <div id="payment-method-helper" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; font-size: 0.85rem; color: #166534; font-weight: 500; margin-bottom: 20px;">
+                💵 Ще платите на куриера при доставка в брой или с карта.
+              </div>
+
+              <!-- Invoicing details -->
+              <h4 style="margin-top: 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark);">🧾 Данни за фактура</h4>
+              
+              <div class="form-group">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="wants-invoice-checkbox" onchange="Cart.toggleInvoiceSection(this.checked)">
+                  <span>Желая фактура за фирма</span>
+                </label>
+              </div>
+
+              <div id="invoice-fields-container" style="display: none; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <div class="form-group">
+                  <label>Име на фирмата</label>
+                  <input type="text" name="invoice_company" id="invoice-company" class="form-control" placeholder="Фирма ООД">
+                </div>
+                <div class="form-group-split">
+                  <div class="form-group">
+                    <label>Булстат / ЕИК</label>
+                    <input type="text" name="invoice_bulstat" id="invoice-bulstat" class="form-control" placeholder="123456789">
+                  </div>
+                  <div class="form-group">
+                    <label>МОЛ (Материално отговорно лице)</label>
+                    <input type="text" name="invoice_mol" id="invoice-mol" class="form-control" placeholder="Иван Иванов">
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Адрес по регистрация</label>
+                  <input type="text" name="invoice_address" id="invoice-address" class="form-control" placeholder="гр. София, ул. Примерна №5">
+                </div>
+              </div>
+
+              <!-- General notes -->
+              <h4 style="margin-top: 25px; margin-bottom: 15px; font-weight: 700; color: var(--text-dark);">📝 Бележка към поръчката</h4>
+              
+              <div class="form-group">
+                <textarea name="order_notes" class="form-control" rows="2" placeholder="Напишете допълнителни инструкции (напр. дължина на срязване, специфичен куриер)..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-accent btn-block btn-large mt-20">🚀 Завърши поръчката</button>
+            </div>
+
+            <!-- Summary Column -->
+            <div id="checkout-summary-container">
+              <!-- Summary cards populated dynamically -->
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       CART SLIDE-OUT DRAWER PANEL
+       ========================================================================== -->
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-header">
+      <h3>🛒 Вашата Количка</h3>
+      <button class="btn-close-drawer" onclick="Cart.closeDrawer()">×</button>
+    </div>
+    
+    <div class="cart-items-list" id="cart-items-container">
+      <!-- Added items populated by cart.js -->
+    </div>
+    
+    <div class="cart-footer" id="cart-footer-panel">
+      <div class="cart-total-row">
+        <span class="font-medium">ОБЩО:</span>
+        <div class="text-right">
+          <div class="font-large text-primary font-bold" id="cart-total-bgn">0.00 €</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <button class="btn btn-accent btn-block btn-large" onclick="Cart.openCheckout()">➔ Към Поръчка</button>
+    </div>
+  </div>
+  <div class="cart-drawer-backdrop" onclick="Cart.closeDrawer()"></div>
+
+  <!-- ==========================================================================
+       MODALS
+       ========================================================================== -->
+
+
+  <!-- 2. SUCCESS ORDER MODAL -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>🎉 Успешна Поръчка</h3>
+        <button class="modal-close" onclick="Cart.closeSuccess()">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="success-details-container">
+          <!-- Populated from cart.js with proforma HTML invoice -->
+        </div>
+        <button class="btn btn-primary btn-block btn-large mt-20" onclick="Cart.closeSuccess()">Затвори и се върни в магазина</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PRODUCT INQUIRY MODAL (ЗАДАЙ ВЪПРОС) -->
+  <div class="modal-overlay" id="inquiry-modal">
+    <div class="modal-window" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>❓ Задай въпрос за продукта</h3>
+        <button class="modal-close" onclick="Catalog.closeInquiryModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="Catalog.submitInquiry(event)">
+          <div class="form-group">
+            <label for="inquiry-subject">Тема</label>
+            <input type="text" id="inquiry-subject" class="form-control" readonly>
+          </div>
+          <div class="form-group">
+            <label for="inquiry-name">Вашето Име</label>
+            <input type="text" id="inquiry-name" class="form-control" required placeholder="Димитър Петров">
+          </div>
+          <div class="form-group">
+            <label for="inquiry-phone">Телефон</label>
+            <input type="tel" id="inquiry-phone" class="form-control" required placeholder="+359 ...">
+          </div>
+          <div class="form-group">
+            <label for="inquiry-message">Въпрос / Запитване</label>
+            <textarea id="inquiry-message" class="form-control" rows="4" required placeholder="Желая бързо запитване относно наличност и опции за сглобяване..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Изпрати Запитване</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. HOSE BUILDER INQUIRY MODAL -->
+  <div class="modal-overlay" id="builder-inquiry-modal">
+    <div class="modal-window" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>⚙️ Запитване за сглобен маркуч</h3>
+        <button class="modal-close" onclick="HoseBuilder.closeInquiryModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="builder-inquiry-summary mb-15 p-15" id="builder-inquiry-summary" style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; color: #1e293b; line-height: 1.4; margin-bottom: 15px; padding: 10px;">
+          <!-- Populated dynamically by builder.js -->
+        </div>
+        <form onsubmit="HoseBuilder.submitInquiry(event)">
+          <div class="form-group">
+            <label for="builder-inquiry-name">Вашето Име</label>
+            <input type="text" id="builder-inquiry-name" class="form-control" required placeholder="Иван Иванов">
+          </div>
+          <div class="form-group-split" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; margin-top: 10px;">
+            <div class="form-group">
+              <label for="builder-inquiry-phone">Телефон</label>
+              <input type="tel" id="builder-inquiry-phone" class="form-control" required placeholder="+359 ...">
+            </div>
+            <div class="form-group">
+              <label for="builder-inquiry-email">Имейл</label>
+              <input type="email" id="builder-inquiry-email" class="form-control" required placeholder="example@mail.com">
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 10px;">
+            <label for="builder-inquiry-message">Допълнителни изисквания (по желание)</label>
+            <textarea id="builder-inquiry-message" class="form-control" rows="3" placeholder="Опишете специфични изисквания, брой сглобки..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 15px;">Изпрати Запитване</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.1. PRODUCT QUICK ORDER MODAL (БЪРЗА ПОРЪЧКА) -->
+  <div class="modal-overlay" id="quick-order-modal">
+    <div class="modal-window" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3>⚡ Бърза поръчка</h3>
+        <button class="modal-close" onclick="Catalog.closeQuickOrderModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="Catalog.submitQuickOrder(event)">
+          <div class="quick-order-product-summary mb-15 p-15" id="quick-order-product-summary" style="background-color: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; color: #1e293b; line-height: 1.4; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 12px;">
+            <!-- Populated dynamically by JS -->
+          </div>
+
+          <div class="form-group" id="quick-order-variant-wrapper" style="margin-bottom: 15px; display: none;">
+            <label for="quick-order-variant-select" style="font-weight: 700; margin-bottom: 5px; display: block;">Изберете размер / вариант <span class="text-accent">*</span></label>
+            <select id="quick-order-variant-select" class="form-control" required onchange="Catalog.handleQuickOrderVariantChange()" style="font-weight: 600;">
+              <!-- Populated dynamically by JS -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="quick-order-name">Име и Фамилия</label>
+            <input type="text" id="quick-order-name" class="form-control" required placeholder="Георги Георгиев">
+          </div>
+          <div class="form-group" style="margin-top: 12px;">
+            <label for="quick-order-phone">Телефонен номер</label>
+            <input type="tel" id="quick-order-phone" class="form-control" required placeholder="08XXXXXXXX">
+          </div>
+          <button type="submit" class="btn btn-orange btn-block btn-large mt-20" style="width: 100%; font-size: 1rem; padding: 12px 0; margin-top: 20px;">⚡ Изпрати поръчката</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. myPOS SECURE CARD PAYMENT MODAL -->
+  <div class="modal-overlay" id="mypos-modal">
+    <div class="modal-window" style="max-width: 480px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="mypos-header" style="background: linear-gradient(135deg, #0f3d70, #0a2540); color: white; padding: 20px 24px; position: relative; text-align: center;">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+          <strong style="font-size: 1.25rem; letter-spacing: 0.5px;">myPOS PayLink</strong>
+          <span style="background-color: #00d4b2; color: #0a2540; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Secure Redirect</span>
+        </div>
+      </div>
+      <div class="modal-body" style="padding: 32px 24px; text-align: center;">
+        <div class="mypos-spinner" style="width: 50px; height: 50px; border: 4px solid rgba(15, 61, 112, 0.1); border-top-color: #00d4b2; border-radius: 50%; animation: mypos-spin 1s infinite linear; margin: 0 auto 24px;"></div>
+        
+        <h3 style="color: #0a2540; font-size: 1.2rem; font-weight: 800; margin-bottom: 12px;" id="mypos-status-text">Пренасочване към защитения портал на myPOS...</h3>
+        
+        <div class="mypos-amount-banner" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; display: inline-flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px;">
+          <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">Сума за авторизиране:</span>
+          <strong id="mypos-pay-amount" style="font-size: 1.1rem; color: #0f3d70;">0.00 €</strong>
+        </div>
+
+        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; max-width: 380px; margin: 0 auto 24px;">
+          За Ваша сигурност, <strong>Хидролукс не събира и не съхранява</strong> данни за банкови карти. Плащането се извършва изцяло на криптираните сървъри на лицензирания платежен оператор <strong>myPOS AD</strong>.
+        </p>
+
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; display: flex; justify-content: center; gap: 16px; opacity: 0.8;">
+          <span style="font-size: 0.8rem; font-weight: bold; color: #94a3b8;">VISA</span>
+          <span style="font-size: 0.8rem; font-weight: bold; color: #94a3b8;">MASTERCARD</span>
+          <span style="font-size: 0.8rem; font-weight: bold; color: #94a3b8;">MAESTRO</span>
+          <span style="font-size: 0.8rem; font-weight: bold; color: #94a3b8;">GPAY</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes mypos-spin {
+      to { transform: rotate(360deg); }
+    }
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      margin-top: 15px;
+      user-select: none;
+    }
+    .checkbox-container input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+  </style>
+
+  <!-- ==========================================================================
+       🤖 FLOATING AI CHATBOT WIDGET
+       ========================================================================== -->
+  <div class="floating-chat-btn" onclick="Chatbot.toggle()">
+    <img src="assets/chatbot-avatar.png" alt="AI Асистент" class="chatbot-avatar-btn-img" width="60" height="60" loading="lazy" decoding="async">
+  </div>
+
+  <!-- AI Chatbot Window -->
+  <div id="ai-chatbot-window" class="chatbot-window" style="display: none;">
+    <div class="chatbot-header">
+      <div class="chatbot-header-info">
+        <span class="chatbot-header-status"></span>
+        <img src="assets/chatbot-avatar.png" alt="AI Асистент" class="chatbot-header-avatar" width="40" height="40" loading="lazy" decoding="async">
+        <h4>AI Асистент</h4>
+      </div>
+      <button class="chatbot-close-btn" onclick="Chatbot.toggle()">&times;</button>
+    </div>
+    <div id="chatbot-messages" class="chatbot-messages"></div>
+    <div id="chatbot-typing" class="chatbot-typing" style="display: none;">
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+      <span class="typing-dot"></span>
+    </div>
+    <div class="chatbot-input-container">
+      <input type="text" id="chatbot-input" placeholder="Попитайте за маркуч, размери..." onkeydown="if(event.key === 'Enter') Chatbot.sendMessage()">
+      <button id="chatbot-send-btn" onclick="Chatbot.sendMessage()">➔</button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Хидролукс Груп</h4>
+          <p>
+            Надеждни индустриални хидравлични и пневматични решения в град Монтана. Професионално запресоване под високо налягане от 2019 г.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Полезни връзки</h4>
+          <ul class="footer-links">
+            <li><a href="#home" onclick="App.navigate('home')">Начало</a></li>
+            <li><a href="#catalog" onclick="Catalog.resetFilters(); App.navigate('catalog')">Продуктов Каталог</a></li>
+            <li><a href="#builder" onclick="App.navigate('builder')">Конфигуратор на маркучи</a></li>
+            <li><a href="#about" onclick="App.navigate('about')">За нас</a></li>
+            <li><a href="#contacts" onclick="App.navigate('contacts')">Контакти</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Продукти</h4>
+          <ul class="footer-links">
+            <li><a href="#catalog" onclick="Catalog.selectCategory('air-hoses')">Маркучи за въздух</a></li>
+            <li><a href="#catalog" onclick="Catalog.selectCategory('water-hoses')">Маркучи за вода</a></li>
+            <li><a href="#catalog" onclick="Catalog.selectCategory('high-pressure-hoses')">Маркучи високо налягане</a></li>
+            <li><a href="#catalog" onclick="Catalog.selectCategory('pneumatic-tubes')">Пневматични шлаухи</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; <span id="footer-current-year">2026</span> Хидролукс Груп ЕООД. Всички права запазени.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Econt Office Locator Modal -->
+  <div id="econt-locator-modal" class="custom-modal-backdrop" style="display: none;">
+    <div class="econt-locator-modal-container">
+      <div class="econt-locator-modal-header">
+        <h3>🏢 Избор на офис на Еконт</h3>
+        <button class="econt-locator-close-btn" onclick="Cart.closeEcontLocator()">&times;</button>
+      </div>
+      <div class="econt-locator-modal-body">
+        <div id="econt-iframe-loader" class="econt-spinner-wrapper">
+          <div class="econt-spinner"></div>
+          <p>Зареждане на картата на Еконт...</p>
+        </div>
+        <iframe 
+          id="econt-locator-iframe" 
+          title="Econt Office Locator" 
+          src="" 
+          allow="geolocation"
+          style="width: 100%; height: 500px; border: none; border-radius: 12px; display: none;">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT MODULES IMPORT
+       ========================================================================== -->
+  <script src="js/backend.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/components/cart.js" defer></script>
+  <script src="js/components/chatbot.js" defer></script>
+  <script src="js/catalog.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <!-- admin.js and builder.js are loaded on demand (App.ensureScript) only when
+       the admin panel / hose builder views are opened, keeping them off the
+       critical path for normal customers. -->
+
+</body>
+</html>
