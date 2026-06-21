@@ -11,6 +11,13 @@ const corsHeaders = {
   "Content-Type": "application/json",
 };
 
+const noCacheHeaders = {
+  ...corsHeaders,
+  "Cache-Control": "no-cache, no-store, must-revalidate, private",
+  "Pragma": "no-cache",
+  "Expires": "0",
+};
+
 // CORS preflight handler helper
 const handlePreflight = () => {
   return new Response(null, {
@@ -33,7 +40,7 @@ http.route({
     const res = await ctx.runQuery(api.state.getState, {});
     return new Response(JSON.stringify(res), {
       status: 200,
-      headers: corsHeaders,
+      headers: noCacheHeaders,
     });
   }),
 });
@@ -103,7 +110,7 @@ http.route({
     const res = await ctx.runQuery(api.orders.getAllOrders, {});
     return new Response(JSON.stringify(res), {
       status: 200,
-      headers: corsHeaders,
+      headers: noCacheHeaders,
     });
   }),
 });
@@ -236,7 +243,7 @@ http.route({
     const res = await ctx.runQuery(api.orders.getUserOrders, { email });
     return new Response(JSON.stringify(res), {
       status: 200,
-      headers: corsHeaders,
+      headers: noCacheHeaders,
     });
   }),
 });
@@ -288,7 +295,7 @@ http.route({
     const res = await ctx.runQuery(api.auth.getArchivedProducts, {});
     return new Response(JSON.stringify(res), {
       status: 200,
-      headers: corsHeaders,
+      headers: noCacheHeaders,
     });
   }),
 });

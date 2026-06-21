@@ -4,8 +4,18 @@ const HydroluxBackend = {
   storagePrefix: "hydrolux_",
 
   async request(path, options = {}) {
-    const response = await fetch(`${this.httpUrl}${path}`, {
-      method: options.method || "GET",
+    const method = options.method || "GET";
+    let url = `${this.httpUrl}${path}`;
+    
+    // Automatically append a unique cache-buster query parameter to all GET requests
+    // to bypass any aggressive browser-level or ISP-level caching.
+    if (method.toUpperCase() === "GET") {
+      const separator = url.includes("?") ? "&" : "?";
+      url = `${url}${separator}_t=${Date.now()}`;
+    }
+
+    const response = await fetch(url, {
+      method: method,
       headers: {
         "Content-Type": "application/json",
         ...(options.headers || {}),
