@@ -5,5 +5,14 @@
       "src": "**",
       "use": "@vercel/static"
     }
+  ],
+  "redirects": [
+    { "source": "/admin", "destination": "/#admin", "permanent": true },
+    { "source": "/builder", "destination": "/#builder", "permanent": true },
+    { "source": "/catalog", "destination": "/#catalog", "permanent": true },
+    { "source": "/wishlist", "destination": "/#wishlist", "permanent": true },
+    { "source": "/services", "destination": "/#services", "permanent": true },
+    { "source": "/about", "destination": "/#about", "permanent": true },
+    { "source": "/contacts", "destination": "/#contacts", "permanent": true }
   ]
 }
