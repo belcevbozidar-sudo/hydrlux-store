@@ -1,8 +1,8 @@
-import { query, mutation } from "./_generated/server";
+import { internalQuery, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 // Register custom email/password user
-export const register = mutation({
+export const register = internalMutation({
   args: {
     name: v.string(),
     email: v.string(),
@@ -31,7 +31,7 @@ export const register = mutation({
 });
 
 // Login custom email/password user
-export const login = mutation({
+export const login = internalMutation({
   args: {
     email: v.string(),
     passwordHash: v.string(),
@@ -58,7 +58,7 @@ export const login = mutation({
 });
 
 // Login or register Google OAuth user
-export const googleLogin = mutation({
+export const googleLogin = internalMutation({
   args: {
     name: v.string(),
     email: v.string(),
@@ -111,7 +111,7 @@ export const googleLogin = mutation({
 });
 
 // Archive a product snapshot before deletion
-export const archiveProduct = mutation({
+export const archiveProduct = internalMutation({
   args: {
     productId: v.string(),
     data: v.any(),
@@ -129,7 +129,7 @@ export const archiveProduct = mutation({
 });
 
 // Get all archived products
-export const getArchivedProducts = query({
+export const getArchivedProducts = internalQuery({
   args: {},
   handler: async (ctx) => {
     const products = await ctx.db.query("productArchive").order("desc").collect();
@@ -138,7 +138,7 @@ export const getArchivedProducts = query({
 });
 
 // Restore an archived product
-export const restoreArchivedProduct = mutation({
+export const restoreArchivedProduct = internalMutation({
   args: {
     productId: v.string(),
   },

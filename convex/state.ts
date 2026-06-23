@@ -1,8 +1,8 @@
-import { query, mutation } from "./_generated/server";
+import { internalQuery, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 // Get the single state document
-export const getState = query({
+export const getState = internalQuery({
   args: {},
   handler: async (ctx) => {
     const stateDoc = await ctx.db.query("state").first();
@@ -14,7 +14,7 @@ export const getState = query({
 });
 
 // Save or overwrite the entire state
-export const saveState = mutation({
+export const saveState = internalMutation({
   args: {
     products: v.any(),
     categories: v.any(),
@@ -51,7 +51,7 @@ export const saveState = mutation({
 });
 
 // Update a single key in the state (e.g. products or categories)
-export const saveStateValue = mutation({
+export const saveStateValue = internalMutation({
   args: {
     key: v.string(),
     value: v.any(),

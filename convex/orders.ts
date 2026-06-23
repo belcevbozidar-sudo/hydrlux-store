@@ -1,8 +1,8 @@
-import { query, mutation } from "./_generated/server";
+import { internalQuery, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 // Create a new order
-export const saveOrder = mutation({
+export const saveOrder = internalMutation({
   args: {
     order: v.object({
       orderNumber: v.string(),
@@ -39,7 +39,7 @@ export const saveOrder = mutation({
 });
 
 // Get all orders (Admin Dashboard)
-export const getAllOrders = query({
+export const getAllOrders = internalQuery({
   args: {},
   handler: async (ctx) => {
     const orders = await ctx.db.query("orders").order("desc").collect();
@@ -48,7 +48,7 @@ export const getAllOrders = query({
 });
 
 // Get orders by email (User Profile)
-export const getUserOrders = query({
+export const getUserOrders = internalQuery({
   args: {
     email: v.string(),
   },
@@ -62,7 +62,7 @@ export const getUserOrders = query({
 });
 
 // Update order status (Admin Dashboard)
-export const updateOrderStatus = mutation({
+export const updateOrderStatus = internalMutation({
   args: {
     orderNumber: v.string(),
     status: v.string(),

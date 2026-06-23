@@ -14,12 +14,18 @@ const HydroluxBackend = {
       url = `${url}${separator}_t=${Date.now()}`;
     }
 
+    const token = localStorage.getItem("hydrolux_admin_token") || sessionStorage.getItem("hydrolux_admin_token");
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(url, {
       method: method,
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      headers: headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
 
@@ -109,6 +115,19 @@ const HydroluxBackend = {
     return await this.request("/api/state-value", {
       method: "POST",
       body: { key, value: finalValue },
+    });
+  },
+
+  async adminLogin(password, clientId, rememberMe) {
+    return await this.request("/api/admin/login", {
+      method: "POST",
+      body: { password, clientId, rememberMe },
+    });
+  },
+
+  async verifyAdminSession() {
+    return await this.request("/api/admin/verify", {
+      method: "POST",
     });
   },
 

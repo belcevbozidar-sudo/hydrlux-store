@@ -26,16 +26,46 @@ const Admin = {
   editingProduct: null, // Product currently being edited
   uploadedImages: [], // Temporary Base64 strings or existing URLs of uploaded files
   uploadedPdfs: [], // Array of { name, url, storageId } (new) or { name, data } (legacy base64) for technical spec PDFs
+  isAuthenticated: false,
+  isVerifyingAuth: true,
   isProcessingImages: false,
   isProcessingPdfs: false,
   templatesPanelOpen: false,
   savedRange: null,
   searchTimeout: null,
 
-  init() {
+  async init() {
     this.resetProductFormState();
     this.loadTemplates();
     this.injectStyles();
+
+    // Generate or retrieve a client ID for security tracking failed attempts
+    let clientId = localStorage.getItem("hydrolux_admin_client_id");
+    if (!clientId) {
+      clientId = "cli_" + Math.random().toString(36).substring(2) + Date.now().toString(36);
+      localStorage.setItem("hydrolux_admin_client_id", clientId);
+    }
+
+    const token = localStorage.getItem("hydrolux_admin_token") || sessionStorage.getItem("hydrolux_admin_token");
+    if (token) {
+      try {
+        const res = await HydroluxBackend.verifyAdminSession();
+        if (res && res.ok) {
+          this.isAuthenticated = true;
+        } else {
+          localStorage.removeItem("hydrolux_admin_token");
+          sessionStorage.removeItem("hydrolux_admin_token");
+          this.isAuthenticated = false;
+        }
+      } catch (err) {
+        console.error("Auth verification failed", err);
+        this.isAuthenticated = false;
+      }
+    } else {
+      this.isAuthenticated = false;
+    }
+
+    this.isVerifyingAuth = false;
     this.render();
 
     // The admin must work on the COMPLETE catalog, not a partial in-memory set,
@@ -43,9 +73,11 @@ const Admin = {
     if (typeof CONFIG !== "undefined" && typeof CONFIG.loadCatalog === "function") {
       CONFIG.loadCatalog().then(() => {
         try { 
-          Admin.render(); 
-          Admin.migrateLegacyPdfs();
-          Admin.migrateLegacyImages();
+          if (Admin.isAuthenticated) {
+            Admin.render(); 
+            Admin.migrateLegacyPdfs();
+            Admin.migrateLegacyImages();
+          }
         } catch (e) { /* view may have changed */ }
       }).catch(() => {});
     }
@@ -1016,6 +1048,10 @@ const Admin = {
       .admin-confirm-ok { background: #2563eb; color: #fff; }
       .admin-confirm-ok.danger { background: #ef4444; }
       .admin-confirm-ok:hover { filter: brightness(1.07); }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
     `;
     document.head.appendChild(style);
   },
@@ -1150,6 +1186,21 @@ const Admin = {
       const container = document.getElementById("admin-view-content");
       if (!container) return;
 
+      if (this.isVerifyingAuth) {
+        container.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; gap: 15px;">
+            <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
+            <span style="font-weight: bold; color: var(--text-dark);">Проверка на сесията...</span>
+          </div>
+        `;
+        return;
+      }
+
+      if (!this.isAuthenticated) {
+        container.innerHTML = this.renderLoginForm();
+        return;
+      }
+
       container.innerHTML = `
         <div class="admin-container">
           <!-- Sidebar Navigation -->
@@ -1170,6 +1221,9 @@ const Admin = {
               </li>
               <li class="admin-menu-item ${this.activeTab === 'archive' ? 'active' : ''}" onclick="Admin.switchTab('archive')">
                 🗄️ Архив (изтрити)
+              </li>
+              <li class="admin-menu-item" onclick="Admin.logout()" style="color: #ef4444; margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 15px;">
+                🚪 Изход
               </li>
             </ul>
           </aside>
@@ -5465,5 +5519,106 @@ const Admin = {
       }
     });
     return [...names].sort();
+  },
+
+  renderLoginForm() {
+    return `
+      <div style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 180px); padding: 20px; background-color: #f8fafc;">
+        <div class="card" style="width: 100%; max-width: 420px; padding: 35px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); background: white; border: 1px solid #e2e8f0;">
+          <div style="text-align: center; margin-bottom: 25px;">
+            <img src="assets/logo.webp" alt="Хидролукс Груп" style="height: 50px; margin-bottom: 15px; object-fit: contain;" onerror="this.src='assets/logo.png'">
+            <h3 style="margin: 0; color: #0f172a; font-weight: 800; font-size: 1.35rem;">Административен панел</h3>
+            <p style="margin: 6px 0 0; color: #64748b; font-size: 0.85rem;">Моля, въведете парола за достъп</p>
+          </div>
+          
+          <form onsubmit="Admin.handleAdminLogin(event)" style="display: flex; flex-direction: column; gap: 18px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-weight: 700; font-size: 0.82rem; color: #334155; margin-bottom: 6px; display: block;">Парола <span style="color: #ef4444;">*</span></label>
+              <div style="position: relative;">
+                <input type="password" id="admin-login-pass" class="form-control" placeholder="Въведете парола" required style="width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-weight: 500; font-size: 0.95rem; transition: border-color 0.2s;">
+              </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #475569; cursor: pointer; user-select: none;">
+                <input type="checkbox" id="admin-login-remember" style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary);">
+                Запомни ме на това устройство
+              </label>
+            </div>
+            
+            <button type="submit" id="admin-login-submit" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); color: white; border: none; padding: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);">
+              Вход в панела
+            </button>
+          </form>
+          
+          <div id="admin-login-error" style="display: none; background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 12px; border-radius: 8px; margin-top: 15px; font-size: 0.82rem; font-weight: 600; line-height: 1.4; text-align: center;"></div>
+        </div>
+      </div>
+    `;
+  },
+
+  async handleAdminLogin(event) {
+    event.preventDefault();
+    const passInput = document.getElementById("admin-login-pass");
+    const rememberCheckbox = document.getElementById("admin-login-remember");
+    const errorDiv = document.getElementById("admin-login-error");
+    const submitBtn = document.getElementById("admin-login-submit");
+
+    if (!passInput) return;
+
+    const password = passInput.value;
+    const rememberMe = rememberCheckbox ? rememberCheckbox.checked : false;
+    const clientId = localStorage.getItem("hydrolux_admin_client_id") || "unknown";
+
+    if (errorDiv) errorDiv.style.display = "none";
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "⏳ Проверка...";
+    }
+
+    try {
+      const res = await HydroluxBackend.adminLogin(password, clientId, rememberMe);
+      if (res && res.ok) {
+        if (rememberMe) {
+          localStorage.setItem("hydrolux_admin_token", res.token);
+        } else {
+          sessionStorage.setItem("hydrolux_admin_token", res.token);
+        }
+        this.isAuthenticated = true;
+        this.render();
+        // Kick off catalog loading if it hasn't finished
+        if (typeof CONFIG !== "undefined" && typeof CONFIG.loadCatalog === "function") {
+          CONFIG.loadCatalog().then(() => {
+            Admin.render();
+          });
+        }
+      } else {
+        if (errorDiv) {
+          errorDiv.textContent = res.error || "Неуспешен вход.";
+          errorDiv.style.display = "block";
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "Вход в панела";
+        }
+      }
+    } catch (err) {
+      console.error("Login request failed", err);
+      if (errorDiv) {
+        errorDiv.textContent = "Възникна системна грешка при връзка със сървъра. Проверете интернет връзката си.";
+        errorDiv.style.display = "block";
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Вход в панела";
+      }
+    }
+  },
+
+  logout() {
+    localStorage.removeItem("hydrolux_admin_token");
+    sessionStorage.removeItem("hydrolux_admin_token");
+    this.isAuthenticated = false;
+    this.render();
   }
 };

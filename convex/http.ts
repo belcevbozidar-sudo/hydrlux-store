@@ -1,6 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 
 const http = httpRouter();
 
@@ -26,7 +26,98 @@ const handlePreflight = () => {
   });
 };
 
-// API State endpoints
+// Helper to extract the actual client IP reliably, preventing spoofing
+function getClientIp(request: Request): string {
+  const cfIp = request.headers.get("cf-connecting-ip");
+  if (cfIp) return cfIp.trim();
+
+  const realIp = request.headers.get("x-real-ip");
+  if (realIp) return realIp.trim();
+
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    const parts = forwardedFor.split(",").map(p => p.trim()).filter(Boolean);
+    if (parts.length > 0) {
+      // The load balancer appends the client's TCP IP to the end of the chain.
+      // So the last element is the non-spoofable connection source.
+      return parts[parts.length - 1];
+    }
+  }
+
+  return "unknown";
+}
+
+// Helper to verify admin auth token
+async function verifySessionToken(ctx: any, request: Request): Promise<boolean> {
+  const authHeader = request.headers.get("Authorization") || "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return false;
+  }
+  const token = authHeader.substring(7).trim();
+  if (!token) {
+    return false;
+  }
+  const session = await ctx.runQuery(internal.adminAuth.verifySession, { token });
+  return session.ok === true;
+}
+
+// ==========================================================================
+// ADMIN AUTHENTICATION ENDPOINTS
+// ==========================================================================
+http.route({
+  path: "/api/admin/login",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/admin/login",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const body = await request.json();
+    
+    const ip = getClientIp(request);
+               
+    const res = await ctx.runMutation(internal.adminAuth.adminLogin, {
+      password: body.password || "",
+      clientId: body.clientId || "unknown",
+      ip: ip,
+      rememberMe: body.rememberMe || false,
+    });
+    
+    if (!res.ok) {
+      // 1-second delay for failed logins to mitigate brute force speed
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    return new Response(JSON.stringify(res), {
+      status: 200,
+      headers: corsHeaders,
+    });
+  }),
+});
+
+http.route({
+  path: "/api/admin/verify",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/admin/verify",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const authorized = await verifySessionToken(ctx, request);
+    return new Response(JSON.stringify({ ok: authorized }), {
+      status: 200,
+      headers: corsHeaders,
+    });
+  }),
+});
+
+// ==========================================================================
+// API STATE ENDPOINTS
+// ==========================================================================
 http.route({
   path: "/api/state",
   method: "OPTIONS",
@@ -37,7 +128,8 @@ http.route({
   path: "/api/state",
   method: "GET",
   handler: httpAction(async (ctx, request) => {
-    const res = await ctx.runQuery(api.state.getState, {});
+    // PUBLIC READ endpoint
+    const res = await ctx.runQuery(internal.state.getState, {});
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: noCacheHeaders,
@@ -49,8 +141,15 @@ http.route({
   path: "/api/state",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // SECURED WRITE endpoint
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     const body = await request.json();
-    const res = await ctx.runMutation(api.state.saveState, body);
+    const res = await ctx.runMutation(internal.state.saveState, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -68,8 +167,15 @@ http.route({
   path: "/api/state-value",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // SECURED WRITE endpoint
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     const body = await request.json();
-    const res = await ctx.runMutation(api.state.saveStateValue, body);
+    const res = await ctx.runMutation(internal.state.saveStateValue, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -77,7 +183,9 @@ http.route({
   }),
 });
 
-// Order endpoints
+// ==========================================================================
+// ORDER ENDPOINTS
+// ==========================================================================
 http.route({
   path: "/api/order",
   method: "OPTIONS",
@@ -88,8 +196,9 @@ http.route({
   path: "/api/order",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // PUBLIC SUBMIT endpoint
     const body = await request.json();
-    const res = await ctx.runMutation(api.orders.saveOrder, body);
+    const res = await ctx.runMutation(internal.orders.saveOrder, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -106,8 +215,15 @@ http.route({
 http.route({
   path: "/api/admin/orders",
   method: "GET",
-  handler: httpAction(async (ctx) => {
-    const res = await ctx.runQuery(api.orders.getAllOrders, {});
+  handler: httpAction(async (ctx, request) => {
+    // SECURED GET orders list
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
+    const res = await ctx.runQuery(internal.orders.getAllOrders, {});
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: noCacheHeaders,
@@ -125,8 +241,15 @@ http.route({
   path: "/api/admin/order/status",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // SECURED POST update order status
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     const body = await request.json();
-    const res = await ctx.runMutation(api.orders.updateOrderStatus, body);
+    const res = await ctx.runMutation(internal.orders.updateOrderStatus, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -134,7 +257,9 @@ http.route({
   }),
 });
 
-// Persist cart fallback (persists as a placeholder success response)
+// ==========================================================================
+// CART & HEARTBEAT ENDPOINTS
+// ==========================================================================
 http.route({
   path: "/api/cart",
   method: "OPTIONS",
@@ -152,7 +277,6 @@ http.route({
   }),
 });
 
-// Heartbeat endpoint
 http.route({
   path: "/api/heartbeat",
   method: "OPTIONS",
@@ -170,7 +294,9 @@ http.route({
   }),
 });
 
-// Auth endpoints
+// ==========================================================================
+// USER AUTH ENDPOINTS
+// ==========================================================================
 http.route({
   path: "/api/auth/register",
   method: "OPTIONS",
@@ -182,7 +308,7 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     const body = await request.json();
-    const res = await ctx.runMutation(api.auth.register, body);
+    const res = await ctx.runMutation(internal.auth.register, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -201,7 +327,7 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     const body = await request.json();
-    const res = await ctx.runMutation(api.auth.login, body);
+    const res = await ctx.runMutation(internal.auth.login, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -220,7 +346,7 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     const body = await request.json();
-    const res = await ctx.runMutation(api.auth.googleLogin, body);
+    const res = await ctx.runMutation(internal.auth.googleLogin, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -240,7 +366,7 @@ http.route({
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
     const email = url.searchParams.get("email") || "";
-    const res = await ctx.runQuery(api.orders.getUserOrders, { email });
+    const res = await ctx.runQuery(internal.orders.getUserOrders, { email });
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: noCacheHeaders,
@@ -248,7 +374,9 @@ http.route({
   }),
 });
 
-// Chatbot endpoint
+// ==========================================================================
+// CHATBOT ENDPOINT
+// ==========================================================================
 http.route({
   path: "/api/chatbot",
   method: "OPTIONS",
@@ -260,7 +388,7 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, request) => {
     const body = await request.json();
-    const res = await ctx.runAction(api.chatbot.chatbot, body);
+    const res = await ctx.runAction(internal.chatbot.chatbot, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -268,7 +396,9 @@ http.route({
   }),
 });
 
-// Product archive endpoints
+// ==========================================================================
+// PRODUCT ARCHIVE ENDPOINTS
+// ==========================================================================
 http.route({
   path: "/api/product-archive",
   method: "OPTIONS",
@@ -279,8 +409,15 @@ http.route({
   path: "/api/product-archive",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // SECURED product archive
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     const body = await request.json();
-    const res = await ctx.runMutation(api.auth.archiveProduct, body);
+    const res = await ctx.runMutation(internal.auth.archiveProduct, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -291,8 +428,15 @@ http.route({
 http.route({
   path: "/api/product-archive",
   method: "GET",
-  handler: httpAction(async (ctx) => {
-    const res = await ctx.runQuery(api.auth.getArchivedProducts, {});
+  handler: httpAction(async (ctx, request) => {
+    // SECURED get archive
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
+    const res = await ctx.runQuery(internal.auth.getArchivedProducts, {});
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: noCacheHeaders,
@@ -310,8 +454,15 @@ http.route({
   path: "/api/product-archive/restore",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // SECURED restore product
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     const body = await request.json();
-    const res = await ctx.runMutation(api.auth.restoreArchivedProduct, body);
+    const res = await ctx.runMutation(internal.auth.restoreArchivedProduct, body);
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -319,7 +470,9 @@ http.route({
   }),
 });
 
-// PDF upload file endpoint
+// ==========================================================================
+// FILE UPLOAD ENDPOINT
+// ==========================================================================
 http.route({
   path: "/api/pdf-upload",
   method: "OPTIONS",
@@ -330,6 +483,13 @@ http.route({
   path: "/api/pdf-upload",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // SECURED pdf/image file upload
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     try {
       const blob = await request.blob();
       const storageId = await ctx.storage.store(blob);

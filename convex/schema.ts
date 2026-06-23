@@ -61,4 +61,19 @@ export default defineSchema({
     archivedAt: v.number(),
     restoredAt: v.optional(v.number()),
   }),
+
+  // Admin login attempts for security lockout
+  adminAttempts: defineTable({
+    ip: v.string(),
+    clientId: v.string(),
+    count: v.number(),
+    lastAttempt: v.number(),
+  }).index("by_ip", ["ip"]).index("by_clientId", ["clientId"]),
+
+  // Admin active sessions
+  adminSessions: defineTable({
+    token: v.string(),
+    createdAt: v.number(),
+    expiresAt: v.optional(v.number()),
+  }).index("by_token", ["token"]),
 });

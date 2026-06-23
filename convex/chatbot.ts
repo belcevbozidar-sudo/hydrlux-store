@@ -1,7 +1,7 @@
-import { action } from "./_generated/server";
+import { internalAction } from "./_generated/server";
 import { v } from "convex/values";
 
-export const chatbot = action({
+export const chatbot = internalAction({
   args: {
     messages: v.array(v.object({ role: v.string(), content: v.string() })),
     catalog: v.string(),
