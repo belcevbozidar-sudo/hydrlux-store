@@ -146,14 +146,16 @@ export const restoreArchivedProduct = mutation({
     const archived = await ctx.db
       .query("productArchive")
       .filter((q) => q.eq(q.field("productId"), args.productId))
-      .first();
+      .collect();
 
-    if (!archived) {
+    const target = archived.find((r) => r.restoredAt === undefined) || archived[0];
+
+    if (!target) {
       return { ok: false, error: "Архивираният продукт не е намерен." };
     }
 
-    // Delete from archive
-    await ctx.db.delete(archived._id);
+    // Mark as restored in archive instead of deleting
+    await ctx.db.patch(target._id, { restoredAt: Date.now() });
     return { ok: true };
   },
 });

@@ -59,5 +59,6 @@ export default defineSchema({
     data: v.any(),
     reason: v.string(),
     archivedAt: v.number(),
+    restoredAt: v.optional(v.number()),
   }),
 });

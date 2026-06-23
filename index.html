@@ -6747,6 +6747,18 @@ td .admin-actions-cell {
       height: 18px;
       accent-color: var(--accent);
     }
+    .drag-handle {
+      cursor: grab;
+      user-select: none;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+    .admin-variant-tr.dragging {
+      opacity: 0.4;
+      background-color: #f1f5f9 !important;
+      border: 2px dashed #cbd5e1 !important;
+    }
   </style>
 
   <!-- ==========================================================================

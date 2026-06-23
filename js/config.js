@@ -1164,10 +1164,10 @@ CONFIG.ready = (async () => {
     if (hasRemoteCategories) {
       const cleanRemoteCategories = filterOldItems(state.categories);
       const cleanLocalCategories = filterOldItems(localCategories);
-      // Reconcile against edited (remote+local) data only, then merge the static
+      // Reconcile against edited (remote) data only, then merge the static
       // seed on top, then strip tombstoned categories so deletions stick.
       const editedCategories = mergeById(cleanRemoteCategories, cleanLocalCategories);
-      reconcileTombstones(CONFIG.deletedCategoryIds, editedCategories);
+      reconcileTombstones(CONFIG.deletedCategoryIds, cleanRemoteCategories);
       const mergedCategories = applyTombstones(mergeById(editedCategories, staticCategories), CONFIG.deletedCategoryIds);
       shouldSyncMergedState = mergedCategories.length !== state.categories.length ||
                               JSON.stringify(mergedCategories) !== JSON.stringify(state.categories);
@@ -1203,7 +1203,7 @@ CONFIG.ready = (async () => {
       const cleanRemoteProducts = filterOldItems(state.products);
       const cleanLocalProducts = filterOldItems(localProducts);
       const editedProducts = mergeById(cleanRemoteProducts, cleanLocalProducts);
-      reconcileTombstones(CONFIG.deletedProductIds, editedProducts);
+      reconcileTombstones(CONFIG.deletedProductIds, cleanRemoteProducts);
       CONFIG.products = applyTombstones(editedProducts, CONFIG.deletedProductIds);
       saveLocalState();
     }

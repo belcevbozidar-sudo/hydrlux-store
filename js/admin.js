@@ -1226,7 +1226,7 @@ const Admin = {
         <p class="text-muted font-xs" style="margin: 0 0 18px; max-width: 720px;">
           Тук се пазят всички продукти, изтрити от панела. Архивът се съхранява в
           Convex и не може да бъде изтрит от сайта или панела — само ръчно от
-          Convex таблото. Натиснете „Възстанови", за да върнете продукт обратно на сайта.
+          Convex таблото. Натиснете „Върни", за да върнете продукт обратно на сайта.
         </p>
       </div>
       <div id="admin-archive-list">
@@ -1275,7 +1275,7 @@ const Admin = {
             <td>
               ${stillLive
                 ? `<span class="text-muted font-xs">вече е на сайта</span>`
-                : `<button class="btn-admin-action" style="background:#16a34a;color:#fff;" onclick="Admin.restoreArchivedProduct('${p.id}')">↩ Възстанови</button>`}
+                : `<button class="btn-admin-action" style="background:#16a34a;color:#fff;" onclick="Admin.restoreArchivedProduct('${p.id}')">↩ Върни</button>`}
             </td>
           </tr>`;
       }).join("");
@@ -1878,7 +1878,22 @@ const Admin = {
     }).join("");
 
     const rowsHTML = activeVariants.map((v, rIdx) => `
-      <tr class="admin-variant-tr">
+      <tr class="admin-variant-tr" 
+          ondragstart="Admin.handleDragStart(event)" 
+          ondragover="Admin.handleDragOver(event)" 
+          ondrop="Admin.handleDrop(event)" 
+          ondragend="Admin.handleDragEnd(event)">
+        <td style="padding: 5px; text-align: center; vertical-align: middle; width: 30px;">
+          <div class="drag-handle" 
+               style="cursor: grab; display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; width: 12px; height: 18px;"
+               onmousedown="Admin.enableRowDrag(this)"
+               onmouseup="Admin.disableRowDrag(this)"
+               onmouseleave="Admin.disableRowDrag(this)">
+            <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
+            <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
+            <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
+          </div>
+        </td>
         ${this.currentColumns.map(c => {
           const val = v[c.key] !== undefined ? v[c.key] : '';
           const isPrice = c.key === 'priceEur';
@@ -1914,6 +1929,7 @@ const Admin = {
           <table class="admin-table" style="min-width: 900px; font-size: 0.85rem; border-collapse: collapse;">
             <thead>
               <tr style="background-color: #f1f5f9;">
+                <th style="padding: 8px; width: 30px; text-align: center;"></th>
                 ${headersHTML}
                 <th style="padding: 8px; width: 60px; text-align: center;">Действие</th>
               </tr>
@@ -2330,6 +2346,10 @@ const Admin = {
   // Inner HTML for the attached-PDFs list. Kept separate so we can re-render
   // just this container (not the whole form) and avoid wiping unsaved inputs.
   renderPdfListItems() {
+    const uniqueNames = this.getUniquePdfDisplayNames();
+    const datalistOptions = uniqueNames.map(name => `<option value="${this.escapeAttr(name)}">`).join("");
+    const datalistHtml = `<datalist id="pdf-names-suggestions">${datalistOptions}</datalist>`;
+
     const items = (this.uploadedPdfs && this.uploadedPdfs.length > 0)
       ? this.uploadedPdfs.map((pdf, idx) => `
           <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 6px;">
@@ -2339,7 +2359,7 @@ const Admin = {
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-size: 0.75rem; font-weight: bold; color: #16a34a; white-space: nowrap;">Име за показване:</span>
-              <input type="text" class="form-control" value="${this.escapeAttr(pdf.displayName || '')}" placeholder="напр. Инструкция за монтаж" oninput="Admin.updatePdfDisplayName(${idx}, this.value)" style="height: 28px; padding: 4px 8px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px; flex: 1;">
+              <input type="text" class="form-control" list="pdf-names-suggestions" value="${this.escapeAttr(pdf.displayName || '')}" placeholder="напр. Инструкция за монтаж" oninput="Admin.updatePdfDisplayName(${idx}, this.value)" style="height: 28px; padding: 4px 8px; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px; flex: 1;">
             </div>
           </div>
         `).join("")
@@ -2347,7 +2367,7 @@ const Admin = {
     const uploading = this.isProcessingPdfs
       ? '<span style="color: #16a34a; font-weight: bold; font-size: 0.85rem;">⏳ Качване на PDF файл(ове)...</span>'
       : '';
-    return items + uploading;
+    return items + uploading + datalistHtml;
   },
 
   // Re-renders only the PDF list container, preserving the rest of the form.
@@ -5223,5 +5243,72 @@ const Admin = {
     } else {
       console.log("No legacy base64 images found. Database is clean.");
     }
+  },
+
+  enableRowDrag(el) {
+    const tr = el.closest(".admin-variant-tr");
+    if (tr) {
+      tr.setAttribute("draggable", "true");
+    }
+  },
+
+  disableRowDrag(el) {
+    const tr = el.closest(".admin-variant-tr");
+    if (tr) {
+      tr.removeAttribute("draggable");
+    }
+  },
+
+  handleDragStart(e) {
+    if (!e.target.closest(".drag-handle")) {
+      e.preventDefault();
+      return;
+    }
+    this.draggedRow = e.currentTarget;
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/html", e.currentTarget.innerHTML);
+    e.currentTarget.classList.add("dragging");
+  },
+
+  handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const row = e.currentTarget;
+    if (row !== this.draggedRow) {
+      const rect = row.getBoundingClientRect();
+      const next = (e.clientY - rect.top) > (rect.height / 2);
+      const parent = row.parentNode;
+      if (next) {
+        parent.insertBefore(this.draggedRow, row.nextSibling);
+      } else {
+        parent.insertBefore(this.draggedRow, row);
+      }
+    }
+  },
+
+  handleDrop(e) {
+    e.preventDefault();
+  },
+
+  handleDragEnd(e) {
+    e.currentTarget.classList.remove("dragging");
+    e.currentTarget.removeAttribute("draggable");
+    this.draggedRow = null;
+  },
+
+  getUniquePdfDisplayNames() {
+    if (typeof CONFIG === "undefined" || !CONFIG.products) return [];
+    const names = new Set();
+    CONFIG.products.forEach(p => {
+      if (Array.isArray(p.pdfs)) {
+        p.pdfs.forEach(pdf => {
+          if (pdf && pdf.displayName) {
+            const trimmed = pdf.displayName.trim();
+            if (trimmed) names.add(trimmed);
+          }
+        });
+      }
+    });
+    return [...names].sort();
   }
 };
