@@ -1879,16 +1879,14 @@ const Admin = {
 
     const rowsHTML = activeVariants.map((v, rIdx) => `
       <tr class="admin-variant-tr" 
+          draggable="true"
           ondragstart="Admin.handleDragStart(event)" 
           ondragover="Admin.handleDragOver(event)" 
           ondrop="Admin.handleDrop(event)" 
           ondragend="Admin.handleDragEnd(event)">
         <td style="padding: 5px; text-align: center; vertical-align: middle; width: 30px;">
           <div class="drag-handle" 
-               style="cursor: grab; display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; width: 12px; height: 18px;"
-               onmousedown="Admin.enableRowDrag(this)"
-               onmouseup="Admin.disableRowDrag(this)"
-               onmouseleave="Admin.disableRowDrag(this)">
+               style="cursor: grab; display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; width: 12px; height: 18px;">
             <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
             <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
             <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
@@ -5245,20 +5243,6 @@ const Admin = {
     }
   },
 
-  enableRowDrag(el) {
-    const tr = el.closest(".admin-variant-tr");
-    if (tr) {
-      tr.setAttribute("draggable", "true");
-    }
-  },
-
-  disableRowDrag(el) {
-    const tr = el.closest(".admin-variant-tr");
-    if (tr) {
-      tr.removeAttribute("draggable");
-    }
-  },
-
   handleDragStart(e) {
     if (!e.target.closest(".drag-handle")) {
       e.preventDefault();
@@ -5292,7 +5276,6 @@ const Admin = {
 
   handleDragEnd(e) {
     e.currentTarget.classList.remove("dragging");
-    e.currentTarget.removeAttribute("draggable");
     this.draggedRow = null;
   },
 
