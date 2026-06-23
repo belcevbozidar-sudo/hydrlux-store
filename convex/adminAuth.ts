@@ -1,13 +1,12 @@
 import { internalQuery, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
-// Prefer the ADMIN_PASSWORD_HASH environment variable (set in the Convex
-// dashboard) so the secret is not hard-coded in source control. Falls back to
-// the previous baked-in hash so existing deployments keep working until the
-// env var is configured.
-const ADMIN_PASSWORD_HASH =
-  process.env.ADMIN_PASSWORD_HASH ||
-  "278bd7484de825592160c7eb2db3a7190b0341b85073aa23142a5a09bc44b422";
+// The admin password hash lives ONLY in the ADMIN_PASSWORD_HASH environment
+// variable (set via the Convex dashboard / `npx convex env set`). It is never
+// hard-coded here because this repository is public. If the variable is missing
+// the value is empty, so admin login fails closed rather than using a leaked
+// secret.
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || "";
 const LOCKOUT_TIME = 60 * 60 * 1000; // 1 hour in ms
 const MAX_ATTEMPTS = 3;
 
