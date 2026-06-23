@@ -1878,15 +1878,12 @@ const Admin = {
     }).join("");
 
     const rowsHTML = activeVariants.map((v, rIdx) => `
-      <tr class="admin-variant-tr" 
-          draggable="true"
-          ondragstart="Admin.handleDragStart(event)" 
-          ondragover="Admin.handleDragOver(event)" 
-          ondrop="Admin.handleDrop(event)" 
-          ondragend="Admin.handleDragEnd(event)">
+      <tr class="admin-variant-tr">
         <td style="padding: 5px; text-align: center; vertical-align: middle; width: 30px;">
           <div class="drag-handle" 
-               style="cursor: grab; display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; width: 12px; height: 18px;">
+               style="cursor: grab; display: inline-flex; flex-direction: column; justify-content: center; gap: 3px; width: 12px; height: 18px;"
+               onmousedown="Admin.startRowDrag(event, this)"
+               ontouchstart="Admin.startRowDrag(event, this)">
             <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
             <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
             <span style="display: flex; gap: 3px;"><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span><span style="width: 3.5px; height: 3.5px; border-radius: 50%; background: #94a3b8;"></span></span>
@@ -5243,40 +5240,64 @@ const Admin = {
     }
   },
 
-  handleDragStart(e) {
-    if (!e.target.closest(".drag-handle")) {
-      e.preventDefault();
-      return;
-    }
-    this.draggedRow = e.currentTarget;
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/html", e.currentTarget.innerHTML);
-    e.currentTarget.classList.add("dragging");
+  startRowDrag(e, handle) {
+    const row = handle.closest(".admin-variant-tr");
+    if (!row) return;
+
+    e.preventDefault();
+
+    this.draggedRow = row;
+    row.classList.add("dragging");
+
+    this.boundRowDragMove = (moveEvent) => this.handleRowDragMove(moveEvent);
+    this.boundRowDragEnd = (endEvent) => this.handleRowDragEnd(endEvent);
+
+    window.addEventListener("mousemove", this.boundRowDragMove);
+    window.addEventListener("mouseup", this.boundRowDragEnd);
+    window.addEventListener("touchmove", this.boundRowDragMove, { passive: false });
+    window.addEventListener("touchend", this.boundRowDragEnd);
   },
 
-  handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    const row = e.currentTarget;
-    if (row !== this.draggedRow) {
+  handleRowDragMove(e) {
+    if (!this.draggedRow) return;
+
+    if (e.type === "touchmove") {
+      e.preventDefault();
+    }
+
+    const clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+
+    const tbody = document.getElementById("admin-variants-tbody");
+    if (!tbody) return;
+
+    const rows = [...tbody.querySelectorAll(".admin-variant-tr")];
+    const targetRow = rows.find(row => {
+      if (row === this.draggedRow) return false;
       const rect = row.getBoundingClientRect();
-      const next = (e.clientY - rect.top) > (rect.height / 2);
-      const parent = row.parentNode;
+      return clientY >= rect.top && clientY <= rect.bottom;
+    });
+
+    if (targetRow) {
+      const rect = targetRow.getBoundingClientRect();
+      const next = clientY > (rect.top + rect.height / 2);
       if (next) {
-        parent.insertBefore(this.draggedRow, row.nextSibling);
+        tbody.insertBefore(this.draggedRow, targetRow.nextSibling);
       } else {
-        parent.insertBefore(this.draggedRow, row);
+        tbody.insertBefore(this.draggedRow, targetRow);
       }
     }
   },
 
-  handleDrop(e) {
-    e.preventDefault();
-  },
+  handleRowDragEnd(e) {
+    if (this.draggedRow) {
+      this.draggedRow.classList.remove("dragging");
+      this.draggedRow = null;
+    }
 
-  handleDragEnd(e) {
-    e.currentTarget.classList.remove("dragging");
-    this.draggedRow = null;
+    window.removeEventListener("mousemove", this.boundRowDragMove);
+    window.removeEventListener("mouseup", this.boundRowDragEnd);
+    window.removeEventListener("touchmove", this.boundRowDragMove);
+    window.removeEventListener("touchend", this.boundRowDragEnd);
   },
 
   getUniquePdfDisplayNames() {
