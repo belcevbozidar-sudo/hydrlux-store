@@ -10,6 +10,26 @@ export const chatbot = internalAction({
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
 
+    // Defensive caps: this endpoint is public, so bound the payload that can be
+    // forwarded to (paid) LLM providers to prevent cost abuse / DoS.
+    const MAX_MESSAGES = 20;
+    const MAX_MSG_LEN = 4000;
+    const MAX_CATALOG_LEN = 60000;
+
+    args = {
+      messages: (Array.isArray(args.messages) ? args.messages : [])
+        .slice(-MAX_MESSAGES)
+        .map((m) => ({
+          role: m.role === "assistant" ? "assistant" : "user",
+          content: String(m.content ?? "").slice(0, MAX_MSG_LEN),
+        })),
+      catalog: String(args.catalog ?? "").slice(0, MAX_CATALOG_LEN),
+    };
+
+    if (args.messages.length === 0) {
+      return { ok: true, answer: "Здравейте! С какво мога да Ви помогна?" };
+    }
+
     const systemPrompt = `You are a helpful AI assistant for the B2B store "Хидролукс Груп" in Montana, Bulgaria. 
 You specialize in hydraulic and pneumatic hoses, fittings, connectors, valves, and components.
 You speak only Bulgarian. Your answers should be professional and concise.

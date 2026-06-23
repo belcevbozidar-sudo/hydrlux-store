@@ -3,6 +3,17 @@ const Auth = {
   currentUser: null,
   googleClientId: "319386067027-lvi2v05qt8sca7ppr3s8ukqk8oak530q.apps.googleusercontent.com",
 
+  // Escapes untrusted strings before they are inserted into innerHTML, to
+  // prevent stored XSS via order data that originates from public submissions.
+  escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  },
+
   init() {
     this.loadSession();
     this.initGoogleClient();
@@ -66,6 +77,10 @@ const Auth = {
     } else {
       this.currentUser = null;
       localStorage.removeItem("hydrolux_user");
+      // Clear the customer session token on logout.
+      if (typeof HydroluxBackend !== "undefined" && HydroluxBackend.setUserToken) {
+        HydroluxBackend.setUserToken(null);
+      }
     }
     this.updateHeaderUI();
 
@@ -345,21 +360,13 @@ const Auth = {
   },
 
   async handleGoogleCredentialResponse(response) {
-    // Decodes Google Credential JWT and signs in
+    // The raw Google credential (ID token) is sent to the backend, which
+    // verifies its signature/audience with Google before trusting any identity.
     try {
       const jwt = response.credential;
-      const parts = jwt.split(".");
-      if (parts.length !== 3) return;
-      const payload = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+      if (!jwt) return;
 
-      const userData = {
-        name: payload.name || "Google Потребител",
-        email: payload.email,
-        googleId: payload.sub,
-        avatarUrl: payload.picture
-      };
-
-      const backendResponse = await HydroluxBackend.authGoogleLogin(userData);
+      const backendResponse = await HydroluxBackend.authGoogleLogin(jwt);
       if (backendResponse.ok) {
         Cart.showToast(`Успешен вход с Google! Здравейте, ${backendResponse.name}!`);
         this.setCurrentUser({
@@ -421,31 +428,11 @@ const Auth = {
     const sandboxOverlay = document.getElementById("google-sandbox-overlay");
     if (sandboxOverlay) sandboxOverlay.remove();
 
-    try {
-      const userData = {
-        name,
-        email,
-        googleId: "google_mock_" + email.replace("@", "_").replace(".", "_"),
-        avatarUrl
-      };
-
-      const backendResponse = await HydroluxBackend.authGoogleLogin(userData);
-      if (backendResponse.ok) {
-        Cart.showToast(`Успешен вход с Google (Симулация)! Здравейте, ${backendResponse.name}!`);
-        this.setCurrentUser({
-          userId: backendResponse.userId,
-          name: backendResponse.name,
-          email: backendResponse.email,
-          avatarUrl: backendResponse.avatarUrl
-        });
-        this.closeAuthModal();
-      } else {
-        Cart.showToast("Грешка при симулация на Google логин.");
-      }
-    } catch (e) {
-      console.error(e);
-      Cart.showToast("Грешка при sandbox аутентикация.");
-    }
+    // The simulated (sandbox) Google accounts are intentionally disabled: the
+    // backend now cryptographically verifies a real Google credential, so a
+    // fake identity can no longer be used to sign in. This prevents anyone from
+    // logging in as an arbitrary account.
+    Cart.showToast("Симулираният Google вход е изключен. Моля, използвайте истински Google профил.");
   },
 
   async showProfileModal() {
@@ -489,7 +476,7 @@ const Auth = {
 
     // Fetch actual user orders from backend dynamically
     try {
-      const response = await HydroluxBackend.getUserOrders(this.currentUser.email);
+      const response = await HydroluxBackend.getUserOrders();
       const ordersContainer = document.getElementById("profile-orders-list");
       if (!ordersContainer) return;
 
@@ -518,8 +505,8 @@ const Auth = {
           // Build quick item list
           const itemsSummary = order.items.map(item => `
             <div class="order-summary-item-row">
-              <span>${item.name} (${item.code || ''}) x${item.quantity || 1}</span>
-              <strong>${(item.priceEur * (item.quantity || 1)).toFixed(2)} €</strong>
+              <span>${this.escapeHtml(item.name)} (${this.escapeHtml(item.code || '')}) x${this.escapeHtml(item.quantity || 1)}</span>
+              <strong>${(Number(item.priceEur) * (Number(item.quantity) || 1)).toFixed(2)} €</strong>
             </div>
           `).join("");
 
@@ -527,7 +514,7 @@ const Auth = {
             <div class="profile-order-card">
               <div class="order-card-header">
                 <div>
-                  <span class="order-number">Поръчка #${order.orderNumber}</span>
+                  <span class="order-number">Поръчка #${this.escapeHtml(order.orderNumber)}</span>
                   <span class="order-date">${date}</span>
                 </div>
                 <span class="order-status-badge ${statusClass}">${statusText}</span>

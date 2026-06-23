@@ -13,6 +13,7 @@ import type * as auth from "../auth.js";
 import type * as chatbot from "../chatbot.js";
 import type * as http from "../http.js";
 import type * as orders from "../orders.js";
+import type * as rateLimit from "../rateLimit.js";
 import type * as state from "../state.js";
 
 import type {
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   chatbot: typeof chatbot;
   http: typeof http;
   orders: typeof orders;
+  rateLimit: typeof rateLimit;
   state: typeof state;
 }>;
 

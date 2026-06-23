@@ -4394,10 +4394,10 @@ const Admin = {
         invoiceHtml = `
           <div style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 15px; margin-top: 12px; font-size: 0.8rem; text-align: left;">
             <strong style="color: #1e293b;">🧾 Данни за фактура:</strong><br>
-            Фирма: <strong>${order.invoiceDetails.companyName}</strong><br>
-            ЕИК/Булстат: <strong>${order.invoiceDetails.bulstat}</strong><br>
-            МОЛ: <strong>${order.invoiceDetails.mol}</strong><br>
-            Адрес: <strong>${order.invoiceDetails.address}</strong>
+            Фирма: <strong>${this.escapeHtml(order.invoiceDetails.companyName)}</strong><br>
+            ЕИК/Булстат: <strong>${this.escapeHtml(order.invoiceDetails.bulstat)}</strong><br>
+            МОЛ: <strong>${this.escapeHtml(order.invoiceDetails.mol)}</strong><br>
+            Адрес: <strong>${this.escapeHtml(order.invoiceDetails.address)}</strong>
           </div>
         `;
       }
@@ -4423,14 +4423,14 @@ const Admin = {
           
           <div class="order-card-header">
             <div class="order-number-date">
-              <h4 style="margin: 0; font-size: 1.15rem; font-weight: 800;">Поръчка #${order.orderNumber}</h4>
+              <h4 style="margin: 0; font-size: 1.15rem; font-weight: 800;">Поръчка #${this.escapeHtml(order.orderNumber)}</h4>
               <span style="font-size: 0.8rem; color: #64748b;">Създадена на: ${orderDate}</span>
             </div>
-            
+
             <div class="order-card-status-controls">
-              <span class="order-badge ${statusDetails.class}">${statusDetails.label}</span>
-              
-              <select class="form-control" style="width: auto; height: 36px; padding: 4px 10px; font-size: 0.85rem; margin-bottom: 0;" onchange="Admin.changeOrderStatus('${order.orderNumber}', this.value)">
+              <span class="order-badge ${statusDetails.class}">${this.escapeHtml(statusDetails.label)}</span>
+
+              <select class="form-control" style="width: auto; height: 36px; padding: 4px 10px; font-size: 0.85rem; margin-bottom: 0;" onchange="Admin.changeOrderStatus('${this.escapeAttr(order.orderNumber)}', this.value)">
                 <option value="new" ${order.status === 'new' ? 'selected' : ''}>Нова</option>
                 <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Платена</option>
                 <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Изпратена</option>
@@ -4445,13 +4445,13 @@ const Admin = {
             <!-- Customer column -->
             <div class="order-details-col order-customer-info">
               <h5>👤 Детайли за клиента & Доставка</h5>
-              <p>Клиент: <strong>${order.customer.name}</strong></p>
-              <p>Телефон: <strong>${order.customer.phone}</strong></p>
-              <p>Имейл: <strong>${order.customer.email}</strong></p>
-              <p style="margin-top: 10px;">Доставка: <strong>${deliveryText}</strong></p>
-              ${order.delivery !== "shop" ? `<p>Град / ПК: <strong>${order.city} (ПК: ${order.postcode})</strong></p>` : ""}
-              ${order.delivery !== "shop" ? `<p>Адрес/Офис: <strong>${order.address}</strong></p>` : ""}
-              <p style="margin-top: 10px;">Плащане: <strong>${paymentText}</strong></p>
+              <p>Клиент: <strong>${this.escapeHtml(order.customer.name)}</strong></p>
+              <p>Телефон: <strong>${this.escapeHtml(order.customer.phone)}</strong></p>
+              <p>Имейл: <strong>${this.escapeHtml(order.customer.email)}</strong></p>
+              <p style="margin-top: 10px;">Доставка: <strong>${this.escapeHtml(deliveryText)}</strong></p>
+              ${order.delivery !== "shop" ? `<p>Град / ПК: <strong>${this.escapeHtml(order.city)} (ПК: ${this.escapeHtml(order.postcode)})</strong></p>` : ""}
+              ${order.delivery !== "shop" ? `<p>Адрес/Офис: <strong>${this.escapeHtml(order.address)}</strong></p>` : ""}
+              <p style="margin-top: 10px;">Плащане: <strong>${this.escapeHtml(paymentText)}</strong></p>
               ${invoiceHtml}
             </div>
             
@@ -4477,25 +4477,25 @@ const Admin = {
 
                     if (itemCode) {
                       if (baseCode && baseCode !== itemCode) {
-                        codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>${itemCode}</strong> <span style="color: #94a3b8; font-size: 0.7rem;">(Базов: ${baseCode})</span></div>`;
+                        codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>${this.escapeHtml(itemCode)}</strong> <span style="color: #94a3b8; font-size: 0.7rem;">(Базов: ${this.escapeHtml(baseCode)})</span></div>`;
                       } else {
-                        codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>${itemCode}</strong></div>`;
+                        codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>${this.escapeHtml(itemCode)}</strong></div>`;
                       }
                     } else if (item.isCustomHose) {
                       codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>ИНДИВИДУАЛЕН</strong></div>`;
                     } else {
-                      codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>${item.productId || "Няма код"}</strong></div>`;
+                      codeHtml = `<div style="font-size: 0.75rem; color: #475569; margin-top: 2px;">Код: <strong>${this.escapeHtml(item.productId || "Няма код")}</strong></div>`;
                     }
 
                     return `
                       <tr>
                         <td style="text-align: left;">
-                          <strong>${item.name}</strong>
+                          <strong>${this.escapeHtml(item.name)}</strong>
                           ${codeHtml}
-                          ${item.variantName ? `<div style="font-size: 0.75rem; color: #64748b;">${item.variantName}</div>` : ""}
-                          ${item.specsText ? `<div style="font-size: 0.7rem; color: #94a3b8;">${item.specsText}</div>` : ""}
+                          ${item.variantName ? `<div style="font-size: 0.75rem; color: #64748b;">${this.escapeHtml(item.variantName)}</div>` : ""}
+                          ${item.specsText ? `<div style="font-size: 0.7rem; color: #94a3b8;">${this.escapeHtml(item.specsText)}</div>` : ""}
                         </td>
-                        <td style="text-align: center;">${item.quantity}</td>
+                        <td style="text-align: center;">${this.escapeHtml(item.quantity)}</td>
                         <td style="text-align: right;">${formatPrice(item.priceEur * item.quantity).eur}</td>
                       </tr>
                     `;
@@ -4512,7 +4512,7 @@ const Admin = {
 
               ${order.notes ? `
                 <div style="background-color: #fffbeb; border-left: 3px solid #f59e0b; padding: 10px 12px; margin-top: 15px; font-size: 0.8rem; border-radius: 0 6px 6px 0; text-align: left;">
-                  <strong>Бележка:</strong> ${order.notes}
+                  <strong>Бележка:</strong> ${this.escapeHtml(order.notes)}
                 </div>
               ` : ""}
             </div>
@@ -5218,12 +5218,12 @@ const Admin = {
       return `
         <div class="new-order-item-card">
           <div class="new-order-header">
-            <span class="new-order-number">${o.orderNumber}</span>
+            <span class="new-order-number">${this.escapeHtml(o.orderNumber)}</span>
             <span class="new-order-date">${formattedDate}</span>
           </div>
           <div class="new-order-details">
-            <div><strong>Клиент:</strong> ${name}</div>
-            <div><strong>Телефон:</strong> ${o.customer?.phone || "Не е въведен"}</div>
+            <div><strong>Клиент:</strong> ${this.escapeHtml(name)}</div>
+            <div><strong>Телефон:</strong> ${this.escapeHtml(o.customer?.phone || "Не е въведен")}</div>
             <div><strong>Артикули:</strong> ${itemsCount} бр.</div>
             <div class="new-order-price"><strong>Сума:</strong> ${total} лв.</div>
           </div>

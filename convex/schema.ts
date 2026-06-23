@@ -76,4 +76,20 @@ export default defineSchema({
     createdAt: v.number(),
     expiresAt: v.optional(v.number()),
   }).index("by_token", ["token"]),
+
+  // Logged-in customer sessions (used to authorise access to a user's own orders)
+  userSessions: defineTable({
+    token: v.string(),
+    userId: v.id("users"),
+    email: v.string(),
+    createdAt: v.number(),
+    expiresAt: v.optional(v.number()),
+  }).index("by_token", ["token"]),
+
+  // Generic fixed-window rate-limit counters keyed by "<bucket>:<ip>"
+  rateLimits: defineTable({
+    key: v.string(),
+    count: v.number(),
+    windowStart: v.number(),
+  }).index("by_key", ["key"]),
 });

@@ -4,6 +4,17 @@ const Chatbot = {
   messages: [],
   initialized: false,
 
+  // Escapes untrusted text (user input and LLM output) before it is placed in
+  // innerHTML, so a prompt-injected response cannot inject active markup.
+  escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  },
+
   init() {
     if (this.initialized) return;
     
@@ -69,9 +80,10 @@ const Chatbot = {
       
       // Remove recommendation tag from text display
       parsedContent = parsedContent.replace(recommendRegex, "").trim();
-      
-      // Format text content slightly
-      parsedContent = parsedContent.replace(/\n/g, "<br>");
+
+      // Escape any HTML in the message BEFORE re-adding our own <br> markup,
+      // so untrusted text (typed by the user or returned by the LLM) is inert.
+      parsedContent = this.escapeHtml(parsedContent).replace(/\n/g, "<br>");
       
       // Generate cards HTML for recommendations
       let carouselHtml = "";

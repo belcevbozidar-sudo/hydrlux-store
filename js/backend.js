@@ -14,7 +14,11 @@ const HydroluxBackend = {
       url = `${url}${separator}_t=${Date.now()}`;
     }
 
-    const token = localStorage.getItem("hydrolux_admin_token") || sessionStorage.getItem("hydrolux_admin_token");
+    // Use an explicitly supplied auth token (e.g. a customer session token)
+    // when provided; otherwise fall back to the admin token if present.
+    const token = options.authToken !== undefined
+      ? options.authToken
+      : (localStorage.getItem("hydrolux_admin_token") || sessionStorage.getItem("hydrolux_admin_token"));
     const headers = {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -209,32 +213,54 @@ const HydroluxBackend = {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   },
 
+  // Persists / clears the customer session token issued by the backend.
+  setUserToken(token) {
+    if (token) {
+      localStorage.setItem("hydrolux_user_token", token);
+    } else {
+      localStorage.removeItem("hydrolux_user_token");
+    }
+  },
+
+  getUserToken() {
+    return localStorage.getItem("hydrolux_user_token") || "";
+  },
+
   async authRegister(name, email, password) {
     const passwordHash = await this.hashPassword(password);
-    return await this.request("/api/auth/register", {
+    const res = await this.request("/api/auth/register", {
       method: "POST",
       body: { name, email, passwordHash },
     });
+    if (res && res.ok && res.token) this.setUserToken(res.token);
+    return res;
   },
 
   async authLogin(email, password) {
     const passwordHash = await this.hashPassword(password);
-    return await this.request("/api/auth/login", {
+    const res = await this.request("/api/auth/login", {
       method: "POST",
       body: { email, passwordHash },
     });
+    if (res && res.ok && res.token) this.setUserToken(res.token);
+    return res;
   },
 
-  async authGoogleLogin(userData) {
-    return await this.request("/api/auth/google", {
+  // Sends the raw Google credential (ID token) for server-side verification.
+  async authGoogleLogin(credential) {
+    const res = await this.request("/api/auth/google", {
       method: "POST",
-      body: userData,
+      body: { credential },
     });
+    if (res && res.ok && res.token) this.setUserToken(res.token);
+    return res;
   },
 
-  async getUserOrders(email) {
-    return await this.request(`/api/auth/orders?email=${encodeURIComponent(email)}`, {
+  async getUserOrders() {
+    // Email is derived server-side from the session token; never sent by client.
+    return await this.request(`/api/auth/orders`, {
       method: "GET",
+      authToken: this.getUserToken(),
     });
   },
 

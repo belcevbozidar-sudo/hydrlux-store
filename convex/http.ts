@@ -47,19 +47,52 @@ function getClientIp(request: Request): string {
   return "unknown";
 }
 
+// Helper to extract a Bearer token from the Authorization header
+function getBearerToken(request: Request): string {
+  const authHeader = request.headers.get("Authorization") || "";
+  if (!authHeader.startsWith("Bearer ")) return "";
+  return authHeader.substring(7).trim();
+}
+
 // Helper to verify admin auth token
 async function verifySessionToken(ctx: any, request: Request): Promise<boolean> {
-  const authHeader = request.headers.get("Authorization") || "";
-  if (!authHeader.startsWith("Bearer ")) {
-    return false;
-  }
-  const token = authHeader.substring(7).trim();
-  if (!token) {
-    return false;
-  }
+  const token = getBearerToken(request);
+  if (!token) return false;
   const session = await ctx.runQuery(internal.adminAuth.verifySession, { token });
   return session.ok === true;
 }
+
+// Helper to verify a customer session token; returns the bound email or null.
+async function verifyUserToken(ctx: any, request: Request): Promise<string | null> {
+  const token = getBearerToken(request);
+  if (!token) return null;
+  const session = await ctx.runQuery(internal.auth.verifyUserSession, { token });
+  return session.ok === true ? session.email : null;
+}
+
+// Helper: fixed-window per-IP rate limiting. Returns true when the request is
+// allowed, false when the caller has exceeded the bucket's limit.
+async function rateLimitOk(
+  ctx: any,
+  request: Request,
+  bucket: string,
+  max: number,
+  windowMs: number
+): Promise<boolean> {
+  const ip = getClientIp(request);
+  const res = await ctx.runMutation(internal.rateLimit.hit, {
+    key: `${bucket}:${ip}`,
+    max,
+    windowMs,
+  });
+  return res.allowed === true;
+}
+
+const tooManyRequests = () =>
+  new Response(JSON.stringify({ ok: false, error: "Твърде много заявки. Моля, опитайте по-късно." }), {
+    status: 429,
+    headers: corsHeaders,
+  });
 
 // ==========================================================================
 // ADMIN AUTHENTICATION ENDPOINTS
@@ -196,7 +229,10 @@ http.route({
   path: "/api/order",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
-    // PUBLIC SUBMIT endpoint
+    // PUBLIC SUBMIT endpoint - rate limited to curb spam / abuse.
+    if (!(await rateLimitOk(ctx, request, "order", 10, 60 * 1000))) {
+      return tooManyRequests();
+    }
     const body = await request.json();
     const res = await ctx.runMutation(internal.orders.saveOrder, body);
     return new Response(JSON.stringify(res), {
@@ -307,6 +343,9 @@ http.route({
   path: "/api/auth/register",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    if (!(await rateLimitOk(ctx, request, "register", 10, 60 * 1000))) {
+      return tooManyRequests();
+    }
     const body = await request.json();
     const res = await ctx.runMutation(internal.auth.register, body);
     return new Response(JSON.stringify(res), {
@@ -326,6 +365,10 @@ http.route({
   path: "/api/auth/login",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // Rate limit login to slow credential-stuffing / brute force.
+    if (!(await rateLimitOk(ctx, request, "login", 10, 60 * 1000))) {
+      return tooManyRequests();
+    }
     const body = await request.json();
     const res = await ctx.runMutation(internal.auth.login, body);
     return new Response(JSON.stringify(res), {
@@ -345,8 +388,15 @@ http.route({
   path: "/api/auth/google",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    if (!(await rateLimitOk(ctx, request, "google", 20, 60 * 1000))) {
+      return tooManyRequests();
+    }
     const body = await request.json();
-    const res = await ctx.runMutation(internal.auth.googleLogin, body);
+    // The browser sends the raw Google credential (ID token); it is verified
+    // server-side before any account is created or accessed.
+    const res = await ctx.runAction(internal.auth.googleVerify, {
+      credential: body.credential || "",
+    });
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
@@ -364,8 +414,16 @@ http.route({
   path: "/api/auth/orders",
   method: "GET",
   handler: httpAction(async (ctx, request) => {
-    const url = new URL(request.url);
-    const email = url.searchParams.get("email") || "";
+    // SECURED: a customer may only read their OWN orders. The email is taken
+    // from the verified session token, never from a client-supplied parameter,
+    // which closes the previous IDOR that exposed every customer's PII.
+    const email = await verifyUserToken(ctx, request);
+    if (!email) {
+      return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
     const res = await ctx.runQuery(internal.orders.getUserOrders, { email });
     return new Response(JSON.stringify(res), {
       status: 200,
@@ -387,6 +445,10 @@ http.route({
   path: "/api/chatbot",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    // Rate limit to prevent LLM cost abuse / DoS via the public chatbot.
+    if (!(await rateLimitOk(ctx, request, "chatbot", 15, 60 * 1000))) {
+      return tooManyRequests();
+    }
     const body = await request.json();
     const res = await ctx.runAction(internal.chatbot.chatbot, body);
     return new Response(JSON.stringify(res), {
