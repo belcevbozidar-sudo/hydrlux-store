@@ -1459,6 +1459,12 @@ const Admin = {
         </div>
       </div>
 
+      ${CONFIG.isStateLoadedFromServer === false ? `
+        <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+          <span>⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни. Моля, проверете интернет връзката си и презаредете страницата.</span>
+        </div>
+      ` : ''}
+
       <!-- Add or Edit Product Form Card -->
       <div class="admin-form-card">
         <h4>${isEditing ? `✏️ Редактиране на продукт: "${this.editingProduct.name}"` : '➕ Добавяне на нов продукт'}</h4>
@@ -3021,6 +3027,12 @@ const Admin = {
         <span class="admin-badge admin-badge-category">${categories.length} Категории</span>
       </div>
 
+      ${CONFIG.isStateLoadedFromServer === false ? `
+        <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+          <span>⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни. Моля, проверете интернет връзката си и презаредете страницата.</span>
+        </div>
+      ` : ''}
+
       <!-- Add or Edit Category Form -->
       <div class="admin-form-card">
         <h4>${isEditing ? `✏️ Редактиране на категория: "${this.editingCategory.name}"` : '📁 Добавяне на нова категория'}</h4>
@@ -3622,10 +3634,7 @@ const Admin = {
       item.addEventListener("dragover", (e) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
-      });
-
-      item.addEventListener("drop", (e) => {
-        e.preventDefault();
+        
         if (item !== draggedItem) {
           const children = Array.from(tableBody.children);
           const draggedIdx = children.indexOf(draggedItem);
@@ -3636,20 +3645,24 @@ const Admin = {
           } else {
             tableBody.insertBefore(draggedItem, item);
           }
-
-          // Sync order with CONFIG.categories
-          const reorderedCats = [];
-          Array.from(tableBody.children).forEach(row => {
-            const catId = row.getAttribute("data-id");
-            const catObj = CONFIG.categories.find(c => c.id === catId);
-            if (catObj) reorderedCats.push(catObj);
-          });
-
-          CONFIG.categories = reorderedCats;
-          CONFIG.saveState();
-          Admin.propagateStateChanges();
-          Admin.render();
         }
+      });
+
+      item.addEventListener("drop", (e) => {
+        e.preventDefault();
+        
+        // Sync order with CONFIG.categories
+        const reorderedCats = [];
+        Array.from(tableBody.children).forEach(row => {
+          const catId = row.getAttribute("data-id");
+          const catObj = CONFIG.categories.find(c => c.id === catId);
+          if (catObj) reorderedCats.push(catObj);
+        });
+
+        CONFIG.categories = reorderedCats;
+        CONFIG.saveState();
+        Admin.propagateStateChanges();
+        Admin.render();
       });
 
       item.addEventListener("dragend", () => {
@@ -3730,10 +3743,7 @@ const Admin = {
       item.addEventListener("dragover", (e) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
-      });
 
-      item.addEventListener("drop", (e) => {
-        e.preventDefault();
         if (item !== draggedItem) {
           const children = Array.from(tableBody.children);
           const draggedIdx = children.indexOf(draggedItem);
@@ -3744,10 +3754,12 @@ const Admin = {
           } else {
             tableBody.insertBefore(draggedItem, item);
           }
-
-          // Sync order with CONFIG.products
-          this.syncProductOrder(tableBody);
         }
+      });
+
+      item.addEventListener("drop", (e) => {
+        e.preventDefault();
+        this.syncProductOrder(tableBody);
       });
 
       item.addEventListener("dragend", () => {
