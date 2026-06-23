@@ -1459,7 +1459,7 @@ const Admin = {
         </div>
       </div>
 
-      ${CONFIG.isStateLoadedFromServer === false ? `
+      ${CONFIG.isStateLoadingFromServer === false && CONFIG.isStateLoadedFromServer === false ? `
         <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
           <span style="display: flex; align-items: center; gap: 6px;">⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни.</span>
           <span style="font-size: 0.8rem; font-family: monospace; color: #991b1b; margin-top: 4px;">Детайли за грешката: ${CONFIG.serverLoadError || 'Failed to fetch (възможно е разширение като Adblock / Brave Shield да блокира достъпа)'}</span>
@@ -3029,7 +3029,7 @@ const Admin = {
         <span class="admin-badge admin-badge-category">${categories.length} Категории</span>
       </div>
 
-      ${CONFIG.isStateLoadedFromServer === false ? `
+      ${CONFIG.isStateLoadingFromServer === false && CONFIG.isStateLoadedFromServer === false ? `
         <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
           <span style="display: flex; align-items: center; gap: 6px;">⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни.</span>
           <span style="font-size: 0.8rem; font-family: monospace; color: #991b1b; margin-top: 4px;">Детайли за грешката: ${CONFIG.serverLoadError || 'Failed to fetch (възможно е разширение като Adblock / Brave Shield да блокира достъпа)'}</span>

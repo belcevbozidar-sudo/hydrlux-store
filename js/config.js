@@ -1092,6 +1092,7 @@ if (localStorage.getItem("hydrolux_builder_options")) {
 // `await CONFIG.loadCatalog()` guards across the admin still work — they now
 // wait for the initial Convex sync to finish, which guarantees the full
 // product list is in memory before any save.
+CONFIG.isStateLoadingFromServer = true;
 CONFIG.isStateLoadedFromServer = false;
 CONFIG.productsUpdatedAt = null;
 CONFIG.categoriesUpdatedAt = null;
@@ -1143,6 +1144,7 @@ CONFIG.ready = (async () => {
 
     CONFIG.isStateLoadedFromServer = isLoaded;
     CONFIG.serverLoadError = loadError;
+    CONFIG.isStateLoadingFromServer = false;
 
     if (isLoaded && state) {
       CONFIG.productsUpdatedAt = state.productsUpdatedAt || null;
@@ -1246,6 +1248,9 @@ CONFIG.ready = (async () => {
 
 // Global API to save state
 CONFIG.saveState = async function() {
+  if (CONFIG.isStateLoadingFromServer) {
+    throw new Error("Базата данни все още се зарежда. Моля, изчакайте приключването на зареждането.");
+  }
   if (CONFIG.isStateLoadedFromServer === false) {
     throw new Error("Базата данни не е заредена успешно. Моля, презаредете страницата преди да правите промени.");
   }
