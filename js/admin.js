@@ -954,7 +954,8 @@ const Admin = {
         85% { transform: rotate(-4deg); }
       }
 
-      .category-draggable-row.dragging {
+      .category-draggable-row.dragging,
+      .product-draggable-row.dragging {
         background-color: rgba(2, 132, 199, 0.08) !important;
         opacity: 0.7;
         outline: 2px dashed #0284c7;
@@ -1183,6 +1184,7 @@ const Admin = {
       // Initialize custom interactive handlers (like spec lists or images preview)
       if (this.activeTab === "products") {
         this.initProductFormHandlers();
+        this.setupProductsDragAndDrop();
       }
       if (this.activeTab === "categories") {
         this.renderSubcategoriesList();
@@ -1396,7 +1398,10 @@ const Admin = {
       const thumb = p.images && p.images[0] ? p.images[0] : "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop";
 
       return `
-        <tr class="admin-table-row">
+        <tr class="admin-table-row ${this.filterCategory ? 'product-draggable-row' : ''}" ${this.filterCategory ? 'draggable="true"' : ''} data-id="${p.id}">
+          <td style="text-align: center; vertical-align: middle; width: 40px; ${this.filterCategory ? 'cursor: grab;' : 'cursor: not-allowed;'}" ${this.filterCategory ? '' : 'title="Изберете категория за подредба"'}>
+            <span style="color: ${this.filterCategory ? '#94a3b8' : '#cbd5e1'}; font-size: 1.15rem; user-select: none;">⠿</span>
+          </td>
           <td data-label="Продукт">
             <div style="display: flex; align-items: center; gap: 8px;">
               <img src="${thumb}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 12px;" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'">
@@ -1414,14 +1419,6 @@ const Admin = {
           </td>
           <td data-label="Вариации">
             <span class="admin-badge admin-badge-success">${p.variants ? p.variants.length : 0} размери</span>
-          </td>
-          <td data-label="Подредба" style="text-align: center;">
-            ${this.filterCategory ? `
-              <div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
-                <button type="button" class="btn btn-secondary btn-icon small" onclick="Admin.moveProduct('${p.id}', 'up')" title="Нагоре" ${idxFiltered === 0 ? 'disabled' : ''} style="width: 28px; height: 28px; padding: 0; font-size: 0.75rem;">▲</button>
-                <button type="button" class="btn btn-secondary btn-icon small" onclick="Admin.moveProduct('${p.id}', 'down')" title="Надолу" ${idxFiltered === products.length - 1 ? 'disabled' : ''} style="width: 28px; height: 28px; padding: 0; font-size: 0.75rem;">▼</button>
-              </div>
-            ` : `<span class="text-muted font-xs" style="font-style: italic;">Изберете кат.</span>`}
           </td>
           <td data-label="Действия">
             <div class="admin-actions-cell">
@@ -1642,11 +1639,11 @@ const Admin = {
         <table class="admin-table" id="admin-products-list-table" style="width: 100%; min-width: 800px; margin-top: 0;">
           <thead>
             <tr>
+              <th style="width: 40px; text-align: center;"></th>
               <th>Продукт</th>
               <th>Категория</th>
               <th>Цена EUR</th>
               <th>Вариации</th>
-              <th>Подредба</th>
               <th>Действия</th>
             </tr>
           </thead>
@@ -1729,7 +1726,10 @@ const Admin = {
       const thumb = p.images && p.images[0] ? p.images[0] : "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop";
 
       return `
-        <tr class="admin-table-row">
+        <tr class="admin-table-row ${catId ? 'product-draggable-row' : ''}" ${catId ? 'draggable="true"' : ''} data-id="${p.id}">
+          <td style="text-align: center; vertical-align: middle; width: 40px; ${catId ? 'cursor: grab;' : 'cursor: not-allowed;'}" ${catId ? '' : 'title="Изберете категория за подредба"'}>
+            <span style="color: ${catId ? '#94a3b8' : '#cbd5e1'}; font-size: 1.15rem; user-select: none;">⠿</span>
+          </td>
           <td data-label="Продукт">
             <div style="display: flex; align-items: center; gap: 8px;">
               <img src="${thumb}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 12px;" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'">
@@ -1748,14 +1748,6 @@ const Admin = {
           <td data-label="Вариации">
             <span class="admin-badge admin-badge-success">${p.variants ? p.variants.length : 0} размери</span>
           </td>
-          <td data-label="Подредба" style="text-align: center;">
-            ${catId ? `
-              <div style="display: flex; gap: 4px; justify-content: center; align-items: center;">
-                <button type="button" class="btn btn-secondary btn-icon small" onclick="Admin.moveProduct('${p.id}', 'up')" title="Нагоре" ${idxFiltered === 0 ? 'disabled' : ''} style="width: 28px; height: 28px; padding: 0; font-size: 0.75rem;">▲</button>
-                <button type="button" class="btn btn-secondary btn-icon small" onclick="Admin.moveProduct('${p.id}', 'down')" title="Надолу" ${idxFiltered === products.length - 1 ? 'disabled' : ''} style="width: 28px; height: 28px; padding: 0; font-size: 0.75rem;">▼</button>
-              </div>
-            ` : `<span class="text-muted font-xs" style="font-style: italic;">Изберете кат.</span>`}
-          </td>
           <td data-label="Действия">
             <div class="admin-actions-cell">
               <button class="btn-admin-action btn-admin-edit" type="button" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
@@ -1771,6 +1763,7 @@ const Admin = {
     }
     
     tbody.innerHTML = productRows;
+    this.setupProductsDragAndDrop();
     
     // Update count badge in the header above the products list
     const badge = document.querySelector(".admin-header-row .admin-badge-success");
@@ -3718,6 +3711,148 @@ const Admin = {
         Admin.render();
       });
     });
+  },
+
+  setupProductsDragAndDrop() {
+    const tableBody = document.querySelector("#admin-products-list-table tbody");
+    if (!tableBody || this.activeTab !== "products") return;
+
+    let draggedItem = null;
+
+    tableBody.querySelectorAll(".product-draggable-row").forEach(item => {
+      // 1. Mouse Drag (Desktop)
+      item.addEventListener("dragstart", (e) => {
+        draggedItem = item;
+        item.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+      });
+
+      item.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      });
+
+      item.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (item !== draggedItem) {
+          const children = Array.from(tableBody.children);
+          const draggedIdx = children.indexOf(draggedItem);
+          const targetIdx = children.indexOf(item);
+
+          if (draggedIdx < targetIdx) {
+            tableBody.insertBefore(draggedItem, item.nextSibling);
+          } else {
+            tableBody.insertBefore(draggedItem, item);
+          }
+
+          // Sync order with CONFIG.products
+          this.syncProductOrder(tableBody);
+        }
+      });
+
+      item.addEventListener("dragend", () => {
+        item.classList.remove("dragging");
+        draggedItem = null;
+      });
+
+      // 2. Touch Drag (Mobile)
+      item.addEventListener("touchstart", (e) => {
+        draggedItem = item;
+        item.classList.add("dragging");
+      }, { passive: true });
+
+      item.addEventListener("touchmove", (e) => {
+        if (!draggedItem) return;
+        if (e.cancelable) e.preventDefault();
+
+        const touch = e.touches[0];
+        
+        // Disable pointer events temporarily on the dragged item
+        const origPE = draggedItem.style.pointerEvents;
+        draggedItem.style.pointerEvents = "none";
+        
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        draggedItem.style.pointerEvents = origPE;
+        
+        if (!element) return;
+
+        const hoverItem = element.closest(".product-draggable-row");
+        if (hoverItem && hoverItem !== draggedItem && hoverItem.parentNode === tableBody) {
+          const children = Array.from(tableBody.children);
+          const draggedIdx = children.indexOf(draggedItem);
+          const hoverIdx = children.indexOf(hoverItem);
+
+          if (draggedIdx < hoverIdx) {
+            tableBody.insertBefore(draggedItem, hoverItem.nextSibling);
+          } else {
+            tableBody.insertBefore(draggedItem, hoverItem);
+          }
+        }
+      }, { passive: false });
+
+      item.addEventListener("touchend", () => {
+        if (!draggedItem) return;
+        item.classList.remove("dragging");
+
+        // Sync order with CONFIG.products
+        this.syncProductOrder(tableBody);
+      });
+    });
+  },
+
+  syncProductOrder(tableBody) {
+    const reorderedIds = Array.from(tableBody.querySelectorAll(".product-draggable-row"))
+      .map(row => row.getAttribute("data-id"));
+    
+    if (reorderedIds.length < 2) return;
+
+    // Find the global indices of these products in CONFIG.products
+    const indexMap = reorderedIds.map(id => {
+      return {
+        id: id,
+        globalIdx: CONFIG.products.findIndex(p => p.id === id)
+      };
+    });
+
+    // Extract the global indices and sort them ascending
+    const globalIndices = indexMap
+      .map(item => item.globalIdx)
+      .filter(idx => idx !== -1)
+      .sort((a, b) => a - b);
+
+    if (globalIndices.length !== reorderedIds.length) {
+      console.warn("Some products were not found in global list");
+      return;
+    }
+
+    // Store previous products state for rollback in case of error
+    const previousProducts = JSON.stringify(CONFIG.products);
+
+    // Create a copy of the products array to modify
+    const newProducts = [...CONFIG.products];
+
+    // Place the reordered products at the sorted global indices
+    reorderedIds.forEach((id, index) => {
+      const targetGlobalIndex = globalIndices[index];
+      const product = CONFIG.products.find(p => p.id === id);
+      newProducts[targetGlobalIndex] = product;
+    });
+
+    CONFIG.products = newProducts;
+
+    CONFIG.saveState()
+      .then(() => {
+        this.propagateStateChanges();
+        this.filterProductsList();
+      })
+      .catch(err => {
+        CONFIG.products = JSON.parse(previousProducts);
+        localStorage.setItem("hydrolux_products", previousProducts);
+        console.error("Failed to save product drag-and-drop reordering", err);
+        Admin.notify("Грешка при пренареждане: " + err.message);
+        this.filterProductsList();
+      });
   },
 
   setupSubcategoriesDragAndDrop() {
