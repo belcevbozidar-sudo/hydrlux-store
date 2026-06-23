@@ -1460,8 +1460,10 @@ const Admin = {
       </div>
 
       ${CONFIG.isStateLoadedFromServer === false ? `
-        <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-          <span>⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни. Моля, проверете интернет връзката си и презаредете страницата.</span>
+        <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span style="display: flex; align-items: center; gap: 6px;">⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни.</span>
+          <span style="font-size: 0.8rem; font-family: monospace; color: #991b1b; margin-top: 4px;">Детайли за грешката: ${CONFIG.serverLoadError || 'Failed to fetch (възможно е разширение като Adblock / Brave Shield да блокира достъпа)'}</span>
+          <span style="font-size: 0.85rem; font-weight: 500; margin-top: 4px;">👉 Моля, спрете Adblock / Brave Shield за този сайт, проверете връзката си и презаредете страницата.</span>
         </div>
       ` : ''}
 
@@ -3028,8 +3030,10 @@ const Admin = {
       </div>
 
       ${CONFIG.isStateLoadedFromServer === false ? `
-        <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-          <span>⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни. Моля, проверете интернет връзката си и презаредете страницата.</span>
+        <div style="background-color: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+          <span style="display: flex; align-items: center; gap: 6px;">⚠️ Базата данни от сървъра (Convex) не е заредена успешно. Всички промени са блокирани, за да се избегне загуба на данни.</span>
+          <span style="font-size: 0.8rem; font-family: monospace; color: #991b1b; margin-top: 4px;">Детайли за грешката: ${CONFIG.serverLoadError || 'Failed to fetch (възможно е разширение като Adblock / Brave Shield да блокира достъпа)'}</span>
+          <span style="font-size: 0.85rem; font-weight: 500; margin-top: 4px;">👉 Моля, спрете Adblock / Brave Shield за този сайт, проверете връзката си и презаредете страницата.</span>
         </div>
       ` : ''}
 

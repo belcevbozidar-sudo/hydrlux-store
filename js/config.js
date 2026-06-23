@@ -1131,15 +1131,18 @@ CONFIG.ready = (async () => {
     const localTemplates = JSON.parse(localStorage.getItem("hydrolux_table_templates") || "[]");
 
     let isLoaded = false;
+    let loadError = null;
     const state = await HydroluxBackend.getState().then(res => {
       isLoaded = true;
       return res;
     }).catch(err => {
       console.warn("Convex getState failed", err);
+      loadError = err.message || String(err);
       return null;
     });
 
     CONFIG.isStateLoadedFromServer = isLoaded;
+    CONFIG.serverLoadError = loadError;
 
     if (isLoaded && state) {
       CONFIG.productsUpdatedAt = state.productsUpdatedAt || null;
