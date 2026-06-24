@@ -533,8 +533,53 @@ http.route({
 });
 
 // ==========================================================================
-// FILE UPLOAD ENDPOINT
+// FILE UPLOAD AND SERVING ENDPOINTS
 // ==========================================================================
+http.route({
+  path: "/api/file",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/file",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const url = new URL(request.url);
+    const storageId = url.searchParams.get("storageId");
+    if (!storageId) {
+      return new Response(JSON.stringify({ error: "Missing storageId parameter" }), {
+        status: 400,
+        headers: corsHeaders,
+      });
+    }
+
+    try {
+      const blob = await ctx.storage.get(storageId);
+      if (!blob) {
+        return new Response(JSON.stringify({ error: "File not found" }), {
+          status: 404,
+          headers: corsHeaders,
+        });
+      }
+
+      return new Response(blob, {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": blob.type || "application/octet-stream",
+          "Cache-Control": "public, max-age=31536000, immutable",
+        },
+      });
+    } catch (err: any) {
+      return new Response(JSON.stringify({ error: err.message }), {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
+  }),
+});
+
 http.route({
   path: "/api/pdf-upload",
   method: "OPTIONS",
@@ -555,7 +600,9 @@ http.route({
     try {
       const blob = await request.blob();
       const storageId = await ctx.storage.store(blob);
-      const url = await ctx.storage.getUrl(storageId);
+      const requestUrl = new URL(request.url);
+      const baseUrl = requestUrl.origin;
+      const url = `${baseUrl}/api/file?storageId=${storageId}`;
       return new Response(JSON.stringify({ ok: true, storageId, url }), {
         status: 200,
         headers: corsHeaders,
