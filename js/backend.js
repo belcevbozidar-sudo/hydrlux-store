@@ -169,11 +169,17 @@ const HydroluxBackend = {
   // Uploads a technical-specification PDF into Convex file storage and returns
   // { ok, storageId, url }. The URL is permanent and can be opened directly.
   async uploadPdf(file) {
+    const token = localStorage.getItem("hydrolux_admin_token") || sessionStorage.getItem("hydrolux_admin_token");
+    const headers = {
+      "Content-Type": file.type || "application/pdf",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${this.httpUrl}/api/pdf-upload`, {
       method: "POST",
-      headers: {
-        "Content-Type": file.type || "application/pdf",
-      },
+      headers: headers,
       body: file,
     });
 
