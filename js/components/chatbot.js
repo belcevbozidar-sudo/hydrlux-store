@@ -92,14 +92,14 @@ const Chatbot = {
           const product = CONFIG.products.find(p => p.id === prodId);
           if (!product) return "";
           
-          const coverImg = product.images[0] || "assets/air_hoses.webp";
+          const coverImg = product.images[0] || "assets/cat_air_hoses.webp";
           const prices = product.variants.map(v => v.priceEur);
           const minPrice = Math.min(...prices);
           const priceText = formatPrice(minPrice, product.unit === "м").eur;
           
           return `
             <a class="chatbot-recommended-product" href="#product-detail/${product.id}" onclick="Chatbot.handleCardClick(event, '${product.id}')">
-              <img src="${coverImg}" alt="${product.name}" class="chatbot-rec-img" onerror="this.src='assets/air_hoses.webp'">
+              <img src="${coverImg}" alt="${product.name}" class="chatbot-rec-img" onerror="this.src='assets/cat_air_hoses.webp'">
               <div class="chatbot-rec-info">
                 <span class="chatbot-rec-name">${product.name}</span>
                 <span class="chatbot-rec-brand">${product.brand || "Хидролукс"}</span>

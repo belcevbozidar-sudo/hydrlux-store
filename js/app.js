@@ -140,7 +140,7 @@ const App = {
           </button>
 
           <div class="product-card-img-wrapper">
-            <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='assets/air_hoses.webp'" width="240" height="240" loading="lazy">
+            <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='assets/cat_air_hoses.webp'" width="240" height="240" loading="lazy">
           </div>
           <div class="product-card-body">
             <h4 class="product-card-title">${p.name}</h4>
@@ -197,7 +197,7 @@ const App = {
               </button>
 
               <div class="product-card-img-wrapper">
-                <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='assets/air_hoses.webp'" width="240" height="240" loading="lazy">
+                <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='assets/cat_air_hoses.webp'" width="240" height="240" loading="lazy">
               </div>
               <div class="product-card-body">
                 <h4 class="product-card-title">${p.name}</h4>
@@ -499,7 +499,7 @@ const App = {
 
               return `
                 <div class="search-suggestion-item" onclick="App.handleProductSuggestionClick('${p.id}')">
-                  <img src="${coverImg}" alt="${p.name} - ${p.brand}" class="search-suggestion-img" onerror="this.src='assets/air_hoses.webp'" width="40" height="40" loading="lazy">
+                  <img src="${coverImg}" alt="${p.name} - ${p.brand}" class="search-suggestion-img" onerror="this.src='assets/cat_air_hoses.webp'" width="40" height="40" loading="lazy">
                   <div class="search-suggestion-info">
                     <span class="search-suggestion-name">${p.name}</span>
                     <span class="search-suggestion-meta">${subText}</span>
