@@ -673,9 +673,9 @@ const Catalog = {
       pdfsToRender.forEach((pdf, idx) => {
         const displayName = pdf.displayName || pdf.name;
         descHtml += `
-          <button onclick="Catalog.openProductPdfData('${product.id}', ${idx})" class="pdf-datasheet-link" title="${this.escapeHtml(displayName)}" style="display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 5px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #16a34a; transition: background-color 0.15s, border-color 0.15s;" onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.borderColor='#16a34a';" onmouseout="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#e2e8f0';">
+          <button onclick="Catalog.openProductPdfData('${product.id}', ${idx})" class="pdf-datasheet-link" title="${this.escapeHtml(displayName)}" style="display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 5px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #16a34a; text-align: left; transition: background-color 0.15s, border-color 0.15s;" onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.borderColor='#16a34a';" onmouseout="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#e2e8f0';">
             <span style="font-size: 0.95rem; line-height: 1;">📄</span>
-            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${this.escapeHtml(displayName)}</span>
+            <span style="white-space: normal; word-break: break-word;">${this.escapeHtml(displayName)}</span>
           </button>
         `;
       });
