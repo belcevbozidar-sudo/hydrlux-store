@@ -259,11 +259,13 @@ http.route({
           for (const item of order.items) {
             const variantInfo = item.variantName ? ` (${item.variantName})` : "";
             const specsInfo = item.specsText ? `\nСпец: ${item.specsText}` : "";
-            ntfyMessage += `- ${item.name || ""}${variantInfo} x${item.quantity || 1} - ${item.priceEur || 0} EUR${specsInfo}\n`;
+            const priceText = item.priceEur !== undefined ? Number(item.priceEur).toFixed(2) : "0.00";
+            ntfyMessage += `- ${item.name || ""}${variantInfo} x${item.quantity || 1} - ${priceText} EUR${specsInfo}\n`;
           }
         }
         
-        ntfyMessage += `\nОбщо: ${order.totals?.eur || 0} EUR`;
+        const totalEur = order.totals?.eur !== undefined ? Number(order.totals.eur).toFixed(2) : "0.00";
+        ntfyMessage += `\nОбщо: ${totalEur} EUR`;
         if (order.notes) ntfyMessage += `\nБележка:\n${order.notes}`;
         
         const url = new URL("https://ntfy.sh/hydrolux-orders-alert-2026");
