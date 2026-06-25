@@ -282,4 +282,11 @@ const HydroluxBackend = {
       body: { orderNumber, status },
     });
   },
+
+  async submitInquiry(inquiry) {
+    return await this.request("/api/inquiry", {
+      method: "POST",
+      body: inquiry,
+    });
+  },
 };

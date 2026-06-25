@@ -968,10 +968,66 @@ const Catalog = {
     }
   },
 
-  submitInquiry(event) {
+  async submitInquiry(event) {
     event.preventDefault();
-    this.closeInquiryModal();
-    Cart.showToast("Благодарим Ви! Запитването е изпратено успешно.");
+    const form = event.target;
+    
+    // Check if it is the product inquiry modal form or services page form
+    const isProductInquiry = form.closest("#inquiry-modal") !== null;
+    
+    let payload = {};
+    if (isProductInquiry) {
+      const name = document.getElementById("inquiry-name").value.trim();
+      const phone = document.getElementById("inquiry-phone").value.trim();
+      const message = document.getElementById("inquiry-message").value.trim();
+      const subject = document.getElementById("inquiry-subject").value.trim();
+      
+      payload = {
+        type: "product",
+        name,
+        phone,
+        message,
+        subject
+      };
+      
+      // Clear inputs
+      document.getElementById("inquiry-name").value = "";
+      document.getElementById("inquiry-phone").value = "";
+      document.getElementById("inquiry-message").value = "";
+      
+      this.closeInquiryModal();
+    } else {
+      // Services/Contact form
+      const name = document.getElementById("services-name").value.trim();
+      const phone = document.getElementById("services-phone").value.trim();
+      const email = document.getElementById("services-email").value.trim();
+      const message = document.getElementById("services-message").value.trim();
+      
+      payload = {
+        type: "contact",
+        name,
+        phone,
+        email,
+        message,
+        subject: "Запитване от контактната форма"
+      };
+      
+      // Clear inputs
+      document.getElementById("services-name").value = "";
+      document.getElementById("services-phone").value = "";
+      document.getElementById("services-email").value = "";
+      document.getElementById("services-message").value = "";
+    }
+    
+    try {
+      if (typeof HydroluxBackend !== "undefined") {
+        await HydroluxBackend.submitInquiry(payload);
+      }
+      Cart.showToast("Благодарим Ви! Запитването е изпратено успешно.");
+    } catch (err) {
+      console.error("Failed to submit inquiry:", err);
+      Cart.showToast("Възникна грешка при изпращането. Моля, опитайте пак.");
+    }
   },
 
   openQuickOrderModal() {

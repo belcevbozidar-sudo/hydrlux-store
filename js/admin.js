@@ -5127,12 +5127,11 @@ const Admin = {
       }
 
       if (stored === null) {
-        acknowledged = orders.map(o => o.orderNumber);
+        acknowledged = orders.filter(o => o.status !== "new" && o.status !== "paid").map(o => o.orderNumber);
         localStorage.setItem("hydrolux_acknowledged_orders", JSON.stringify(acknowledged));
-        return;
       }
 
-      const newOrders = orders.filter(o => !acknowledged.includes(o.orderNumber) && o.status !== "canceled");
+      const newOrders = orders.filter(o => !acknowledged.includes(o.orderNumber) && o.status !== "canceled" && o.status !== "cancelled");
 
       if (newOrders.length > 0) {
         this.showNewOrdersNotification(newOrders);
@@ -5206,7 +5205,8 @@ const Admin = {
   renderNewOrdersListHTML(newOrders) {
     return newOrders.map(o => {
       const name = o.customer?.fullName || o.customer?.name || "Анонимен клиент";
-      const total = o.totals?.total !== undefined ? parseFloat(o.totals.total).toFixed(2) : "0.00";
+      const totalEur = o.totals?.eur !== undefined ? parseFloat(o.totals.eur).toFixed(2) : "0.00";
+      const totalBgn = o.totals?.bgn !== undefined ? parseFloat(o.totals.bgn).toFixed(2) : (o.totals?.eur !== undefined ? (parseFloat(o.totals.eur) * 1.95583).toFixed(2) : "0.00");
       const itemsCount = Array.isArray(o.items) ? o.items.length : 0;
       const formattedDate = new Date(o.createdAt).toLocaleString("bg-BG", {
         day: "2-digit",
@@ -5225,7 +5225,7 @@ const Admin = {
             <div><strong>Клиент:</strong> ${this.escapeHtml(name)}</div>
             <div><strong>Телефон:</strong> ${this.escapeHtml(o.customer?.phone || "Не е въведен")}</div>
             <div><strong>Артикули:</strong> ${itemsCount} бр.</div>
-            <div class="new-order-price"><strong>Сума:</strong> ${total} лв.</div>
+            <div class="new-order-price"><strong>Сума:</strong> ${totalEur} € (${totalBgn} лв.)</div>
           </div>
         </div>
       `;

@@ -12,6 +12,8 @@ import type * as adminAuth from "../adminAuth.js";
 import type * as auth from "../auth.js";
 import type * as chatbot from "../chatbot.js";
 import type * as http from "../http.js";
+import type * as matches from "../matches.js";
+import type * as migrateWayback from "../migrateWayback.js";
 import type * as orders from "../orders.js";
 import type * as rateLimit from "../rateLimit.js";
 import type * as state from "../state.js";
@@ -27,6 +29,8 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   chatbot: typeof chatbot;
   http: typeof http;
+  matches: typeof matches;
+  migrateWayback: typeof migrateWayback;
   orders: typeof orders;
   rateLimit: typeof rateLimit;
   state: typeof state;

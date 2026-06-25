@@ -235,7 +235,124 @@ http.route({
     }
     const body = await request.json();
     const res = await ctx.runMutation(internal.orders.saveOrder, body);
+    
+    if (res.ok) {
+      try {
+        const order = body.order;
+        const isQuick = order.delivery === "quick_order";
+        const title = isQuick 
+          ? `⚡ Бърза поръчка ${order.orderNumber}`
+          : `📦 Нова поръчка ${order.orderNumber}`;
+        const tags = isQuick ? "zap,shopping_bags" : "shopping_bags";
+        
+        let ntfyMessage = `Клиент: ${order.customer?.name || "Неизвестен"}\n`;
+        ntfyMessage += `Телефон: ${order.customer?.phone || "Неизвестен"}\n`;
+        if (order.customer?.email) ntfyMessage += `Имейл: ${order.customer.email}\n`;
+        ntfyMessage += `Доставка: ${order.delivery || "Неизвестно"}\n`;
+        
+        if (!isQuick && (order.city || order.address)) {
+          ntfyMessage += `Адрес: ${order.postcode || ""} ${order.city || ""}, ${order.address || ""}\n`;
+        }
+        
+        ntfyMessage += `\nПродукти:\n`;
+        if (Array.isArray(order.items)) {
+          for (const item of order.items) {
+            const variantInfo = item.variantName ? ` (${item.variantName})` : "";
+            const specsInfo = item.specsText ? `\nСпец: ${item.specsText}` : "";
+            ntfyMessage += `- ${item.name || ""}${variantInfo} x${item.quantity || 1} - ${item.priceEur || 0} EUR${specsInfo}\n`;
+          }
+        }
+        
+        ntfyMessage += `\nОбщо: ${order.totals?.eur || 0} EUR`;
+        if (order.notes) ntfyMessage += `\nБележка:\n${order.notes}`;
+        
+        const url = new URL("https://ntfy.sh/hydrolux-orders-alert-2026");
+        url.searchParams.append("title", title);
+        url.searchParams.append("tags", tags);
+        url.searchParams.append("priority", "high");
+        
+        await fetch(url.toString(), {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+          },
+          body: ntfyMessage,
+        });
+      } catch (err) {
+        console.error("Failed to send Ntfy notification for order:", err);
+      }
+    }
+
     return new Response(JSON.stringify(res), {
+      status: 200,
+      headers: corsHeaders,
+    });
+  }),
+});
+
+http.route({
+  path: "/api/inquiry",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/inquiry",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    // Rate limit to prevent spam
+    if (!(await rateLimitOk(ctx, request, "inquiry", 10, 60 * 1000))) {
+      return tooManyRequests();
+    }
+    
+    const body = await request.json();
+    const { type, name, phone, email, subject, message, details } = body;
+    
+    // Format Ntfy message
+    let title = "";
+    let tags = "";
+    let ntfyMessage = `Клиент: ${name || "Неизвестен"}\n`;
+    ntfyMessage += `Телефон: ${phone || "Неизвестен"}\n`;
+    if (email) ntfyMessage += `Имейл: ${email}\n`;
+    
+    if (type === "product") {
+      title = `❓ Въпрос за продукт: ${subject || "Без тема"}`;
+      tags = "question,speech_balloon";
+      if (message) ntfyMessage += `\nВъпрос:\n${message}`;
+    } else if (type === "contact") {
+      title = `✉️ Ново запитване / Контакт`;
+      tags = "incoming_envelope,speech_balloon";
+      if (message) ntfyMessage += `\nСъобщение:\n${message}`;
+    } else if (type === "builder") {
+      title = `⚙️ Запитване за маркуч (Конфигуратор)`;
+      tags = "nut_and_bolt,hammer_and_wrench";
+      if (details) ntfyMessage += `\nСпецификация:\n${details}\n`;
+      if (message) ntfyMessage += `\nБележка:\n${message}`;
+    } else {
+      title = `Форма: ${subject || "Запитване"}`;
+      tags = "memo";
+      if (message) ntfyMessage += `\nСъобщение:\n${message}`;
+    }
+    
+    // Send to Ntfy
+    try {
+      const url = new URL("https://ntfy.sh/hydrolux-orders-alert-2026");
+      url.searchParams.append("title", title);
+      if (tags) url.searchParams.append("tags", tags);
+      url.searchParams.append("priority", "high");
+      
+      await fetch(url.toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+        },
+        body: ntfyMessage,
+      });
+    } catch (err) {
+      console.error("Failed to send Ntfy notification for inquiry:", err);
+    }
+    
+    return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: corsHeaders,
     });

@@ -519,9 +519,41 @@ const HoseBuilder = {
     }
   },
 
-  submitInquiry(event) {
+  async submitInquiry(event) {
     event.preventDefault();
+    
+    const name = document.getElementById("builder-inquiry-name").value.trim();
+    const phone = document.getElementById("builder-inquiry-phone").value.trim();
+    const email = document.getElementById("builder-inquiry-email").value.trim();
+    const userMessage = document.getElementById("builder-inquiry-message").value.trim();
+    const specsSummary = document.getElementById("builder-inquiry-summary").innerText;
+    
+    const payload = {
+      type: "builder",
+      name,
+      phone,
+      email,
+      message: userMessage,
+      subject: "Сглобяване на маркуч (Конфигуратор)",
+      details: specsSummary
+    };
+    
+    // Clear inputs
+    document.getElementById("builder-inquiry-name").value = "";
+    document.getElementById("builder-inquiry-phone").value = "";
+    document.getElementById("builder-inquiry-email").value = "";
+    document.getElementById("builder-inquiry-message").value = "";
+    
     this.closeInquiryModal();
-    Cart.showToast("Благодарим Ви! Запитването за сглобен маркуч е изпратено.");
+    
+    try {
+      if (typeof HydroluxBackend !== "undefined") {
+        await HydroluxBackend.submitInquiry(payload);
+      }
+      Cart.showToast("Благодарим Ви! Запитването за сглобен маркуч е изпратено.");
+    } catch (err) {
+      console.error("Failed to submit builder inquiry:", err);
+      Cart.showToast("Възникна грешка при изпращането. Моля, опитайте пак.");
+    }
   }
 };

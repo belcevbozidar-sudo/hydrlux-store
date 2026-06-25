@@ -62,7 +62,7 @@ export const saveOrder = internalMutation({
 
     // Reject obviously malformed contact details.
     const email = clampStr(o.customer.email, 254).toLowerCase().trim();
-    if (!EMAIL_RE.test(email)) {
+    if (o.delivery !== "quick_order" && !EMAIL_RE.test(email)) {
       return { ok: false, error: "Невалиден имейл адрес." };
     }
 
