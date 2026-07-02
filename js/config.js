@@ -962,6 +962,33 @@ if (hasOldUnsplashOrPng || hasOldCategoryIds) {
   localStorage.removeItem("hydrolux_builder_options");
 }
 
+function normalizePaths(products, categories) {
+  const backendUrl = (typeof HydroluxBackend !== "undefined" && HydroluxBackend.httpUrl) 
+    ? HydroluxBackend.httpUrl 
+    : "https://shiny-bass-730.eu-west-1.convex.site";
+
+  if (Array.isArray(products)) {
+    products.forEach(p => {
+      if (p && p.images && Array.isArray(p.images)) {
+        p.images = p.images.map(img => {
+          if (img && typeof img === "string" && img.startsWith("/api/file?")) {
+            return backendUrl + img;
+          }
+          return img;
+        });
+      }
+    });
+  }
+
+  if (Array.isArray(categories)) {
+    categories.forEach(c => {
+      if (c && c.image && typeof c.image === "string" && c.image.startsWith("/api/file?")) {
+        c.image = backendUrl + c.image;
+      }
+    });
+  }
+}
+
 // Load dynamic state if present in localStorage to support admin dashboard updates in real-time.
 // staticCategories holds the original CONFIG seed (~17 categories) so that on a fresh device,
 // the home page can render category cards instantly while the database call resolves.
@@ -973,6 +1000,7 @@ if (localStorage.getItem("hydrolux_products")) {
     const local = filterOldItems(JSON.parse(localStorage.getItem("hydrolux_products")));
     reconcileTombstones(CONFIG.deletedProductIds, local);
     CONFIG.products = applyTombstones(local, CONFIG.deletedProductIds);
+    normalizePaths(CONFIG.products, null);
   } catch (e) {
     console.error("Error parsing products from localStorage", e);
   }
@@ -985,6 +1013,7 @@ if (localStorage.getItem("hydrolux_categories")) {
     const local = filterOldItems(JSON.parse(localStorage.getItem("hydrolux_categories")));
     reconcileTombstones(CONFIG.deletedCategoryIds, local);
     CONFIG.categories = applyTombstones(mergeById(local, staticCategories), CONFIG.deletedCategoryIds);
+    normalizePaths(null, CONFIG.categories);
   } catch (e) {
     console.error("Error parsing categories from localStorage", e);
   }
@@ -1235,6 +1264,9 @@ CONFIG.ready = (async () => {
         console.warn("Initial seed sync failed", syncErr);
       }
     }
+
+    // Ensure all images are normalized before rendering
+    normalizePaths(CONFIG.products, CONFIG.categories);
 
     // Render with the freshly-loaded database state.
     if (typeof App !== "undefined" && typeof App.renderAllUI === "function") {
