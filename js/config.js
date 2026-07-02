@@ -8,7 +8,7 @@ const CONFIG = {
     addressShort: "ул. „Индустриална“ 32г, Монтана",
     phone: "+359 89 248 4337",
     phoneDisplay: "089 248 4337",
-    email: "hydroluxgroup@gmail.com",
+    email: "info@hydrolux.bg",
     workingHours: "Понеделник - Петък: 08:30 - 17:30 | Събота: 09:00 - 13:00"
   },
   

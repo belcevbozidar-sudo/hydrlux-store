@@ -699,7 +699,7 @@ const App = {
       } else if (mainView === "contacts") {
         this.updateSEO(
           "Контакти | Свържете се с нас | Хидролукс Груп Монтана",
-          "Свържете се с екипа на Хидролукс Груп в Монтана. Телефон: 0892 483 337, имейл: hydroluxgroup@gmail.com, адрес: ул. Индустриална 32Г.",
+          "Свържете се с екипа на Хидролукс Груп в Монтана. Телефон: 0892 483 337, имейл: info@hydrolux.bg, адрес: ул. Индустриална 32Г.",
           "#contacts"
         );
         this.updateSchema(this.getLocalBusinessSchema());
