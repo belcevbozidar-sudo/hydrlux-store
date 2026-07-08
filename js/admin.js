@@ -2086,7 +2086,7 @@ const Admin = {
     return "СЕЗОННО НАМАЛЕНИЕ";
   },
 
-  collectVariantsFromDOM() {
+  collectVariantsFromDOM(skipEmpty = false) {
     // Use admin-specific ID to avoid conflict with catalog's #prod-variants-tbody
     const tbody = document.getElementById("admin-variants-tbody");
     if (!tbody) return null;
@@ -2107,7 +2107,7 @@ const Admin = {
           v[key] = (isNaN(val) || val === '') ? val : parseFloat(val);
         }
       });
-      if (hasValue) {
+      if (!skipEmpty || hasValue) {
         variants.push(v);
       }
     });
@@ -2817,7 +2817,7 @@ const Admin = {
       });
 
       // 2. Collect dynamic size/variant columns using our DOM collector
-      const variants = this.collectVariantsFromDOM();
+      const variants = this.collectVariantsFromDOM(true);
 
       if (!variants || variants.length === 0) {
         Admin.notify("Моля добавете поне един размер в таблицата!");
