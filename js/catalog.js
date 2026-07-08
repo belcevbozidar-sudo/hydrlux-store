@@ -1138,7 +1138,7 @@ const Catalog = {
     }
 
     const orderNumber = "HL-Q-" + Math.floor(100000 + Math.random() * 900000);
-    const totals = { eur: priceEur };
+    const totals = { eur: priceEur, bgn: priceEur };
     const orderedItems = [{
       id: this.currentProduct.id,
       name: this.currentProduct.name,
@@ -1154,10 +1154,12 @@ const Catalog = {
       items: orderedItems,
       totals,
       delivery: "quick_order",
+      city: "",
+      postcode: "",
       address: "",
+      paymentMethod: "unspecified",
+      invoiceDetails: null,
       notes: "БЪРЗА ПОРЪЧКА ОТ СТРАНИЦА НА ПРОДУКТ",
-      clientType: "b2c",
-      b2bDetails: null,
       status: "new",
       createdAt: Date.now()
     };

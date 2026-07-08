@@ -4378,9 +4378,11 @@ const Admin = {
       const deliveryMap = {
         address: "🚚 До личен / служебен адрес",
         office: "🏢 До офис на Еконт",
-        shop: "🏬 Вземане от магазина (гр. Монтана)"
+        shop: "🏬 Вземане от магазина (гр. Монтана)",
+        quick_order: "⚡ Бърза поръчка (за уточняване)"
       };
       const deliveryText = deliveryMap[order.delivery] || order.delivery;
+      const isQuickOrder = order.delivery === "quick_order";
 
       const paymentMap = {
         cod: "💵 Наложен платеж",
@@ -4447,11 +4449,11 @@ const Admin = {
               <h5>👤 Детайли за клиента & Доставка</h5>
               <p>Клиент: <strong>${this.escapeHtml(order.customer.name)}</strong></p>
               <p>Телефон: <strong>${this.escapeHtml(order.customer.phone)}</strong></p>
-              <p>Имейл: <strong>${this.escapeHtml(order.customer.email)}</strong></p>
+              ${order.customer.email ? `<p>Имейл: <strong>${this.escapeHtml(order.customer.email)}</strong></p>` : ""}
               <p style="margin-top: 10px;">Доставка: <strong>${this.escapeHtml(deliveryText)}</strong></p>
-              ${order.delivery !== "shop" ? `<p>Град / ПК: <strong>${this.escapeHtml(order.city)} (ПК: ${this.escapeHtml(order.postcode)})</strong></p>` : ""}
-              ${order.delivery !== "shop" ? `<p>Адрес/Офис: <strong>${this.escapeHtml(order.address)}</strong></p>` : ""}
-              <p style="margin-top: 10px;">Плащане: <strong>${this.escapeHtml(paymentText)}</strong></p>
+              ${(!isQuickOrder && order.delivery !== "shop") ? `<p>Град / ПК: <strong>${this.escapeHtml(order.city)} (ПК: ${this.escapeHtml(order.postcode)})</strong></p>` : ""}
+              ${(!isQuickOrder && order.delivery !== "shop") ? `<p>Адрес/Офис: <strong>${this.escapeHtml(order.address)}</strong></p>` : ""}
+              ${!isQuickOrder ? `<p style="margin-top: 10px;">Плащане: <strong>${this.escapeHtml(paymentText)}</strong></p>` : ""}
               ${invoiceHtml}
             </div>
             
