@@ -2780,7 +2780,10 @@ const Admin = {
       if (!code) { Admin.notify("Моля въведете Код / Артикулен номер!"); document.getElementById("prod-code")?.focus(); return; }
       if (categories.length === 0) { Admin.notify("Моля изберете поне една Категория!"); return; }
       const editor = document.getElementById("prod-description-editor");
-      const description = editor ? (editor.innerHTML || "").trim() : "";
+      let description = editor ? (editor.innerHTML || "").trim() : "";
+      // Clean up empty Word paragraphs/divs on save
+      description = description.replace(/<p[^>]*>(&nbsp;|\s|<br>|<br\s*\/?>)*<\/p>/gi, '');
+      description = description.replace(/<div[^>]*>(&nbsp;|\s|<br>|<br\s*\/?>)*<\/div>/gi, '');
       const tagsInput = document.getElementById("prod-tags")?.value || "";
       const isSpecial = document.getElementById("prod-is-special")?.checked || false;
       const specialOfferType = isSpecial ? (document.getElementById("prod-special-type")?.value || "") : "";

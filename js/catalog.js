@@ -659,7 +659,12 @@ const Catalog = {
     stockEl.textContent = product.inStock ? "В наличност" : "По запитване";
 
     // Inject Description
-    let descHtml = product.description.replace(/\n\n/g, "<br><br>");
+    let descHtml = product.description || "";
+    // Clean up empty paragraphs, divs, and excessive line breaks from Word paste
+    descHtml = descHtml.replace(/<p[^>]*>(&nbsp;|\s|<br>|<br\s*\/?>)*<\/p>/gi, '');
+    descHtml = descHtml.replace(/<div[^>]*>(&nbsp;|\s|<br>|<br\s*\/?>)*<\/div>/gi, '');
+    descHtml = descHtml.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
+    descHtml = descHtml.replace(/\n\n/g, "<br><br>");
     
     let pdfsToRender = [];
     if (product.pdfs && product.pdfs.length > 0) {
