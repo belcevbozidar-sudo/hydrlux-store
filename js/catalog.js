@@ -694,14 +694,22 @@ const Catalog = {
     
     // Set stock
     const stockEl = document.getElementById("prod-stock");
-    stockEl.className = `stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}`;
-    stockEl.textContent = product.inStock ? "В наличност" : "По запитване";
+    if (stockEl) {
+      stockEl.className = `stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}`;
+      stockEl.textContent = product.inStock ? "В наличност" : "По запитване";
+    }
 
     // Inject Description
     let descHtml = this.cleanDescriptionHtml(product.description || "");
-    // Clean up excessive line breaks from Word paste
-    descHtml = descHtml.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
-    descHtml = descHtml.replace(/\n\n/g, "<br><br>");
+    
+    // Only format newlines to breaks if it's a plain text description
+    const isHtml = /<p|<div|<br|<li|<span/i.test(descHtml);
+    if (!isHtml) {
+      descHtml = descHtml.replace(/\n\n/g, "<br><br>").replace(/\n/g, "<br>");
+    } else {
+      // For HTML, remove excessive consecutive breaks if any
+      descHtml = descHtml.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
+    }
     
     let pdfsToRender = [];
     if (product.pdfs && product.pdfs.length > 0) {
