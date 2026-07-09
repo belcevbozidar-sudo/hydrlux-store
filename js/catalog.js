@@ -602,6 +602,45 @@ const Catalog = {
     }
   },
 
+  cleanDescriptionHtml(htmlString) {
+    if (!htmlString) return "";
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlString, "text/html");
+      const tempDiv = doc.body;
+      
+      const blocks = tempDiv.querySelectorAll("p, div, h1, h2, h3, h4, h5, h6");
+      blocks.forEach(block => {
+        const text = block.textContent.replace(/[\s\u00A0]/g, "");
+        const hasImages = block.querySelector("img") !== null;
+        const hasIframe = block.querySelector("iframe") !== null;
+        
+        if (text === "" && !hasImages && !hasIframe) {
+          block.remove();
+        } else {
+          if (block.hasAttribute("style")) {
+            const color = block.style.color;
+            block.removeAttribute("style");
+            if (color) block.style.color = color;
+          }
+        }
+      });
+
+      const inlineElements = tempDiv.querySelectorAll("span, strong, em, b, i, u");
+      inlineElements.forEach(el => {
+        if (el.hasAttribute("style")) {
+          const color = el.style.color;
+          el.removeAttribute("style");
+          if (color) el.style.color = color;
+        }
+      });
+
+      return tempDiv.innerHTML;
+    } catch (e) {
+      return htmlString;
+    }
+  },
+
   openProductDetails(productId, shouldNavigate = true) {
     const product = CONFIG.products.find(p => p.id === productId);
     if (!product) return;
@@ -659,10 +698,8 @@ const Catalog = {
     stockEl.textContent = product.inStock ? "В наличност" : "По запитване";
 
     // Inject Description
-    let descHtml = product.description || "";
-    // Clean up empty paragraphs, divs, and excessive line breaks from Word paste
-    descHtml = descHtml.replace(/<p[^>]*>(&nbsp;|\s|<br>|<br\s*\/?>)*<\/p>/gi, '');
-    descHtml = descHtml.replace(/<div[^>]*>(&nbsp;|\s|<br>|<br\s*\/?>)*<\/div>/gi, '');
+    let descHtml = this.cleanDescriptionHtml(product.description || "");
+    // Clean up excessive line breaks from Word paste
     descHtml = descHtml.replace(/(<br\s*\/?>\s*){3,}/gi, '<br><br>');
     descHtml = descHtml.replace(/\n\n/g, "<br><br>");
     
