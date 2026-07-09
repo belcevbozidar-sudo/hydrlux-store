@@ -1408,6 +1408,8 @@ p {
   display: flex;
   flex-direction: column;
   height: 100%;
+  text-decoration: none;
+  color: inherit;
 }
 
 .product-card .product-badge {
@@ -1506,6 +1508,28 @@ p {
 .breadcrumb a {
   color: var(--text-dark);
   font-weight: 500;
+}
+
+/* Word copy-paste margin fixes for clean spacing */
+#prod-desc-text p,
+#prod-desc-text div {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+  line-height: 1.6 !important;
+}
+#prod-desc-text p:last-child,
+#prod-desc-text div:last-child {
+  margin-bottom: 0 !important;
+}
+#prod-desc-text ul,
+#prod-desc-text ol {
+  margin-top: 0 !important;
+  margin-bottom: 12px !important;
+  padding-left: 20px !important;
+}
+#prod-desc-text li {
+  margin-bottom: 4px !important;
+  line-height: 1.6 !important;
 }
 
 .product-detail-layout {
@@ -3274,6 +3298,8 @@ td .admin-actions-cell {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   overflow: visible;
+  text-decoration: none;
+  color: inherit;
 }
 
 .popular-layout .product-card:hover {
@@ -6133,7 +6159,7 @@ td .admin-actions-cell {
           </div>
 
           <div id="prod-desc-panel" class="tab-panel">
-            <p id="prod-desc-text" class="text-muted font-small">Описание...</p>
+            <div id="prod-desc-text" class="text-muted font-small">Описание...</div>
           </div>
 
           <div id="prod-specs-panel" class="tab-panel hidden">

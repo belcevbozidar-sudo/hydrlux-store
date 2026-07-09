@@ -568,7 +568,7 @@ const Catalog = {
       }
 
       return `
-        <div class="product-card card" onclick="Catalog.openProductDetails('${p.id}')">
+        <a href="#product-detail/${p.id}" class="product-card card">
           <div class="product-badge">${p.inStock ? 'В наличност' : 'По поръчка'}</div>
           <div class="product-card-img-wrapper">
             <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'" width="240" height="240" loading="lazy">
@@ -586,10 +586,10 @@ const Catalog = {
                 <span class="price-bgn font-medium text-primary font-bold">${priceText}</span>
                 <span class="price-eur font-xs text-muted">/ линеен метър или бр.</span>
               </div>
-              <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation(); Catalog.openProductDetails('${p.id}')">➔</button>
+              <span class="btn btn-secondary btn-icon">➔</span>
             </div>
           </div>
-        </div>
+        </a>
       `;
     }).join("");
 
