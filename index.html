@@ -19,6 +19,11 @@
   <meta property="og:url" id="og-url" content="https://www.hydrolux.bg/">
   <meta property="og:site_name" content="Хидролукс Груп">
 
+  <!-- Robots directive: toggled to noindex,nofollow by App.updateSEO() for
+       the account/order-flow views (admin, checkout, wishlist) that have no
+       standalone SEO value. -->
+  <meta name="robots" id="robots-meta" content="index, follow">
+
   <!-- Canonical Link -->
   <link rel="canonical" id="canonical-link" href="https://www.hydrolux.bg/">
   
@@ -6108,6 +6113,10 @@ td .admin-actions-cell {
             <div class="catalog-subsubcategories-tags" id="catalog-subsubcategories-tags" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;"></div>
           </div>
 
+          <!-- Populated by Catalog.renderCategoryDescription() when a top-level
+               category from CATEGORY_SEO is selected; empty/hidden otherwise. -->
+          <div id="catalog-category-description" class="text-muted font-small" style="display: none; margin-bottom: 20px; line-height: 1.7;"></div>
+
           <div class="products-grid full-width" id="products-grid">
             <!-- Dynamically Rendered Products or Category Cards -->
           </div>
@@ -6888,6 +6897,7 @@ td .admin-actions-cell {
   <!-- ==========================================================================
        JAVASCRIPT MODULES IMPORT
        ========================================================================== -->
+  <script src="js/categoryContent.js" defer></script>
   <script src="js/backend.js" defer></script>
   <script src="js/auth.js" defer></script>
   <script src="js/config.js" defer></script>

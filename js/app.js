@@ -686,11 +686,11 @@ const App = {
         this.ensureScript("js/admin.js")
           .then(() => Admin.init())
           .catch(err => console.error("Failed to load admin panel:", err));
-        this.updateSEO("Административен панел | Хидролукс Груп", "Административен панел на Хидролукс Груп.", "admin");
+        this.updateSEO("Административен панел | Хидролукс Груп", "Административен панел на Хидролукс Груп.", "admin", true);
         this.updateSchema(null);
       } else if (mainView === "checkout") {
         Cart.renderCheckoutSummary();
-        this.updateSEO("Завършване на поръчката | Хидролукс Груп", "Сигурно финализиране на Вашата поръчка за хидравлични и пневматични решения в онлайн магазина на Хидролукс.", "checkout");
+        this.updateSEO("Завършване на поръчката | Хидролукс Груп", "Сигурно финализиране на Вашата поръчка за хидравлични и пневматични решения в онлайн магазина на Хидролукс.", "checkout", true);
         this.updateSchema(null);
       } else if (mainView === "catalog") {
         Catalog.filterWishlist = false;
@@ -707,13 +707,22 @@ const App = {
         }
         Catalog.renderSidebar();
         Catalog.applyFiltersAndRender();
+        Catalog.renderCategoryDescription(subParam ? null : viewParam);
 
-        this.updateSEO(
-          "Продуктов каталог | Маркучи, Хидравлика & Пневматика | Хидролукс Груп",
-          "Разгледайте нашия продуктов каталог с маркучи за въздух, вода, гориво, силиконови съединения, хидравлични накрайници, бързи връзки и други от Хидролукс.",
-          cleanPath
-        );
-        this.updateSchema(null);
+        // Top-level categories with dedicated copy in CATEGORY_SEO get a
+        // unique title/description instead of the generic catalog one.
+        const catSeo = (!subParam && typeof CATEGORY_SEO !== "undefined") ? CATEGORY_SEO[viewParam] : null;
+        if (catSeo) {
+          this.updateSEO(catSeo.title, catSeo.description, cleanPath);
+          this.updateSchema(this.getCategoryBreadcrumbSchema(viewParam));
+        } else {
+          this.updateSEO(
+            "Продуктов каталог | Маркучи, Хидравлика & Пневматика | Хидролукс Груп",
+            "Разгледайте нашия продуктов каталог с маркучи за въздух, вода, гориво, силиконови съединения, хидравлични накрайници, бързи връзки и други от Хидролукс.",
+            cleanPath
+          );
+          this.updateSchema(viewParam ? this.getCategoryBreadcrumbSchema(viewParam, subParam, subsubParam) : null);
+        }
       } else if (mainView === "wishlist") {
         Catalog.filterWishlist = true;
         Catalog.activeCategory = null;
@@ -727,7 +736,8 @@ const App = {
         this.updateSEO(
           "Любими продукти | Хидролукс Груп",
           "Вашите любими и запазени продукти в Хидролукс Груп.",
-          "wishlist"
+          "wishlist",
+          true
         );
         this.updateSchema(null);
       } else if (mainView === "services") {
@@ -799,13 +809,19 @@ const App = {
     }
   },
 
-  // Dynamic SEO meta tags and OG updates
-  updateSEO(title, description, hashPath) {
+  // Dynamic SEO meta tags and OG updates. noindex=true marks account/order
+  // views (admin, checkout, wishlist) that have no standalone SEO value.
+  updateSEO(title, description, hashPath, noindex = false) {
     document.title = title;
 
     const metaDesc = document.getElementById("meta-description");
     if (metaDesc) {
       metaDesc.setAttribute("content", description);
+    }
+
+    const robotsMeta = document.getElementById("robots-meta");
+    if (robotsMeta) {
+      robotsMeta.setAttribute("content", noindex ? "noindex, nofollow" : "index, follow");
     }
 
     const canonicalLink = document.getElementById("canonical-link");
@@ -878,6 +894,40 @@ const App = {
         }
       ]
     };
+  },
+
+  // BreadcrumbList JSON-LD for a catalog category/subcategory/sub-subcategory
+  // path, reusing the same CONFIG.categories traversal the visible catalog
+  // breadcrumb (Catalog.openProductDetails) already does.
+  getCategoryBreadcrumbSchema(catId, subId, subsubId, extraLeafName) {
+    if (typeof CONFIG === "undefined" || !CONFIG.categories) return null;
+    const cat = CONFIG.categories.find(c => c.id === catId);
+    if (!cat) return null;
+
+    const items = [
+      { "@type": "ListItem", "position": 1, "name": "Начало", "item": "https://www.hydrolux.bg/" },
+      { "@type": "ListItem", "position": 2, "name": "Продукти", "item": "https://www.hydrolux.bg/catalog" },
+      { "@type": "ListItem", "position": 3, "name": cat.name, "item": `https://www.hydrolux.bg/catalog/${cat.id}` }
+    ];
+
+    if (subId && cat.subcategories) {
+      const sub = cat.subcategories.find(s => s.id === subId);
+      if (sub) {
+        items.push({ "@type": "ListItem", "position": 4, "name": sub.name, "item": `https://www.hydrolux.bg/catalog/${cat.id}/${sub.id}` });
+        if (subsubId && sub.subcategories) {
+          const subsub = sub.subcategories.find(ss => ss.id === subsubId);
+          if (subsub) {
+            items.push({ "@type": "ListItem", "position": 5, "name": subsub.name, "item": `https://www.hydrolux.bg/catalog/${cat.id}/${sub.id}/${subsub.id}` });
+          }
+        }
+      }
+    }
+
+    if (extraLeafName) {
+      items.push({ "@type": "ListItem", "position": items.length + 1, "name": extraLeafName });
+    }
+
+    return { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": items };
   },
 
   initScrollHeader() {

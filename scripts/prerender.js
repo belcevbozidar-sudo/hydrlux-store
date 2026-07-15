@@ -10,6 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+const CATEGORY_SEO = require('../js/categoryContent.js');
 
 const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
@@ -172,18 +173,42 @@ function buildProductSchema(product) {
   return schema;
 }
 
-function buildProductHtml(baseHtml, product) {
+function buildProductBreadcrumbSchema(product, categories) {
+  const catId = (product.categories && product.categories.length > 0) ? product.categories[0] : product.category;
+  const cat = categories.find(c => c.id === catId);
+  if (!cat) return null;
+
+  const items = [
+    { '@type': 'ListItem', position: 1, name: 'Начало', item: `${SITE_ORIGIN}/` },
+    { '@type': 'ListItem', position: 2, name: 'Продукти', item: `${SITE_ORIGIN}/catalog` },
+    { '@type': 'ListItem', position: 3, name: cat.name, item: `${SITE_ORIGIN}/catalog/${cat.id}` }
+  ];
+
+  const subId = (product.subcategories && product.subcategories.length > 0) ? product.subcategories[0] : product.subcategory;
+  const sub = subId && cat.subcategories ? cat.subcategories.find(s => s.id === subId) : null;
+  if (sub) {
+    items.push({ '@type': 'ListItem', position: 4, name: sub.name, item: `${SITE_ORIGIN}/catalog/${cat.id}/${sub.id}` });
+  }
+  items.push({ '@type': 'ListItem', position: items.length + 1, name: product.name });
+
+  return { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items };
+}
+
+function buildProductHtml(baseHtml, product, categories) {
   const title = `${product.name} - ${product.brand || 'Хидролукс'} | Хидролукс Груп Монтана`;
   const plainDesc = (product.description || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
   const description = plainDesc.length > 155 ? `${plainDesc.slice(0, 152)}...` : plainDesc;
   const mainImage = resolveImageUrl((product.images || [])[0]) || `${SITE_ORIGIN}/assets/logo.webp`;
+
+  const breadcrumbSchema = buildProductBreadcrumbSchema(product, categories);
+  const schemaObj = breadcrumbSchema ? [buildProductSchema(product), breadcrumbSchema] : buildProductSchema(product);
 
   let html = patchHead(baseHtml, {
     title,
     description,
     canonicalPath: `product/${product.id}`,
     ogImage: mainImage,
-    schemaObj: buildProductSchema(product)
+    schemaObj
   });
   html = activateView(html, 'product-detail-view');
 
@@ -237,18 +262,39 @@ function buildCategorySchema(category, products) {
   };
 }
 
+function buildBreadcrumbSchema(category) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Начало', item: `${SITE_ORIGIN}/` },
+      { '@type': 'ListItem', position: 2, name: 'Продукти', item: `${SITE_ORIGIN}/catalog` },
+      { '@type': 'ListItem', position: 3, name: category.name, item: `${SITE_ORIGIN}/catalog/${category.id}` }
+    ]
+  };
+}
+
 function buildCategoryHtml(baseHtml, category, products) {
-  const title = `${category.name} | Маркучи, Хидравлика & Пневматика | Хидролукс Груп`;
-  const description = `Разгледайте ${category.name} от Хидролукс Груп - производство, доставка и техническа консултация в Монтана и цяла България.`;
+  const seo = CATEGORY_SEO[category.id];
+  const title = seo ? seo.title : `${category.name} | Маркучи, Хидравлика & Пневматика | Хидролукс Груп`;
+  const description = seo ? seo.description : `Разгледайте ${category.name} от Хидролукс Груп - производство, доставка и техническа консултация в Монтана и цяла България.`;
 
   let html = patchHead(baseHtml, {
     title,
     description,
     canonicalPath: `catalog/${category.id}`,
     ogImage: `${SITE_ORIGIN}/assets/logo.webp`,
-    schemaObj: buildCategorySchema(category, products)
+    schemaObj: [buildCategorySchema(category, products), buildBreadcrumbSchema(category)]
   });
   html = activateView(html, 'catalog-view');
+
+  if (seo) {
+    html = html.replace(
+      /<div id="catalog-category-description" class="text-muted font-small" style="display: none;([^"]*)"><\/div>/,
+      (_, styleRest) => `<div id="catalog-category-description" class="text-muted font-small" style="display: block;${styleRest}">${escapeHtml(seo.body)}</div>`
+    );
+  }
+
   return html;
 }
 
@@ -320,7 +366,7 @@ async function main() {
   let productCount = 0;
   for (const product of products) {
     if (!product || !product.id) continue;
-    const html = buildProductHtml(baseHtml, product);
+    const html = buildProductHtml(baseHtml, product, categories);
     const outDir = path.join(DIST, 'product', product.id);
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
