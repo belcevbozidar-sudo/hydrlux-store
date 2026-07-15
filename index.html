@@ -2,6 +2,11 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
+  <!-- Every relative asset/script reference in this file (and dynamically
+       injected ones like ensureScript()) is written relative to the site
+       root. Without this, a page loaded at a nested path like /product/x
+       would resolve "js/app.js" as "/product/js/app.js" and 404. -->
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Хидролукс Груп | Онлайн магазин за Хидравлични и Пневматични решения Монтана</title>
   <meta name="description" id="meta-description" content="Хидролукс Груп предлага производство на маркучи за високо налягане, хидравлика, пневматика, фитинги, уплътнители и накрайници в град Монтана. Професионално качество от 2019 г.">
@@ -5670,7 +5675,7 @@ td .admin-actions-cell {
   <header class="header-main">
     <div class="container">
       <!-- Official Brand Logo Image -->
-      <a onclick="App.navigate('home')" class="logo-link" title="Хидролукс Груп" href="#home">
+      <a onclick="App.navigate('home')" class="logo-link" title="Хидролукс Груп" href="/">
         <img src="assets/logo.webp" width="200" height="78" alt="Хидролукс Груп - Производство и запресоване на хидравлични и пневматични маркучи Монтана" class="brand-logo-img" fetchpriority="high">
       </a>
 
@@ -5731,13 +5736,13 @@ td .admin-actions-cell {
       <!-- Navigation Links -->
       <nav id="main-nav-links">
         <ul class="nav-links-list">
-          <li><a class="nav-link active" href="#home" onclick="App.navigate('home')">Начало</a></li>
-          <li><a class="nav-link" href="#catalog" onclick="Catalog.resetFilters(); App.navigate('catalog')">Продукти</a></li>
-          <li><a class="nav-link" href="#builder" onclick="App.navigate('builder')">Кримпване</a></li>
-          <li><a class="nav-link" href="#services" onclick="App.navigate('services')">Услуги</a></li>
+          <li><a class="nav-link active" data-view="home" href="/" onclick="App.navigate('home')">Начало</a></li>
+          <li><a class="nav-link" data-view="catalog" href="/catalog" onclick="Catalog.resetFilters(); App.navigate('catalog')">Продукти</a></li>
+          <li><a class="nav-link" data-view="builder" href="/builder" onclick="App.navigate('builder')">Кримпване</a></li>
+          <li><a class="nav-link" data-view="services" href="/services" onclick="App.navigate('services')">Услуги</a></li>
           <li><a class="nav-link" href="#brands" onclick="event.preventDefault(); Cart.showToast('Изборът на марки ще бъде достъпен скоро!')">Марки</a></li>
-          <li><a class="nav-link" href="#about" onclick="App.navigate('about')">За нас</a></li>
-          <li><a class="nav-link" href="#contacts" onclick="App.navigate('contacts')">Контакти</a></li>
+          <li><a class="nav-link" data-view="about" href="/about" onclick="App.navigate('about')">За нас</a></li>
+          <li><a class="nav-link" data-view="contacts" href="/contacts" onclick="App.navigate('contacts')">Контакти</a></li>
         </ul>
       </nav>
 
@@ -6833,20 +6838,20 @@ td .admin-actions-cell {
         <div class="footer-col">
           <h4>Полезни връзки</h4>
           <ul class="footer-links">
-            <li><a href="#home" onclick="App.navigate('home')">Начало</a></li>
-            <li><a href="#catalog" onclick="Catalog.resetFilters(); App.navigate('catalog')">Продуктов Каталог</a></li>
-            <li><a href="#builder" onclick="App.navigate('builder')">Конфигуратор на маркучи</a></li>
-            <li><a href="#about" onclick="App.navigate('about')">За нас</a></li>
-            <li><a href="#contacts" onclick="App.navigate('contacts')">Контакти</a></li>
+            <li><a href="/" onclick="App.navigate('home')">Начало</a></li>
+            <li><a href="/catalog" onclick="Catalog.resetFilters(); App.navigate('catalog')">Продуктов Каталог</a></li>
+            <li><a href="/builder" onclick="App.navigate('builder')">Конфигуратор на маркучи</a></li>
+            <li><a href="/about" onclick="App.navigate('about')">За нас</a></li>
+            <li><a href="/contacts" onclick="App.navigate('contacts')">Контакти</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Продукти</h4>
           <ul class="footer-links">
-            <li><a href="#catalog" onclick="Catalog.selectCategory('air-hoses')">Маркучи за въздух</a></li>
-            <li><a href="#catalog" onclick="Catalog.selectCategory('water-hoses')">Маркучи за вода</a></li>
-            <li><a href="#catalog" onclick="Catalog.selectCategory('high-pressure-hoses')">Маркучи високо налягане</a></li>
-            <li><a href="#catalog" onclick="Catalog.selectCategory('pneumatic-tubes')">Пневматични шлаухи</a></li>
+            <li><a href="/catalog" onclick="Catalog.selectCategory('air-hoses')">Маркучи за въздух</a></li>
+            <li><a href="/catalog" onclick="Catalog.selectCategory('water-hoses')">Маркучи за вода</a></li>
+            <li><a href="/catalog" onclick="Catalog.selectCategory('high-pressure-hoses')">Маркучи високо налягане</a></li>
+            <li><a href="/catalog" onclick="Catalog.selectCategory('pneumatic-tubes')">Пневматични шлаухи</a></li>
           </ul>
         </div>
       </div>

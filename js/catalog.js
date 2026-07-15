@@ -568,7 +568,7 @@ const Catalog = {
       }
 
       return `
-        <a href="#product-detail/${p.id}" class="product-card card">
+        <a href="/product/${p.id}" class="product-card card">
           <div class="product-badge">${p.inStock ? 'В наличност' : 'По поръчка'}</div>
           <div class="product-card-img-wrapper">
             <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'" width="240" height="240" loading="lazy">
@@ -874,7 +874,7 @@ const Catalog = {
     if (typeof App !== "undefined" && typeof App.updateSEO === "function") {
       const title = `${product.name} - ${product.brand} | Хидролукс Груп Монтана`;
       const desc = product.description.length > 155 ? product.description.substring(0, 152) + "..." : product.description;
-      App.updateSEO(title, desc, `#product-detail/${product.id}`);
+      App.updateSEO(title, desc, `product/${product.id}`);
       
       const productSchema = this.getProductSchema(product);
       App.updateSchema(productSchema);
