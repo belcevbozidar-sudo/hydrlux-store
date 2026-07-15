@@ -16,8 +16,10 @@ const App = {
     
     // 3. Setup event listeners
     this.setupSearchSuggestions();
+    this.healLegacyHash();
+    this.setupLinkInterceptor();
     this.route();
-    window.addEventListener("hashchange", () => this.route());
+    window.addEventListener("popstate", () => this.route());
     this.updateHeroStats();
     this.initScrollHeader();
 
@@ -130,7 +132,7 @@ const App = {
       const isFav = wishlist.includes(p.id);
 
       return `
-        <a href="#product-detail/${p.id}" class="product-card card">
+        <a href="/product/${p.id}" class="product-card card">
           <div class="product-badge ${badgeClass}">${badgeText}</div>
           
           <button class="wishlist-btn ${isFav ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); App.toggleFavorite('${p.id}', this)" title="Любими" aria-label="Добави в любими">
@@ -187,7 +189,7 @@ const App = {
           const isFav = wishlist.includes(p.id);
 
           return `
-            <a href="#product-detail/${p.id}" class="product-card card">
+            <a href="/product/${p.id}" class="product-card card">
               <div class="product-badge badge-orange">${badgeText}</div>
               
               <button class="wishlist-btn ${isFav ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); App.toggleFavorite('${p.id}', this)" title="Любими" aria-label="Добави в любими">
@@ -543,9 +545,51 @@ const App = {
     if (dropdown) dropdown.style.display = "none";
   },
 
-  // Switch SPA views smoothly
+  // Switch SPA views smoothly using the History API. viewId keeps the same
+  // shape callers have always passed ("catalog", "product-detail/prod-75",
+  // "home", ...) and is translated to its real path here in one place.
   navigate(viewId) {
-    window.location.hash = `#${viewId}`;
+    let path = viewId;
+    if (path.startsWith("product-detail/")) {
+      path = "product/" + path.slice("product-detail/".length);
+    } else if (path === "home") {
+      path = "";
+    }
+    path = "/" + path;
+    if (window.location.pathname === path) return;
+    history.pushState(null, "", path);
+    this.route();
+  },
+
+  // Old bookmarks/shared links use the pre-migration "#view/..." hash form.
+  // Fragments never reach the server, so this is the only place that can fix
+  // them: silently swap in the equivalent real path before the first route().
+  healLegacyHash() {
+    const rawHash = window.location.hash;
+    if (!rawHash || rawHash.length < 2) return;
+    let viewId = rawHash.substring(1);
+    if (viewId.startsWith("product-detail/")) {
+      viewId = "product/" + viewId.slice("product-detail/".length);
+    } else if (viewId === "home") {
+      viewId = "";
+    }
+    history.replaceState(null, "", "/" + viewId);
+  },
+
+  // Single delegated click handler so every internal <a href="/..."> link
+  // (including product cards, which have no onclick at all) uses pushState
+  // instead of a full page navigation.
+  setupLinkInterceptor() {
+    document.addEventListener("click", (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const link = e.target.closest("a[href]");
+      if (!link) return;
+      if (link.target === "_blank" || link.hasAttribute("download")) return;
+      const href = link.getAttribute("href");
+      if (!href || href.charAt(0) !== "/" || href.startsWith("//")) return;
+      e.preventDefault();
+      this.navigate(href.substring(1) || "home");
+    });
   },
 
   // Lazily injects a script once and resolves when it has loaded. Used to keep
@@ -569,12 +613,16 @@ const App = {
   },
 
   route() {
-    let hash = window.location.hash.substring(1);
-    if (!hash) hash = "home";
+    let cleanPath = window.location.pathname.replace(/^\/+|\/+$/g, "");
+    if (!cleanPath) cleanPath = "home";
 
-    // Separate params if any, e.g. product-detail/semperit-plw-20
-    const parts = hash.split("/");
-    const mainView = parts[0];
+    // Separate params if any, e.g. product/semperit-plw-20
+    const parts = cleanPath.split("/");
+    let mainView = parts[0];
+    // The real URL segment is "product" (see navigate()); map it back to the
+    // internal view name used by the DOM id (#product-detail-view) and the
+    // branches below.
+    if (mainView === "product") mainView = "product-detail";
 
     // Trigger full catalog load immediately if entering catalog or product pages
     if (["catalog", "product-detail", "wishlist"].includes(mainView)) {
@@ -608,7 +656,7 @@ const App = {
       this.currentView = mainView === "wishlist" ? "catalog" : mainView;
 
       // Update active nav link
-      const navLink = document.querySelector(`.nav-link[onclick*="navigate('${mainView}')"]`);
+      const navLink = document.querySelector(`.nav-link[data-view="${mainView}"]`);
       if (navLink) navLink.classList.add("active");
 
       // Scroll to top
@@ -622,7 +670,7 @@ const App = {
         this.updateSEO(
           "Интерактивен конфигуратор на маркучи | Хидролукс Груп",
           "Конфигурирайте и поръчайте маркучи за високо налягане по индивидуален размер. Лесен избор на накрайници и спирали с изчисляване на цена в реално време.",
-          "#builder"
+          "builder"
         );
         this.updateSchema({
           "@context": "https://schema.org",
@@ -638,11 +686,11 @@ const App = {
         this.ensureScript("js/admin.js")
           .then(() => Admin.init())
           .catch(err => console.error("Failed to load admin panel:", err));
-        this.updateSEO("Административен панел | Хидролукс Груп", "Административен панел на Хидролукс Груп.", "#admin");
+        this.updateSEO("Административен панел | Хидролукс Груп", "Административен панел на Хидролукс Груп.", "admin");
         this.updateSchema(null);
       } else if (mainView === "checkout") {
         Cart.renderCheckoutSummary();
-        this.updateSEO("Завършване на поръчката | Хидролукс Груп", "Сигурно финализиране на Вашата поръчка за хидравлични и пневматични решения в онлайн магазина на Хидролукс.", "#checkout");
+        this.updateSEO("Завършване на поръчката | Хидролукс Груп", "Сигурно финализиране на Вашата поръчка за хидравлични и пневматични решения в онлайн магазина на Хидролукс.", "checkout");
         this.updateSchema(null);
       } else if (mainView === "catalog") {
         Catalog.filterWishlist = false;
@@ -663,7 +711,7 @@ const App = {
         this.updateSEO(
           "Продуктов каталог | Маркучи, Хидравлика & Пневматика | Хидролукс Груп",
           "Разгледайте нашия продуктов каталог с маркучи за въздух, вода, гориво, силиконови съединения, хидравлични накрайници, бързи връзки и други от Хидролукс.",
-          hash
+          cleanPath
         );
         this.updateSchema(null);
       } else if (mainView === "wishlist") {
@@ -679,28 +727,28 @@ const App = {
         this.updateSEO(
           "Любими продукти | Хидролукс Груп",
           "Вашите любими и запазени продукти в Хидролукс Груп.",
-          "#wishlist"
+          "wishlist"
         );
         this.updateSchema(null);
       } else if (mainView === "services") {
         this.updateSEO(
           "Сервиз, услуги и техническа консултация в Монтана | Хидролукс Груп",
           "Професионално запресоване на маркучи, ремонт на хидравлични цилиндри и пневматични системи в нашия специализиран сервиз в град Монтана на ул. Индустриална 32г.",
-          "#services"
+          "services"
         );
         this.updateSchema(this.getLocalBusinessSchema());
       } else if (mainView === "about") {
         this.updateSEO(
           "За нас | Хидролукс Груп - Лидер в Хидравликата & Пневматиката",
           "Научете повече за историята, мисията и екипа от професионалисти на Хидролукс Груп. Работим с водещи световни марки от 2019 г.",
-          "#about"
+          "about"
         );
         this.updateSchema(null);
       } else if (mainView === "contacts") {
         this.updateSEO(
           "Контакти | Свържете се с нас | Хидролукс Груп Монтана",
           "Свържете се с екипа на Хидролукс Груп в Монтана. Телефон: 0892 483 337, имейл: info@hydrolux.bg, адрес: ул. Индустриална 32Г.",
-          "#contacts"
+          "contacts"
         );
         this.updateSchema(this.getLocalBusinessSchema());
       } else if (mainView === "product-detail") {
