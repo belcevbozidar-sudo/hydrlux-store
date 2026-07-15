@@ -26,25 +26,60 @@ const handlePreflight = () => {
   });
 };
 
-// Helper to extract the actual client IP reliably, preventing spoofing
+// Helper to extract the actual client IP reliably, preventing spoofing.
+//
+// This deployment (*.convex.site) sits behind Cloudflare. Verified empirically:
+//   - `cf-connecting-ip` is set by Cloudflare to the true client IP and CANNOT
+//     be spoofed — a request carrying a client-supplied `cf-connecting-ip` is
+//     rejected by Cloudflare (error 1000) before it reaches us. So it is the
+//     authoritative, non-spoofable source.
+//   - a client-supplied `x-forwarded-for` does not survive; its last element is
+//     the real IP, used only as a fallback.
+//   - `x-real-ip` is stripped from client requests (always absent), so it is
+//     deliberately NOT trusted here — it would only add a spoofable surface if
+//     the upstream ever changed.
 function getClientIp(request: Request): string {
   const cfIp = request.headers.get("cf-connecting-ip");
   if (cfIp) return cfIp.trim();
-
-  const realIp = request.headers.get("x-real-ip");
-  if (realIp) return realIp.trim();
 
   const forwardedFor = request.headers.get("x-forwarded-for");
   if (forwardedFor) {
     const parts = forwardedFor.split(",").map(p => p.trim()).filter(Boolean);
     if (parts.length > 0) {
-      // The load balancer appends the client's TCP IP to the end of the chain.
-      // So the last element is the non-spoofable connection source.
+      // The trusted proxy appends the real TCP source to the end of the chain,
+      // so the last element is the non-spoofable connection source.
       return parts[parts.length - 1];
     }
   }
 
   return "unknown";
+}
+
+// The ntfy topic is effectively a secret: anyone who knows it can read every
+// order/inquiry notification (customer PII) or spam the owner's phone. It is
+// therefore read ONLY from env vars and never hard-coded in this public repo.
+// When the topic is unset we skip the notification (fail closed) rather than
+// fall back to a guessable public topic. An optional access token protects the
+// topic from anonymous readers when configured.
+const NTFY_TOPIC = process.env.NTFY_TOPIC || "";
+const NTFY_TOKEN = process.env.NTFY_TOKEN || "";
+
+async function sendNtfy(title: string, tags: string, message: string): Promise<void> {
+  if (!NTFY_TOPIC) {
+    console.warn("NTFY_TOPIC is not configured — skipping notification.");
+    return;
+  }
+  const url = new URL(`https://ntfy.sh/${NTFY_TOPIC}`);
+  if (title) url.searchParams.append("title", title);
+  if (tags) url.searchParams.append("tags", tags);
+  url.searchParams.append("priority", "high");
+
+  const headers: Record<string, string> = {
+    "Content-Type": "text/plain; charset=utf-8",
+  };
+  if (NTFY_TOKEN) headers["Authorization"] = `Bearer ${NTFY_TOKEN}`;
+
+  await fetch(url.toString(), { method: "POST", headers, body: message });
 }
 
 // Helper to extract a Bearer token from the Authorization header
@@ -268,18 +303,7 @@ http.route({
         ntfyMessage += `\nОбщо: ${totalEur} EUR`;
         if (order.notes) ntfyMessage += `\nБележка:\n${order.notes}`;
         
-        const url = new URL("https://ntfy.sh/hydrolux-orders-alert-2026");
-        url.searchParams.append("title", title);
-        url.searchParams.append("tags", tags);
-        url.searchParams.append("priority", "high");
-        
-        await fetch(url.toString(), {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain; charset=utf-8",
-          },
-          body: ntfyMessage,
-        });
+        await sendNtfy(title, tags, ntfyMessage);
       } catch (err) {
         console.error("Failed to send Ntfy notification for order:", err);
       }
@@ -338,18 +362,7 @@ http.route({
     
     // Send to Ntfy
     try {
-      const url = new URL("https://ntfy.sh/hydrolux-orders-alert-2026");
-      url.searchParams.append("title", title);
-      if (tags) url.searchParams.append("tags", tags);
-      url.searchParams.append("priority", "high");
-      
-      await fetch(url.toString(), {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-        },
-        body: ntfyMessage,
-      });
+      await sendNtfy(title, tags, ntfyMessage);
     } catch (err) {
       console.error("Failed to send Ntfy notification for inquiry:", err);
     }
