@@ -291,6 +291,22 @@ const Catalog = {
     `;
   },
 
+  // Shows the unique on-page copy from CATEGORY_SEO (js/categoryContent.js)
+  // for a selected top-level category; hides it for subcategories, "all
+  // categories", search, or any category without dedicated copy yet.
+  renderCategoryDescription(catId) {
+    const el = document.getElementById("catalog-category-description");
+    if (!el) return;
+    const entry = (catId && typeof CATEGORY_SEO !== "undefined") ? CATEGORY_SEO[catId] : null;
+    if (entry) {
+      el.textContent = entry.body;
+      el.style.display = "block";
+    } else {
+      el.textContent = "";
+      el.style.display = "none";
+    }
+  },
+
   toggleCategoriesDropdown() {
     const menu = document.getElementById("catalog-cat-dropdown-menu");
     if (menu) {
@@ -875,9 +891,15 @@ const Catalog = {
       const title = `${product.name} - ${product.brand} | Хидролукс Груп Монтана`;
       const desc = product.description.length > 155 ? product.description.substring(0, 152) + "..." : product.description;
       App.updateSEO(title, desc, `product/${product.id}`);
-      
+
       const productSchema = this.getProductSchema(product);
-      App.updateSchema(productSchema);
+      const primaryCatId = (product.categories && product.categories.length > 0) ? product.categories[0] : product.category;
+      const primarySubId = (product.subcategories && product.subcategories.length > 0) ? product.subcategories[0] : product.subcategory;
+      const primarySubSubId = (product.subsubcategories && product.subsubcategories.length > 0) ? product.subsubcategories[0] : product.subsubcategory;
+      const breadcrumbSchema = (typeof App.getCategoryBreadcrumbSchema === "function" && primaryCatId)
+        ? App.getCategoryBreadcrumbSchema(primaryCatId, primarySubId, primarySubSubId, product.name)
+        : null;
+      App.updateSchema(breadcrumbSchema ? [productSchema, breadcrumbSchema] : productSchema);
     }
   },
 
