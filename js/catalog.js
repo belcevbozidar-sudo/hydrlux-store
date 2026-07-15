@@ -1331,7 +1331,7 @@ const Catalog = {
       "@context": "https://schema.org",
       "@type": "Product",
       "name": product.name,
-      "image": product.images.map(img => img.startsWith("http") ? img : `https://hydrolux.bg/${img}`),
+      "image": product.images.map(img => img.startsWith("http") ? img : `https://www.hydrolux.bg/${img}`),
       "description": product.description,
       "sku": product.code,
       "brand": {

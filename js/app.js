@@ -762,7 +762,7 @@ const App = {
 
     const canonicalLink = document.getElementById("canonical-link");
     if (canonicalLink) {
-      const fullUrl = `https://hydrolux.bg/${hashPath}`;
+      const fullUrl = `https://www.hydrolux.bg/${hashPath}`;
       canonicalLink.setAttribute("href", fullUrl);
     }
 
@@ -773,7 +773,7 @@ const App = {
     if (ogDesc) ogDesc.setAttribute("content", description);
 
     const ogUrl = document.getElementById("og-url");
-    if (ogUrl) ogUrl.setAttribute("content", `https://hydrolux.bg/${hashPath}`);
+    if (ogUrl) ogUrl.setAttribute("content", `https://www.hydrolux.bg/${hashPath}`);
   },
 
   // Dynamic JSON-LD injection
@@ -793,8 +793,8 @@ const App = {
       "@context": "https://schema.org",
       "@type": "Store",
       "name": "Хидролукс Груп ЕООД",
-      "image": "https://hydrolux.bg/assets/logo.webp",
-      "url": "https://hydrolux.bg/",
+      "image": "https://www.hydrolux.bg/assets/logo.webp",
+      "url": "https://www.hydrolux.bg/",
       "telephone": "+359892484337",
       "email": "office@hydrolux.bg",
       "address": {
