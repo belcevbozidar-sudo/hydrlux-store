@@ -2,6 +2,11 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
+  <!-- Every relative asset/script reference in this file (and dynamically
+       injected ones like ensureScript()) is written relative to the site
+       root. Without this, a page loaded at a nested path like /product/x
+       would resolve "js/app.js" as "/product/js/app.js" and 404. -->
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Хидролукс Груп | Онлайн магазин за Хидравлични и Пневматични решения Монтана</title>
   <meta name="description" id="meta-description" content="Хидролукс Груп предлага производство на маркучи за високо налягане, хидравлика, пневматика, фитинги, уплътнители и накрайници в град Монтана. Професионално качество от 2019 г.">
