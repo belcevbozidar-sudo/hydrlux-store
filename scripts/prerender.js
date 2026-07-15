@@ -252,6 +252,42 @@ function buildCategoryHtml(baseHtml, category, products) {
   return html;
 }
 
+// ---- robots.txt / sitemap.xml -----------------------------------------
+
+function buildRobotsTxt() {
+  return [
+    'User-agent: *',
+    'Allow: /',
+    'Disallow: /admin',
+    'Disallow: /checkout',
+    'Disallow: /wishlist',
+    '',
+    `Sitemap: ${SITE_ORIGIN}/sitemap.xml`,
+    ''
+  ].join('\n');
+}
+
+function xmlEscape(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function buildSitemapXml(products, categories) {
+  const otherPaths = ['catalog', 'services', 'about', 'contacts', 'builder'];
+  const urls = [
+    `${SITE_ORIGIN}/`,
+    ...otherPaths.map(p => `${SITE_ORIGIN}/${p}`),
+    ...categories.filter(c => c && c.id).map(c => `${SITE_ORIGIN}/catalog/${c.id}`),
+    ...products.filter(p => p && p.id).map(p => `${SITE_ORIGIN}/product/${p.id}`)
+  ];
+  const entries = urls.map(u => `  <url><loc>${xmlEscape(u)}</loc></url>`).join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+}
+
 // ---- Main -------------------------------------------------------------
 
 async function main() {
@@ -308,6 +344,10 @@ async function main() {
   if (categoryCount === 0) {
     throw new Error('Prerender aborted: generated 0 category pages.');
   }
+
+  fs.writeFileSync(path.join(DIST, 'robots.txt'), buildRobotsTxt());
+  fs.writeFileSync(path.join(DIST, 'sitemap.xml'), buildSitemapXml(products, categories));
+  console.log('Prerender: wrote robots.txt and sitemap.xml.');
 
   console.log('Prerender: build complete.');
 }
