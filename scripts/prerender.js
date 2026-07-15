@@ -346,9 +346,14 @@ async function main() {
   copyRecursive(path.join(ROOT, 'thank-you.html'), path.join(DIST, 'thank-you.html'));
   copyRecursive(path.join(ROOT, 'assets'), path.join(DIST, 'assets'));
   copyRecursive(path.join(ROOT, 'js'), path.join(DIST, 'js'));
+  // Google Search Console site-ownership verification file (HTML-file
+  // method). Must stay at the site root and must never be removed, or
+  // Google will consider ownership unverified again.
+  copyRecursive(path.join(ROOT, 'google514b382e51bf06d2.html'), path.join(DIST, 'google514b382e51bf06d2.html'));
 
   assertFile(path.join(DIST, 'index.html'), 'index.html');
   assertFile(path.join(DIST, 'thank-you.html'), 'thank-you.html');
+  assertFile(path.join(DIST, 'google514b382e51bf06d2.html'), 'google514b382e51bf06d2.html');
   assertNonEmptyDir(path.join(DIST, 'assets'), 'assets/');
   assertNonEmptyDir(path.join(DIST, 'js'), 'js/');
 
