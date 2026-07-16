@@ -624,13 +624,15 @@ const Catalog = {
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlString, "text/html");
       const tempDiv = doc.body;
-      
+
+      this.sanitizeDescriptionDom(tempDiv);
+
       const blocks = tempDiv.querySelectorAll("p, div, h1, h2, h3, h4, h5, h6");
       blocks.forEach(block => {
         const text = block.textContent.replace(/[\s\u00A0]/g, "");
         const hasImages = block.querySelector("img") !== null;
         const hasIframe = block.querySelector("iframe") !== null;
-        
+
         if (text === "" && !hasImages && !hasIframe) {
           block.remove();
         } else {
@@ -653,8 +655,52 @@ const Catalog = {
 
       return tempDiv.innerHTML;
     } catch (e) {
-      return htmlString;
+      // Fail closed: never emit unsanitised markup on a parser error.
+      return this.escapeHtml(htmlString);
     }
+  },
+
+  // SECURITY: product descriptions are authored in the admin panel and rendered
+  // with innerHTML on the PUBLIC site, so any active markup here would execute
+  // for every visitor. This strips everything that can run script - dangerous
+  // tags, on* event handlers and javascript:/data: URLs - while preserving the
+  // formatting, images and legitimate video/map embeds the shop actually uses.
+  sanitizeDescriptionDom(root) {
+    const FORBIDDEN_TAGS = ["script", "style", "object", "embed", "base", "meta",
+      "link", "form", "input", "textarea", "button", "svg", "math"];
+    root.querySelectorAll(FORBIDDEN_TAGS.join(",")).forEach(el => el.remove());
+
+    // Keep iframes only when they point at a known embed host (video / maps);
+    // sandbox them and drop inline document sources.
+    const IFRAME_ALLOWED = /^https:\/\/([a-z0-9-]+\.)*(youtube\.com|youtube-nocookie\.com|youtu\.be|vimeo\.com|player\.vimeo\.com|dailymotion\.com|google\.com|openstreetmap\.org)\//i;
+    root.querySelectorAll("iframe").forEach(f => {
+      const src = (f.getAttribute("src") || "").trim();
+      if (!IFRAME_ALLOWED.test(src)) { f.remove(); return; }
+      f.removeAttribute("srcdoc");
+      f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-presentation");
+    });
+
+    const URL_ATTRS = ["href", "src", "xlink:href", "formaction", "action", "background", "poster"];
+    root.querySelectorAll("*").forEach(el => {
+      Array.from(el.attributes).forEach(attr => {
+        const name = attr.name.toLowerCase();
+        const raw = attr.value || "";
+        if (name.startsWith("on")) { el.removeAttribute(attr.name); return; }
+        if (URL_ATTRS.includes(name)) {
+          // Collapse whitespace/control chars that can hide a scheme, then block
+          // script-bearing URLs (allow data: only for inline images).
+          const scheme = raw.replace(/[\s\p{Cc}]+/gu, "").toLowerCase();
+          const isDataImage = /^data:image\//i.test(scheme);
+          if (scheme.startsWith("javascript:") || scheme.startsWith("vbscript:") ||
+              (scheme.startsWith("data:") && !isDataImage)) {
+            el.removeAttribute(attr.name);
+          }
+        }
+        if (name === "style" && /expression\(|javascript:/i.test(raw)) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
   },
 
   openProductDetails(productId, shouldNavigate = true) {
