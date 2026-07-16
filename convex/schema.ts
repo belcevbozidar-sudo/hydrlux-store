@@ -17,6 +17,10 @@ export default defineSchema({
   // Customer orders
   orders: defineTable({
     orderNumber: v.string(),
+    // Bound to the authenticated customer who placed the order (when logged in).
+    // Order history is queried by this id — NOT by email — so that registering
+    // someone else's email address grants no access to their orders.
+    userId: v.optional(v.id("users")),
     customer: v.object({
       name: v.string(),
       phone: v.string(),
@@ -41,7 +45,7 @@ export default defineSchema({
     notes: v.string(),
     status: v.string(), // "new", "paid", "processing", "completed", "cancelled"
     createdAt: v.number(),
-  }).index("by_email", ["customer.email"]),
+  }).index("by_email", ["customer.email"]).index("by_userId", ["userId"]),
 
   // User accounts
   users: defineTable({

@@ -97,12 +97,14 @@ async function verifySessionToken(ctx: any, request: Request): Promise<boolean> 
   return session.ok === true;
 }
 
-// Helper to verify a customer session token; returns the bound email or null.
-async function verifyUserToken(ctx: any, request: Request): Promise<string | null> {
+// Best-effort resolve the authenticated customer's account id from the session
+// token. Returns undefined when there is no valid token (e.g. guest checkout) —
+// callers must still work for anonymous users.
+async function getUserIdFromToken(ctx: any, request: Request): Promise<any | undefined> {
   const token = getBearerToken(request);
-  if (!token) return null;
+  if (!token) return undefined;
   const session = await ctx.runQuery(internal.auth.verifyUserSession, { token });
-  return session.ok === true ? session.email : null;
+  return session.ok === true ? session.userId : undefined;
 }
 
 // Helper: fixed-window per-IP rate limiting. Returns true when the request is
@@ -269,8 +271,15 @@ http.route({
       return tooManyRequests();
     }
     const body = await request.json();
-    const res = await ctx.runMutation(internal.orders.saveOrder, body);
-    
+    // Bind the order to the logged-in customer (if any). The id is derived from
+    // the verified session token, never from the client body, so it appears in
+    // that customer's own order history and nowhere else.
+    const userId = await getUserIdFromToken(ctx, request);
+    const res = await ctx.runMutation(internal.orders.saveOrder, {
+      order: body.order,
+      userId,
+    });
+
     if (res.ok) {
       try {
         const order = body.order;
@@ -546,17 +555,17 @@ http.route({
   path: "/api/auth/orders",
   method: "GET",
   handler: httpAction(async (ctx, request) => {
-    // SECURED: a customer may only read their OWN orders. The email is taken
-    // from the verified session token, never from a client-supplied parameter,
-    // which closes the previous IDOR that exposed every customer's PII.
-    const email = await verifyUserToken(ctx, request);
-    if (!email) {
+    // SECURED: a customer may only read their OWN orders. Orders are looked up
+    // by the account id bound to the verified session token — never by email —
+    // so registering someone else's address exposes none of their orders.
+    const userId = await getUserIdFromToken(ctx, request);
+    if (!userId) {
       return new Response(JSON.stringify({ ok: false, error: "Unauthorized" }), {
         status: 401,
         headers: corsHeaders,
       });
     }
-    const res = await ctx.runQuery(internal.orders.getUserOrders, { email });
+    const res = await ctx.runQuery(internal.orders.getUserOrders, { userId });
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: noCacheHeaders,

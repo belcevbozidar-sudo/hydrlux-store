@@ -201,9 +201,13 @@ const HydroluxBackend = {
   },
 
   async saveOrder(order) {
+    // Send the customer session token (empty when not logged in) so the server
+    // can bind the order to the account. Guests remain anonymous — an empty
+    // token sends no Authorization header.
     return await this.request("/api/order", {
       method: "POST",
       body: { order },
+      authToken: this.getUserToken(),
     });
   },
 

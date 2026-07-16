@@ -29,6 +29,9 @@ function safeMoney(value: unknown): number {
 // Create a new order
 export const saveOrder = internalMutation({
   args: {
+    // Resolved server-side from the session token (never trusted from the client
+    // body). Present only when the customer was logged in at checkout.
+    userId: v.optional(v.id("users")),
     order: v.object({
       orderNumber: v.string(),
       customer: v.object({
@@ -73,7 +76,7 @@ export const saveOrder = internalMutation({
     // Build a sanitised, length-capped copy. Crucially, `status` is forced to
     // "new" here so a client can never submit an order pre-marked as paid, and
     // every free-text field is clamped to stop storage abuse.
-    const sanitized = {
+    const sanitized: any = {
       orderNumber: safeOrderNumber(o.orderNumber),
       customer: {
         name: clampStr(o.customer.name, 200),
@@ -112,6 +115,9 @@ export const saveOrder = internalMutation({
       createdAt: Date.now(),
     };
 
+    // Stamp the owning account when the checkout was authenticated.
+    if (args.userId) sanitized.userId = args.userId;
+
     const id = await ctx.db.insert("orders", sanitized);
     return { ok: true, orderId: id };
   },
@@ -126,15 +132,21 @@ export const getAllOrders = internalQuery({
   },
 });
 
-// Get orders by email (User Profile)
+// Get the logged-in customer's own orders (User Profile).
+//
+// Queried strictly by the account id resolved from the session token. Email is
+// deliberately NOT used as the key: because email ownership is not verified at
+// registration, keying on it would let anyone read another person's orders by
+// simply registering their address. Only orders placed while authenticated as
+// this account are returned.
 export const getUserOrders = internalQuery({
   args: {
-    email: v.string(),
+    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
     const orders = await ctx.db
       .query("orders")
-      .withIndex("by_email", (q) => q.eq("customer.email", args.email))
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .collect();
     return { ok: true, orders };
   },

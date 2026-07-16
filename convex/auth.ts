@@ -228,6 +228,18 @@ export const googleLogin = internalMutation({
       if (!user.googleId) patchObj.googleId = args.googleId;
       if (args.avatarUrl && user.avatarUrl !== args.avatarUrl) patchObj.avatarUrl = args.avatarUrl;
 
+      // Anti account-pre-hijacking: Google has cryptographically verified that
+      // the person signing in owns this email (email_verified is checked in
+      // googleVerify). If a password had been set on this account WITHOUT any
+      // email verification — as anyone can currently do at /register — it may
+      // belong to an attacker who pre-registered the address. On the first link
+      // to a verified Google identity we therefore disable that password, so it
+      // can no longer be used to co-own this now-verified account.
+      const hasUnverifiedPassword = user.passwordHash && user.passwordHash !== "GOOGLE_OAUTH_USER";
+      if (hasUnverifiedPassword && !user.googleId) {
+        patchObj.passwordHash = "GOOGLE_OAUTH_USER";
+      }
+
       if (Object.keys(patchObj).length > 0) {
         await ctx.db.patch(user._id, patchObj);
       }
