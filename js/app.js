@@ -659,8 +659,10 @@ const App = {
       const navLink = document.querySelector(`.nav-link[data-view="${mainView}"]`);
       if (navLink) navLink.classList.add("active");
 
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Scroll to top instantly — a smooth scroll here gets cancelled on
+      // mobile by leftover touch/momentum scrolling or by layout shifts while
+      // the new view renders, stranding the user at the footer.
+      window.scrollTo(0, 0);
 
       // Run view-specific inits and update SEO metadata
       if (mainView === "builder") {
