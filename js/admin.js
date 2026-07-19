@@ -1265,18 +1265,41 @@ const Admin = {
       const overlay = document.createElement("div");
       overlay.className = "admin-confirm-overlay";
 
-      let imagesHtml = "";
-      if (isImage && this.uploadedImages && this.uploadedImages.length > 0) {
-        imagesHtml = `
-          <div style="margin-top: 14px; text-align: left;">
-            <label style="font-weight: 700; font-size: 0.85rem; color: #475569; display: block; margin-bottom: 6px;">Изберете от качените за продукта снимки:</label>
-            <div class="prompt-image-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #f8fafc;">
-              ${this.uploadedImages.map((url, idx) => `
-                <div class="prompt-image-thumb" data-url="${this.escapeAttr(url)}" style="aspect-ratio: 1; border-radius: 6px; border: 2px solid #e2e8f0; overflow: hidden; cursor: pointer; transition: all 0.15s ease; background-color: #ffffff; display: flex; align-items: center; justify-content: center; position: relative;">
-                  <img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                </div>
-              `).join("")}
+      let dialogContent = "";
+      if (isImage) {
+        let imagesHtml = "";
+        if (this.uploadedImages && this.uploadedImages.length > 0) {
+          imagesHtml = `
+            <div style="margin-top: 20px; text-align: left;">
+              <label style="font-weight: 700; font-size: 0.85rem; color: #475569; display: block; margin-bottom: 6px;">Или изберете от качените за продукта снимки:</label>
+              <div class="prompt-image-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #f8fafc;">
+                ${this.uploadedImages.map((url, idx) => `
+                  <div class="prompt-image-thumb" data-url="${this.escapeAttr(url)}" style="aspect-ratio: 1; border-radius: 6px; border: 2px solid #e2e8f0; overflow: hidden; cursor: pointer; transition: all 0.15s ease; background-color: #ffffff; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                  </div>
+                `).join("")}
+              </div>
             </div>
+          `;
+        }
+
+        dialogContent = `
+          <div style="text-align: center; margin-bottom: 15px; padding: 15px 0;">
+            <input type="file" id="prompt-file-input" accept="image/*" style="display: none;">
+            <button type="button" id="prompt-upload-btn" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700; background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.15s ease;">
+              📁 Изберете снимка от устройството
+            </button>
+            <div id="prompt-upload-status" style="margin-top: 10px; font-weight: 600; font-size: 0.9rem; color: #475569; display: none;"></div>
+          </div>
+          ${imagesHtml}
+        `;
+      } else {
+        dialogContent = `
+          <div style="text-align: left; margin-bottom: 15px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #475569; display: block; margin-bottom: 6px;">
+              URL адрес на линка:
+            </label>
+            <input type="text" id="prompt-dialog-input" class="form-control" style="width: 100%; font-weight: 500;" placeholder="https://example.com" required>
           </div>
         `;
       }
@@ -1286,35 +1309,15 @@ const Admin = {
           <div class="admin-confirm-msg" style="font-weight: 800; font-size: 1.1rem; margin-bottom: 12px; color: #1e293b;">
             ${isImage ? "🖼️ Добавяне на снимка към текста" : "🔗 Добавяне на линк към текста"}
           </div>
-          <div style="text-align: left; margin-bottom: 15px;">
-            <label style="font-weight: 700; font-size: 0.85rem; color: #475569; display: block; margin-bottom: 6px;">
-              ${isImage ? "URL адрес на снимката:" : "URL адрес на линка:"}
-            </label>
-            <input type="text" id="prompt-dialog-input" class="form-control" style="width: 100%; font-weight: 500;" placeholder="${isImage ? 'https://example.com/image.png' : 'https://example.com'}" required>
-          </div>
-          ${imagesHtml}
+          ${dialogContent}
           <div class="admin-confirm-actions" style="margin-top: 20px;">
             <button type="button" class="admin-confirm-cancel">Отказ</button>
-            <button type="button" class="admin-confirm-ok" style="background-color: #16a34a;">Добави</button>
+            ${!isImage ? `<button type="button" class="admin-confirm-ok" style="background-color: #16a34a;">Добави</button>` : ""}
           </div>
         </div>`;
 
       document.body.appendChild(overlay);
       requestAnimationFrame(() => overlay.classList.add("show"));
-
-      const input = overlay.querySelector("#prompt-dialog-input");
-      input.focus();
-
-      if (isImage) {
-        const thumbs = overlay.querySelectorAll(".prompt-image-thumb");
-        thumbs.forEach(thumb => {
-          thumb.addEventListener("click", () => {
-            thumbs.forEach(t => t.style.borderColor = "#e2e8f0");
-            thumb.style.borderColor = "#16a34a";
-            input.value = thumb.getAttribute("data-url");
-          });
-        });
-      }
 
       let settled = false;
       const close = (val) => {
@@ -1328,21 +1331,70 @@ const Admin = {
 
       const onKey = (e) => {
         if (e.key === "Escape") close(null);
-        else if (e.key === "Enter") {
+        else if (e.key === "Enter" && !isImage) {
+          const input = overlay.querySelector("#prompt-dialog-input");
           const url = (input.value || "").trim();
           if (url) close(url);
           else input.focus();
         }
       };
 
-      overlay.querySelector(".admin-confirm-cancel").addEventListener("click", () => close(null));
-      overlay.querySelector(".admin-confirm-ok").addEventListener("click", () => {
-        const url = (input.value || "").trim();
-        if (url) close(url);
-        else input.focus();
-      });
-      overlay.addEventListener("click", (e) => { if (e.target === overlay) close(null); });
       document.addEventListener("keydown", onKey);
+
+      overlay.querySelector(".admin-confirm-cancel").addEventListener("click", () => close(null));
+      overlay.addEventListener("click", (e) => { if (e.target === overlay) close(null); });
+
+      if (isImage) {
+        const fileInput = overlay.querySelector("#prompt-file-input");
+        const uploadBtn = overlay.querySelector("#prompt-upload-btn");
+        const statusEl = overlay.querySelector("#prompt-upload-status");
+
+        uploadBtn.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", async () => {
+          const file = fileInput.files[0];
+          if (!file) return;
+
+          statusEl.style.display = "block";
+          statusEl.innerHTML = `⏳ Качване на снимката...`;
+          uploadBtn.disabled = true;
+          uploadBtn.style.opacity = "0.7";
+
+          try {
+            if (typeof HydroluxBackend === "undefined") {
+              throw new Error("HydroluxBackend is undefined");
+            }
+            const result = await HydroluxBackend.uploadPdf(file);
+            if (result && result.url) {
+              statusEl.innerHTML = `✅ Успешно качена!`;
+              setTimeout(() => close(result.url), 500);
+            } else {
+              throw new Error("Invalid response from upload");
+            }
+          } catch (err) {
+            console.error("Image upload failed", err);
+            statusEl.innerHTML = `❌ Грешка при качването.`;
+            uploadBtn.disabled = false;
+            uploadBtn.style.opacity = "1";
+          }
+        });
+
+        const thumbs = overlay.querySelectorAll(".prompt-image-thumb");
+        thumbs.forEach(thumb => {
+          thumb.addEventListener("click", () => {
+            close(thumb.getAttribute("data-url"));
+          });
+        });
+      } else {
+        const input = overlay.querySelector("#prompt-dialog-input");
+        input.focus();
+
+        overlay.querySelector(".admin-confirm-ok").addEventListener("click", () => {
+          const url = (input.value || "").trim();
+          if (url) close(url);
+          else input.focus();
+        });
+      }
     });
   },
 
