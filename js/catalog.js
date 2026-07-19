@@ -680,7 +680,7 @@ const Catalog = {
       f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-presentation");
     });
 
-    const URL_ATTRS = ["href", "src", "xlink:href", "formaction", "action", "background", "poster"];
+    const URL_ATTRS = ["href", "src", "xlink:href", "formaction", "action", "background", "poster", "data-image-src"];
     root.querySelectorAll("*").forEach(el => {
       Array.from(el.attributes).forEach(attr => {
         const name = attr.name.toLowerCase();
@@ -794,6 +794,21 @@ const Catalog = {
       descHtml += `</div>`;
     }
     document.getElementById("prod-desc-text").innerHTML = descHtml;
+
+    // Setup image link click handlers inside the description container
+    const descTextContainer = document.getElementById("prod-desc-text");
+    if (descTextContainer) {
+      descTextContainer.addEventListener("click", (e) => {
+        const link = e.target.closest(".desc-image-link");
+        if (link) {
+          e.preventDefault();
+          const src = link.getAttribute("data-image-src");
+          if (src) {
+            Catalog.openLightbox(src);
+          }
+        }
+      });
+    }
 
     // Inject Specs List
     const specsContainer = document.getElementById("prod-specs-list");
@@ -1083,6 +1098,46 @@ const Catalog = {
     if (modal) {
       modal.classList.remove("open");
       document.body.classList.remove("no-scroll");
+    }
+  },
+
+  openLightbox(src) {
+    let overlay = document.getElementById("desc-lightbox");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "desc-lightbox";
+      overlay.className = "desc-lightbox-overlay";
+      overlay.innerHTML = `
+        <div class="desc-lightbox-content">
+          <button type="button" class="desc-lightbox-close">&times;</button>
+          <img src="" class="desc-lightbox-img" alt="Детайлно изображение">
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      // Close handlers
+      overlay.querySelector(".desc-lightbox-close").addEventListener("click", () => this.closeLightbox());
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) this.closeLightbox();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") this.closeLightbox();
+      });
+    }
+
+    const img = overlay.querySelector(".desc-lightbox-img");
+    img.src = src;
+    
+    // Add open class to trigger transition
+    requestAnimationFrame(() => {
+      overlay.classList.add("open");
+    });
+  },
+
+  closeLightbox() {
+    const overlay = document.getElementById("desc-lightbox");
+    if (overlay) {
+      overlay.classList.remove("open");
     }
   },
 

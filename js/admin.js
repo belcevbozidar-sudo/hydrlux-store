@@ -1174,6 +1174,178 @@ const Admin = {
     this.formatDoc("foreColor", color);
   },
 
+  async addEditorLink() {
+    this.restoreSelection();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) {
+      this.showToast("Моля, първо селектирайте текст в описанието.", "error");
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    if (range.collapsed) {
+      this.showToast("Моля, селектирайте текст, на който да поставите линк.", "error");
+      return;
+    }
+
+    const url = await this.promptLinkDialog("link");
+    if (!url) return;
+
+    this.restoreSelection();
+
+    // Create anchor tag
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    try {
+      const content = range.extractContents();
+      link.appendChild(content);
+      range.insertNode(link);
+
+      sel.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNode(link);
+      sel.addRange(newRange);
+      this.saveSelection();
+
+      const editor = document.getElementById("prod-description-editor");
+      if (editor) editor.focus();
+    } catch (e) {
+      console.error("Failed to wrap link", e);
+      document.execCommand("createLink", false, url);
+    }
+  },
+
+  async addEditorImageLink() {
+    this.restoreSelection();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) {
+      this.showToast("Моля, първо селектирайте текст в описанието.", "error");
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    if (range.collapsed) {
+      this.showToast("Моля, селектирайте текст, който да показва снимка.", "error");
+      return;
+    }
+
+    const imageUrl = await this.promptLinkDialog("image");
+    if (!imageUrl) return;
+
+    this.restoreSelection();
+
+    const link = document.createElement("a");
+    link.href = "#";
+    link.className = "desc-image-link";
+    link.setAttribute("data-image-src", imageUrl);
+
+    try {
+      const content = range.extractContents();
+      link.appendChild(content);
+      range.insertNode(link);
+
+      sel.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNode(link);
+      sel.addRange(newRange);
+      this.saveSelection();
+
+      const editor = document.getElementById("prod-description-editor");
+      if (editor) editor.focus();
+    } catch (e) {
+      console.error("Failed to wrap image link", e);
+      this.showToast("Възникна грешка при създаването на линка към снимка.", "error");
+    }
+  },
+
+  promptLinkDialog(type) {
+    const isImage = type === "image";
+    return new Promise(resolve => {
+      const overlay = document.createElement("div");
+      overlay.className = "admin-confirm-overlay";
+
+      let imagesHtml = "";
+      if (isImage && this.uploadedImages && this.uploadedImages.length > 0) {
+        imagesHtml = `
+          <div style="margin-top: 14px; text-align: left;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #475569; display: block; margin-bottom: 6px;">Изберете от качените за продукта снимки:</label>
+            <div class="prompt-image-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px; border: 1.5px solid #cbd5e1; border-radius: 8px; background: #f8fafc;">
+              ${this.uploadedImages.map((url, idx) => `
+                <div class="prompt-image-thumb" data-url="${this.escapeAttr(url)}" style="aspect-ratio: 1; border-radius: 6px; border: 2px solid #e2e8f0; overflow: hidden; cursor: pointer; transition: all 0.15s ease; background-color: #ffffff; display: flex; align-items: center; justify-content: center; position: relative;">
+                  <img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      overlay.innerHTML = `
+        <div class="admin-confirm-box" role="dialog" aria-modal="true" style="max-width: ${isImage ? '480px' : '400px'}; width: 90%;">
+          <div class="admin-confirm-msg" style="font-weight: 800; font-size: 1.1rem; margin-bottom: 12px; color: #1e293b;">
+            ${isImage ? "🖼️ Добавяне на снимка към текста" : "🔗 Добавяне на линк към текста"}
+          </div>
+          <div style="text-align: left; margin-bottom: 15px;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #475569; display: block; margin-bottom: 6px;">
+              ${isImage ? "URL адрес на снимката:" : "URL адрес на линка:"}
+            </label>
+            <input type="text" id="prompt-dialog-input" class="form-control" style="width: 100%; font-weight: 500;" placeholder="${isImage ? 'https://example.com/image.png' : 'https://example.com'}" required>
+          </div>
+          ${imagesHtml}
+          <div class="admin-confirm-actions" style="margin-top: 20px;">
+            <button type="button" class="admin-confirm-cancel">Отказ</button>
+            <button type="button" class="admin-confirm-ok" style="background-color: #16a34a;">Добави</button>
+          </div>
+        </div>`;
+
+      document.body.appendChild(overlay);
+      requestAnimationFrame(() => overlay.classList.add("show"));
+
+      const input = overlay.querySelector("#prompt-dialog-input");
+      input.focus();
+
+      if (isImage) {
+        const thumbs = overlay.querySelectorAll(".prompt-image-thumb");
+        thumbs.forEach(thumb => {
+          thumb.addEventListener("click", () => {
+            thumbs.forEach(t => t.style.borderColor = "#e2e8f0");
+            thumb.style.borderColor = "#16a34a";
+            input.value = thumb.getAttribute("data-url");
+          });
+        });
+      }
+
+      let settled = false;
+      const close = (val) => {
+        if (settled) return;
+        settled = true;
+        overlay.classList.remove("show");
+        setTimeout(() => overlay.remove(), 220);
+        document.removeEventListener("keydown", onKey);
+        resolve(val);
+      };
+
+      const onKey = (e) => {
+        if (e.key === "Escape") close(null);
+        else if (e.key === "Enter") {
+          const url = (input.value || "").trim();
+          if (url) close(url);
+          else input.focus();
+        }
+      };
+
+      overlay.querySelector(".admin-confirm-cancel").addEventListener("click", () => close(null));
+      overlay.querySelector(".admin-confirm-ok").addEventListener("click", () => {
+        const url = (input.value || "").trim();
+        if (url) close(url);
+        else input.focus();
+      });
+      overlay.addEventListener("click", (e) => { if (e.target === overlay) close(null); });
+      document.addEventListener("keydown", onKey);
+    });
+  },
+
   switchTab(tabId) {
     this.activeTab = tabId;
     this.resetProductFormState();
@@ -1595,6 +1767,8 @@ const Admin = {
                 <button type="button" class="editor-btn" onclick="Admin.formatDoc('bold')" title="Удебелен">B</button>
                 <button type="button" class="editor-btn" onclick="Admin.formatDoc('italic')" title="Курсив" style="font-style: italic;">I</button>
                 <button type="button" class="editor-btn" onclick="Admin.formatDoc('underline')" title="Подчертан" style="text-decoration: underline;">U</button>
+                <button type="button" class="editor-btn" onclick="Admin.addEditorLink()" title="Добави хиперлинк">🔗</button>
+                <button type="button" class="editor-btn" onclick="Admin.addEditorImageLink()" title="Добави линк към снимка">🖼️</button>
                 <div class="editor-color-wrapper" style="position: relative; display: inline-block;">
                   <button type="button" class="editor-btn" title="Цвят на текста" onclick="document.getElementById('editor-color-input').click()" style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
                     <span style="font-size: 0.75rem; line-height: 1; font-weight: 900; color: #1e293b;">A</span>
@@ -2145,7 +2319,7 @@ const Admin = {
       f.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-presentation");
     });
 
-    const URL_ATTRS = ["href", "src", "xlink:href", "formaction", "action", "background", "poster"];
+    const URL_ATTRS = ["href", "src", "xlink:href", "formaction", "action", "background", "poster", "data-image-src"];
     root.querySelectorAll("*").forEach(el => {
       Array.from(el.attributes).forEach(attr => {
         const name = attr.name.toLowerCase();
