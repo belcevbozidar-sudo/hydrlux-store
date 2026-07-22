@@ -1700,6 +1700,7 @@ const Admin = {
           </td>
           <td data-label="Действия">
             <div class="admin-actions-cell">
+              <button class="btn-admin-action" onclick="Admin.toggleFeaturedHome('${p.id}')" title="${p.isFeaturedHome ? 'Премахни от Популярни продукти' : 'Покажи в Популярни продукти'}" style="background-color: ${p.isFeaturedHome ? '#fef3c7' : ''}; color: ${p.isFeaturedHome ? '#b45309' : ''};">${p.isFeaturedHome ? '⭐ Популярен' : '☆ Направи популярен'}</button>
               <button class="btn-admin-action btn-admin-edit" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
               <button class="btn-admin-action btn-admin-danger" onclick="Admin.deleteProduct('${p.id}')">✕ Изтрий</button>
             </div>
@@ -1844,6 +1845,16 @@ const Admin = {
             <input type="file" id="prod-pdf-upload" class="form-control" accept="application/pdf" multiple style="padding: 6px; border: 1px solid var(--border-light); font-weight: bold; background-color: white;">
             <div id="prod-pdfs-list-container" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
               ${this.renderPdfListItems()}
+            </div>
+          </div>
+
+          <!-- FEATURED ON HOMEPAGE SETTINGS -->
+          <div class="form-group" style="background-color: #eff6ff; padding: 12px 15px; border-radius: 8px; border: 1px solid #bfdbfe; margin-top: 15px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="checkbox" id="prod-is-featured-home" ${isEditing && this.editingProduct.isFeaturedHome ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+              <label for="prod-is-featured-home" style="margin: 0; font-weight: 700; color: #1d4ed8; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                ⭐ Покажи в "Популярни продукти" на началната страница
+              </label>
             </div>
           </div>
 
@@ -3089,6 +3100,7 @@ const Admin = {
       let description = editor ? (editor.innerHTML || "").trim() : "";
       description = this.cleanDescriptionHtml(description);
       const tagsInput = document.getElementById("prod-tags")?.value || "";
+      const isFeaturedHome = document.getElementById("prod-is-featured-home")?.checked || false;
       const isSpecial = document.getElementById("prod-is-special")?.checked || false;
       const specialOfferType = isSpecial ? (document.getElementById("prod-special-type")?.value || "") : "";
       const specialOfferText = isSpecial && specialOfferType === "other"
@@ -3149,6 +3161,7 @@ const Admin = {
             target.brand = brand;
             target.description = description;
             target.tags = tags;
+            target.isFeaturedHome = isFeaturedHome;
             target.isSpecial = isSpecial;
             target.specialOfferType = specialOfferType;
             target.specialOfferText = specialOfferText;
@@ -3210,6 +3223,7 @@ const Admin = {
           reviewsCount: 1,
           views: 12,
           inStock: true,
+          isFeaturedHome,
           isSpecial,
           specialOfferType,
           specialOfferText,
@@ -3242,6 +3256,22 @@ const Admin = {
         submitBtn.innerHTML = originalBtnHtml;
       }
     }
+  },
+
+  async toggleFeaturedHome(productId) {
+    const product = CONFIG.products.find(p => p.id === productId);
+    if (!product) return;
+    const nextValue = !product.isFeaturedHome;
+
+    const saved = await this.persistProductChanges(() => {
+      const target = CONFIG.products.find(p => p.id === productId);
+      if (target) target.isFeaturedHome = nextValue;
+    });
+    if (!saved) return;
+
+    this.propagateStateChanges();
+    Admin.notify(nextValue ? "Продуктът вече се показва в Популярни продукти." : "Продуктът е премахнат от Популярни продукти.");
+    this.render();
   },
 
   async deleteProduct(productId) {
