@@ -80,6 +80,15 @@ const App = {
     if (typeof Catalog !== "undefined") {
       Catalog.renderSidebar();
       Catalog.applyFiltersAndRender();
+
+      // If a product page was opened directly by URL, the initial render ran
+      // before the fresh Convex state arrived (prerendered HTML or stale local
+      // cache). Re-render it now so the visitor sees the current description,
+      // prices and variants instead of the stale snapshot.
+      const productMatch = window.location.pathname.match(/^\/(?:product|product-detail)\/([^\/]+)/);
+      if (productMatch && typeof Catalog.openProductDetails === "function") {
+        Catalog.openProductDetails(decodeURIComponent(productMatch[1]), false);
+      }
     }
     this.renderFeaturedProductsHome();
   },
@@ -92,15 +101,21 @@ const App = {
 
     const wishlist = this.getWishlist();
 
-    // 1. Render Popular Products
-    const popularProductIds = [
-      "hydraulic-hose-2sn",
-      "fitting-90-bsp",
-      "pu-spiral-hose",
-      "quick-coupling-isoa"
-    ];
+    // 1. Render Popular Products — admin-selected via the "isFeaturedHome" flag
+    // on each product (Admin panel > Продукти). Falls back to the previous
+    // hardcoded picks only until the admin has selected at least one product.
     const sourceProducts = CONFIG.products && CONFIG.products.length > 0 ? CONFIG.products : (CONFIG.featuredProducts || []);
-    let featured = popularProductIds.map(id => sourceProducts.find(p => p.id === id)).filter(Boolean);
+    let featured = sourceProducts.filter(p => p.isFeaturedHome === true || p.isFeaturedHome === "true");
+
+    if (featured.length === 0) {
+      const popularProductIds = [
+        "hydraulic-hose-2sn",
+        "fitting-90-bsp",
+        "pu-spiral-hose",
+        "quick-coupling-isoa"
+      ];
+      featured = popularProductIds.map(id => sourceProducts.find(p => p.id === id)).filter(Boolean);
+    }
 
     if (featured.length === 0) {
       const targets = [
