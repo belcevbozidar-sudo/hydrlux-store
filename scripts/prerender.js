@@ -344,6 +344,7 @@ async function main() {
 
   copyRecursive(path.join(ROOT, 'index.html'), path.join(DIST, 'index.html'));
   copyRecursive(path.join(ROOT, 'thank-you.html'), path.join(DIST, 'thank-you.html'));
+  copyRecursive(path.join(ROOT, 'favicon.ico'), path.join(DIST, 'favicon.ico'));
   copyRecursive(path.join(ROOT, 'assets'), path.join(DIST, 'assets'));
   copyRecursive(path.join(ROOT, 'js'), path.join(DIST, 'js'));
   // Google Search Console site-ownership verification file (HTML-file
