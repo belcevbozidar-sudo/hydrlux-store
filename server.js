@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -44,6 +44,13 @@ const server = http.createServer((req, res) => {
   // Check if file exists
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
+      // SPA fallback: адреси без разширение (/catalog/59/80, /product/prod-90)
+      // се обслужват от index.html, както прави и Vercel в продукция.
+      if (!path.extname(safeUrl)) {
+        res.writeHead(200, { 'Content-Type': MIME_TYPES['.html'] });
+        fs.createReadStream(path.join(__dirname, 'index.html')).pipe(res);
+        return;
+      }
       res.statusCode = 404;
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.end('File Not Found');

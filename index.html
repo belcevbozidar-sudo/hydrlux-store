@@ -1668,6 +1668,51 @@ p {
   margin-bottom: 15px;
 }
 
+.catalog-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--border-light, #e2e8f0);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pagination-btn:hover:not(:disabled):not(.active) {
+  border-color: var(--primary, #0091ff);
+  color: var(--primary, #0091ff);
+}
+
+.pagination-btn.active {
+  background: var(--primary, #0091ff);
+  border-color: var(--primary, #0091ff);
+  color: #ffffff;
+  cursor: default;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-gap {
+  padding: 0 4px;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
 .tab-btn {
   padding: 8px 16px;
   font-family: var(--font-family);
@@ -6239,8 +6284,8 @@ td .admin-actions-cell {
           <div class="products-grid full-width" id="products-grid">
             <!-- Dynamically Rendered Products or Category Cards -->
           </div>
-          <div id="catalog-load-more-container" style="display: none; justify-content: center; margin-top: 30px; margin-bottom: 20px;">
-            <button onclick="Catalog.loadMore()" class="btn btn-primary" style="padding: 10px 30px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">Зареди още решения</button>
+          <div id="catalog-load-more-container" class="catalog-pagination" style="display: none; justify-content: center; margin-top: 30px; margin-bottom: 20px;">
+            <!-- Номерата на страниците се рисуват от Catalog.renderPagination() -->
           </div>
         </div>
       </div>

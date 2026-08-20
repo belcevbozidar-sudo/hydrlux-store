@@ -360,9 +360,11 @@ const App = {
         "67": "assets/cat_67.jpg",
         "154": "assets/cat_154.jpg"
       };
+      // Снимката, зададена от админа, е с приоритет — вградената по-долу е
+      // само резерва за категориите, на които никой не е слагал своя.
+      if (cat.image && !cat.image.includes("hydrolux.bg")) return cat.image;
       const mapped = mapping[String(cat.id)];
       if (mapped) return mapped;
-      if (cat.image && !cat.image.includes("hydrolux.bg")) return cat.image;
       return "assets/logo.webp";
     };
 
@@ -510,7 +512,7 @@ const App = {
             ${matchingProds.map(p => {
               const prices = p.variants.map(v => v.priceEur);
               const minPrice = Math.min(...prices);
-              const coverImg = p.images[0] || "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop";
+              const coverImg = p.images[0] || "assets/logo.webp";
               
               const subText = `Код: ${p.code}${p.brand ? ` | Марка: ${p.brand}` : ""}`;
 
@@ -600,6 +602,13 @@ const App = {
       const link = e.target.closest("a[href]");
       if (!link) return;
       if (link.target === "_blank" || link.hasAttribute("download")) return;
+      // Маркиране на текст вътре в картата (за копиране на име/код) не бива да
+      // се брои за клик върху линка.
+      const selection = window.getSelection && window.getSelection();
+      if (selection && !selection.isCollapsed && String(selection).trim() !== "" &&
+          link.contains(selection.anchorNode)) {
+        return;
+      }
       const href = link.getAttribute("href");
       if (!href || href.charAt(0) !== "/" || href.startsWith("//")) return;
       e.preventDefault();
@@ -713,6 +722,10 @@ const App = {
         Catalog.filterWishlist = false;
         const subParam = parts[2];
         const subsubParam = parts[3];
+        // Номерът на страницата идва от адреса (?page=3), за да се възстанови
+        // при "Назад" от продуктова страница.
+        const pageParam = parseInt(new URLSearchParams(window.location.search).get("page"), 10);
+        Catalog.pendingPage = pageParam > 0 ? pageParam : null;
         if (viewParam) {
           // Влизане в конкретна категория: старата заявка от търсачката
           // трябва да отпадне, иначе категорията излиза "празна".

@@ -1673,7 +1673,7 @@ const Admin = {
         }
         return name;
       }).join("; ");
-      const thumb = p.images && p.images[0] ? p.images[0] : "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop";
+      const thumb = p.images && p.images[0] ? p.images[0] : "assets/logo.webp";
 
       return `
         <tr class="admin-table-row ${this.filterCategory ? 'product-draggable-row' : ''}" ${this.filterCategory ? 'draggable="true"' : ''} data-id="${p.id}">
@@ -1682,7 +1682,7 @@ const Admin = {
           </td>
           <td data-label="Продукт">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <img src="${thumb}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 12px;" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'">
+              <img src="${thumb}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 12px;" onerror="this.src='assets/logo.webp'">
               <div>
                 <strong>${p.name}</strong><br>
                 <span class="text-muted font-xs">Код: ${p.code} | <strong>Марка:</strong> ${p.brand}</span>
@@ -2022,7 +2022,7 @@ const Admin = {
         }
         return name;
       }).join("; ");
-      const thumb = p.images && p.images[0] ? p.images[0] : "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop";
+      const thumb = p.images && p.images[0] ? p.images[0] : "assets/logo.webp";
 
       return `
         <tr class="admin-table-row ${catId ? 'product-draggable-row' : ''}" ${catId ? 'draggable="true"' : ''} data-id="${p.id}">
@@ -2031,7 +2031,7 @@ const Admin = {
           </td>
           <td data-label="Продукт">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <img src="${thumb}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 12px;" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'">
+              <img src="${thumb}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light); margin-right: 12px;" onerror="this.src='assets/logo.webp'">
               <div>
                 <strong>${p.name}</strong><br>
                 <span class="text-muted font-xs">Код: ${p.code} | <strong>Марка:</strong> ${p.brand}</span>
@@ -2049,6 +2049,7 @@ const Admin = {
           </td>
           <td data-label="Действия">
             <div class="admin-actions-cell">
+              <button class="btn-admin-action" type="button" onclick="Admin.toggleFeaturedHome('${p.id}')" title="${p.isFeaturedHome ? 'Премахни от Популярни продукти' : 'Покажи в Популярни продукти'}" style="background-color: ${p.isFeaturedHome ? '#fef3c7' : ''}; color: ${p.isFeaturedHome ? '#b45309' : ''};">${p.isFeaturedHome ? '⭐ Популярен' : '☆ Направи популярен'}</button>
               <button class="btn-admin-action btn-admin-edit" type="button" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
               <button class="btn-admin-action btn-admin-danger" type="button" onclick="Admin.deleteProduct('${p.id}')">✕ Изтрий</button>
             </div>
@@ -2537,7 +2538,8 @@ const Admin = {
     }
     if (!this.currentColumns) this.currentColumns = [];
     this.currentColumns.push({ key, label: "Нова колона" });
-    this.refreshVariantsTable(activeVariants);
+    // Новата колона е най-вдясно — показваме я веднага.
+    this.refreshVariantsTable(activeVariants, { scrollToEnd: true });
   },
 
   addNewVariantRow() {
@@ -2551,14 +2553,25 @@ const Admin = {
     this.refreshVariantsTable(activeVariants);
   },
 
-  refreshVariantsTable(variants = null) {
+  refreshVariantsTable(variants = null, options = {}) {
     const container = document.getElementById("variants-table-container");
-    if (container) {
-      if (variants) {
-        this.tempVariants = variants;
-      }
-      container.innerHTML = this.renderVariantsTable();
-      this.tempVariants = null;
+    if (!container) return;
+
+    // Таблицата се пре-рисува изцяло, а хоризонталното скролиране живее в
+    // обвивката вътре в нея — затова позицията се запазва и връща обратно,
+    // иначе изгледът отскача най-вляво при всяка промяна.
+    const previousScroller = container.querySelector(".admin-table-responsive");
+    const previousScrollLeft = previousScroller ? previousScroller.scrollLeft : 0;
+
+    if (variants) {
+      this.tempVariants = variants;
+    }
+    container.innerHTML = this.renderVariantsTable();
+    this.tempVariants = null;
+
+    const scroller = container.querySelector(".admin-table-responsive");
+    if (scroller) {
+      scroller.scrollLeft = options.scrollToEnd ? scroller.scrollWidth : previousScrollLeft;
     }
   },
 

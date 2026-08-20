@@ -10,6 +10,9 @@ const Catalog = {
   filterTemp: "",
   sortBy: "default",
   productsLimit: 24,
+  productsPerPage: 24,
+  currentPage: 1,
+  pendingPage: null,
   searchTimeout: null,
 
   escapeHtml(value) {
@@ -373,7 +376,10 @@ const Catalog = {
 
   applyFiltersAndRender(isLoadMore = false) {
     if (!isLoadMore) {
-      this.productsLimit = 24;
+      // При смяна на категория/филтър се връщаме на първа страница, освен ако
+      // адресът изрично носи номер на страница (напр. при "Назад" в браузъра).
+      this.currentPage = this.pendingPage > 0 ? this.pendingPage : 1;
+      this.pendingPage = null;
     }
     const products = CONFIG.products;
     const grid = document.getElementById("products-grid");
@@ -422,9 +428,11 @@ const Catalog = {
           "67": "assets/cat_67.jpg",
           "154": "assets/cat_154.jpg"
         };
+        // Снимката, зададена от админа, е с приоритет — вградената по-долу е
+        // само резерва за категориите, на които никой не е слагал своя.
+        if (cat.image && !cat.image.includes("hydrolux.bg")) return cat.image;
         const mapped = mapping[String(cat.id)];
         if (mapped) return mapped;
-        if (cat.image && !cat.image.includes("hydrolux.bg")) return cat.image;
         return "assets/logo.webp";
       };
 
@@ -532,8 +540,21 @@ const Catalog = {
       if (this.filterWishlist) {
         titleEl.textContent = "Любими продукти";
       } else if (this.activeCategory) {
+        // Заглавието следва най-дълбокото избрано ниво, за да е ясно, че сме в
+        // подкатегорията, а не в цялата категория (важно и при "Назад").
         const cat = CONFIG.categories.find(c => c.id === this.activeCategory);
-        titleEl.textContent = cat ? cat.name : "Всички продукти";
+        let title = cat ? cat.name : "Всички продукти";
+        if (cat && this.activeSubcategory && Array.isArray(cat.subcategories)) {
+          const sub = cat.subcategories.find(s => s.id === this.activeSubcategory);
+          if (sub) {
+            title = sub.name;
+            if (this.activeSubSubcategory && Array.isArray(sub.subcategories)) {
+              const subsub = sub.subcategories.find(ss => ss.id === this.activeSubSubcategory);
+              if (subsub) title = subsub.name;
+            }
+          }
+        }
+        titleEl.textContent = title;
       } else if (this.searchQuery) {
         titleEl.textContent = `Резултати за "${this.searchQuery}"`;
       } else {
@@ -564,7 +585,11 @@ const Catalog = {
       return;
     }
 
-    const productsToRender = filtered.slice(0, this.productsLimit);
+    const totalPages = Math.max(1, Math.ceil(filtered.length / this.productsPerPage));
+    if (this.currentPage > totalPages) this.currentPage = totalPages;
+    if (this.currentPage < 1) this.currentPage = 1;
+    const pageStart = (this.currentPage - 1) * this.productsPerPage;
+    const productsToRender = filtered.slice(pageStart, pageStart + this.productsPerPage);
 
     grid.innerHTML = productsToRender.map(p => {
       const prices = (p.variants || []).map(v => parseFloat(v.priceEur) || 0);
@@ -584,10 +609,10 @@ const Catalog = {
       }
 
       return `
-        <a href="/product/${p.id}" class="product-card card">
+        <a href="/product/${p.id}" class="product-card card" draggable="false">
           <div class="product-badge">${p.inStock ? 'В наличност' : 'По поръчка'}</div>
           <div class="product-card-img-wrapper">
-            <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop'" width="240" height="240" loading="lazy">
+            <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.onerror=null; this.src='assets/logo.webp'" width="240" height="240" loading="lazy">
           </div>
           <div class="product-card-body">
             <div class="product-card-brand">${p.brand}</div>
@@ -610,11 +635,54 @@ const Catalog = {
     }).join("");
 
     if (loadMoreContainer) {
-      if (filtered.length > this.productsLimit) {
-        loadMoreContainer.style.display = "flex";
-      } else {
-        loadMoreContainer.style.display = "none";
+      loadMoreContainer.innerHTML = this.renderPagination(totalPages);
+      loadMoreContainer.style.display = totalPages > 1 ? "flex" : "none";
+    }
+  },
+
+  // Номера на страници вместо "Зареди още" — така връщането назад от продукт
+  // показва същата страница, а не пак първата.
+  renderPagination(totalPages) {
+    if (totalPages <= 1) return "";
+
+    const current = this.currentPage;
+    const pages = [];
+    const push = n => { if (!pages.includes(n)) pages.push(n); };
+    push(1);
+    for (let n = current - 1; n <= current + 1; n++) {
+      if (n > 1 && n < totalPages) push(n);
+    }
+    if (totalPages > 1) push(totalPages);
+    pages.sort((a, b) => a - b);
+
+    let html = `<button class="pagination-btn" ${current === 1 ? "disabled" : ""} onclick="Catalog.goToPage(${current - 1})" aria-label="Предишна страница">‹</button>`;
+    let previous = 0;
+    pages.forEach(n => {
+      if (previous && n - previous > 1) {
+        html += `<span class="pagination-gap">…</span>`;
       }
+      html += `<button class="pagination-btn ${n === current ? "active" : ""}" onclick="Catalog.goToPage(${n})">${n}</button>`;
+      previous = n;
+    });
+    html += `<button class="pagination-btn" ${current === totalPages ? "disabled" : ""} onclick="Catalog.goToPage(${current + 1})" aria-label="Следваща страница">›</button>`;
+    return html;
+  },
+
+  goToPage(page) {
+    const target = Math.max(1, parseInt(page, 10) || 1);
+    if (target === this.currentPage) return;
+    this.currentPage = target;
+
+    // Номерът живее в адреса, за да оцелее при "Назад" от продуктова страница.
+    const url = window.location.pathname + (target > 1 ? `?page=${target}` : "");
+    history.pushState(null, "", url);
+
+    this.applyFiltersAndRender(true);
+
+    const anchor = document.getElementById("catalog-active-title") || document.getElementById("products-grid");
+    if (anchor) {
+      const top = anchor.getBoundingClientRect().top + window.pageYOffset - 120;
+      window.scrollTo({ top: top < 0 ? 0 : top, behavior: "smooth" });
     }
   },
 
@@ -703,6 +771,17 @@ const Catalog = {
     });
   },
 
+  // Всеки нов продукт се отваря на "Описание". Табовете са в статичния HTML и
+  // се преизползват, така че без нулиране остава избраният при предишния продукт.
+  resetProductTabs() {
+    const descPanel = document.getElementById("prod-desc-panel");
+    const specsPanel = document.getElementById("prod-specs-panel");
+    if (descPanel) descPanel.classList.remove("hidden");
+    if (specsPanel) specsPanel.classList.add("hidden");
+    const tabs = document.querySelectorAll(".tab-btn");
+    tabs.forEach((btn, i) => btn.classList.toggle("active", i === 0));
+  },
+
   openProductDetails(productId, shouldNavigate = true) {
     const product = CONFIG.products.find(p => p.id === productId);
     if (!product) return;
@@ -710,6 +789,7 @@ const Catalog = {
 
     // Търсенето си е свършило работата — продуктът е намерен и отворен.
     this.clearSearch();
+    this.resetProductTabs();
 
     // Transition view
     if (shouldNavigate) {
@@ -1093,9 +1173,10 @@ const Catalog = {
     }, 150);
   },
 
+  // Запазено за съвместимост със стари линкове/бутони: прехвърля на следващата
+  // страница вместо да дозарежда.
   loadMore() {
-    this.productsLimit += 24;
-    this.applyFiltersAndRender(true);
+    this.goToPage(this.currentPage + 1);
   },
 
   // Modal Inquiry Form (Задай въпрос)
