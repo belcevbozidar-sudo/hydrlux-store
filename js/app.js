@@ -714,6 +714,9 @@ const App = {
         const subParam = parts[2];
         const subsubParam = parts[3];
         if (viewParam) {
+          // Влизане в конкретна категория: старата заявка от търсачката
+          // трябва да отпадне, иначе категорията излиза "празна".
+          Catalog.clearSearch();
           Catalog.activeCategory = viewParam;
           Catalog.activeSubcategory = subParam || null;
           Catalog.activeSubSubcategory = subsubParam || null;
@@ -745,8 +748,8 @@ const App = {
         Catalog.activeCategory = null;
         Catalog.activeSubcategory = null;
         Catalog.activeSubSubcategory = null;
-        Catalog.searchQuery = "";
-        
+        Catalog.clearSearch();
+
         Catalog.renderSidebar();
         Catalog.applyFiltersAndRender();
 

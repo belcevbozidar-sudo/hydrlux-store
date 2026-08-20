@@ -708,6 +708,9 @@ const Catalog = {
     if (!product) return;
     this.currentProduct = product;
 
+    // Търсенето си е свършило работата — продуктът е намерен и отворен.
+    this.clearSearch();
+
     // Transition view
     if (shouldNavigate) {
       App.navigate("product-detail/" + productId);
@@ -1061,6 +1064,20 @@ const Catalog = {
     document.getElementById("search-input-blue").value = tag;
     App.navigate("catalog");
     this.applyFiltersAndRender();
+  },
+
+  // Изчиства търсенето — и полето, и активния филтър. Без това една стара
+  // заявка остава да се комбинира с избраната категория и тя излиза празна.
+  clearSearch() {
+    this.searchQuery = "";
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = null;
+    }
+    const input = document.getElementById("search-input-blue");
+    if (input) input.value = "";
+    const dropdown = document.getElementById("search-suggestions-dropdown");
+    if (dropdown) dropdown.style.display = "none";
   },
 
   handleSearchInput(val) {

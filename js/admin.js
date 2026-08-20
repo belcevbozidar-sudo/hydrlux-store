@@ -3759,6 +3759,20 @@ const Admin = {
     return (columns || []).map(c => ({ ...c }));
   },
 
+  cloneRows(rows) {
+    return (rows || []).map(r => ({ ...r }));
+  },
+
+  // Редовете от таблицата в момента, без празните.
+  collectTemplateRows() {
+    return this.cloneRows(this.collectVariantsFromDOM(true) || []);
+  },
+
+  // Има ли изобщо попълнено нещо в текущата таблица.
+  hasFilledVariantRows() {
+    return (this.collectVariantsFromDOM(true) || []).length > 0;
+  },
+
   saveTemplate(name) {
     if (!name || !name.trim()) {
       Admin.notify("Моля въведете име на шаблона!");
@@ -3770,14 +3784,20 @@ const Admin = {
       return;
     }
     const id = "tpl_" + Date.now();
+    // Шаблонът пази и попълнените редове (размерите), а не само колоните,
+    // за да може цяла готова таблица да се преизползва наготово.
+    const rows = this.collectTemplateRows();
     this.savedTemplates.push({
       id,
       name: name.trim(),
-      columns: this.cloneColumns(this.currentColumns)
+      columns: this.cloneColumns(this.currentColumns),
+      rows
     });
     this.saveTemplates();
     this.templatesPanelOpen = true;
-    Admin.notify(`Шаблонът "${name}" е запазен успешно!`);
+    Admin.notify(rows.length
+      ? `Шаблонът "${name}" е запазен с ${rows.length} ${rows.length === 1 ? "ред" : "реда"}!`
+      : `Шаблонът "${name}" е запазен успешно!`);
     this.refreshVariantsTable();
   },
 
@@ -3810,9 +3830,12 @@ const Admin = {
     if (!tpl) return;
 
     tpl.columns = this.cloneColumns(this.currentColumns);
+    tpl.rows = this.collectTemplateRows();
     this.saveTemplates();
     this.templatesPanelOpen = true;
-    Admin.notify(`Шаблонът "${tpl.name}" е обновен с текущите колони!`);
+    Admin.notify(tpl.rows.length
+      ? `Шаблонът "${tpl.name}" е обновен с текущите колони и ${tpl.rows.length} ${tpl.rows.length === 1 ? "ред" : "реда"}!`
+      : `Шаблонът "${tpl.name}" е обновен с текущите колони!`);
     this.refreshVariantsTable();
   },
 
@@ -3831,23 +3854,46 @@ const Admin = {
     this.refreshVariantsTable();
   },
 
-  loadTemplateById(id) {
+  async loadTemplateById(id) {
     if (!id) return;
     this.loadTemplates();
     const tpl = this.savedTemplates.find(t => t.id === id);
-    if (tpl) {
-      this.currentColumns = this.cloneColumns(tpl.columns);
-      const activeVariants = this.collectVariantsFromDOM() || [];
-      if (activeVariants.length === 0) {
-        const newRow = {};
-        this.currentColumns.forEach(c => {
-          newRow[c.key] = "";
-        });
-        activeVariants.push(newRow);
+    if (!tpl) return;
+
+    const templateRows = this.cloneRows(tpl.rows);
+
+    // Ако шаблонът носи готови редове, те заместват таблицата. Когато в нея
+    // вече има попълнено нещо, първо питаме — за да не се изтрие чужда работа.
+    if (templateRows.length > 0) {
+      if (this.hasFilledVariantRows()) {
+        const replace = await this.confirmDialog(
+          `Шаблонът "${tpl.name}" съдържа ${templateRows.length} ${templateRows.length === 1 ? "ред" : "реда"}. Да заменя ли текущата таблица с тях?`
+        );
+        if (!replace) {
+          // Само колоните, редовете остават както са.
+          this.currentColumns = this.cloneColumns(tpl.columns);
+          this.templatesPanelOpen = true;
+          this.refreshVariantsTable(this.collectVariantsFromDOM() || []);
+          return;
+        }
       }
+      this.currentColumns = this.cloneColumns(tpl.columns);
       this.templatesPanelOpen = true;
-      this.refreshVariantsTable(activeVariants);
+      this.refreshVariantsTable(templateRows);
+      return;
     }
+
+    this.currentColumns = this.cloneColumns(tpl.columns);
+    const activeVariants = this.collectVariantsFromDOM() || [];
+    if (activeVariants.length === 0) {
+      const newRow = {};
+      this.currentColumns.forEach(c => {
+        newRow[c.key] = "";
+      });
+      activeVariants.push(newRow);
+    }
+    this.templatesPanelOpen = true;
+    this.refreshVariantsTable(activeVariants);
   },
 
   handleProductCategoryChange(catIds, selectedSubIds = [], selectedSubSubIds = []) {
