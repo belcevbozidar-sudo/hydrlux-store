@@ -1443,6 +1443,9 @@ const Admin = {
               <li class="admin-menu-item ${this.activeTab === 'crimping' ? 'active' : ''}" onclick="Admin.switchTab('crimping')">
                 ⚙️ Кримпване
               </li>
+              <li class="admin-menu-item ${this.activeTab === 'visits' ? 'active' : ''}" onclick="Admin.switchTab('visits')">
+                📊 Посещения
+              </li>
               <li class="admin-menu-item ${this.activeTab === 'archive' ? 'active' : ''}" onclick="Admin.switchTab('archive')">
                 🗄️ Архив (изтрити)
               </li>
@@ -1474,6 +1477,9 @@ const Admin = {
       if (this.activeTab === "archive") {
         this.loadArchive();
       }
+      if (this.activeTab === "visits") {
+        this.loadVisitStats();
+      }
     } finally {
       this.isFullRender = false;
     }
@@ -1489,11 +1495,153 @@ const Admin = {
         return this.renderOrdersWorkspace();
       case "crimping":
         return this.renderCrimpingWorkspace();
+      case "visits":
+        return this.renderVisitsWorkspace();
       case "archive":
         return this.renderArchiveWorkspace();
       default:
         return "Няма намерен работен панел.";
     }
+  },
+
+  // ==========================================================================
+  // VISITS WORKSPACE (колко души разглеждат сайта)
+  // ==========================================================================
+  visitStats: null,
+  visitStatsError: null,
+  visitStatsDays: 30,
+
+  renderVisitsWorkspace() {
+    return `
+      <div class="admin-header-row">
+        <h2 class="admin-workspace-title">📊 Посещения на сайта</h2>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="visits-range" class="form-control" style="width: 170px; height: 36px; padding: 4px 8px; font-weight: 700;" onchange="Admin.changeVisitRange(this.value)">
+            <option value="7" ${this.visitStatsDays === 7 ? "selected" : ""}>Последните 7 дни</option>
+            <option value="30" ${this.visitStatsDays === 30 ? "selected" : ""}>Последните 30 дни</option>
+            <option value="90" ${this.visitStatsDays === 90 ? "selected" : ""}>Последните 90 дни</option>
+          </select>
+          <button type="button" class="btn btn-secondary btn-small" onclick="Admin.loadVisitStats()">🔄 Обнови</button>
+        </div>
+      </div>
+      <div id="visits-content">
+        <p class="text-muted">Зареждане...</p>
+      </div>
+    `;
+  },
+
+  changeVisitRange(value) {
+    const days = parseInt(value, 10);
+    this.visitStatsDays = [7, 30, 90].includes(days) ? days : 30;
+    this.loadVisitStats();
+  },
+
+  async loadVisitStats() {
+    const container = document.getElementById("visits-content");
+    if (container) container.innerHTML = `<p class="text-muted">Зареждане...</p>`;
+
+    try {
+      const res = await HydroluxBackend.getVisitStats(this.visitStatsDays);
+      this.visitStats = res && res.ok ? res : null;
+      this.visitStatsError = this.visitStats ? null : "Сървърът не върна данни.";
+    } catch (err) {
+      this.visitStats = null;
+      this.visitStatsError = err.message || String(err);
+    }
+    this.renderVisitStatsContent();
+  },
+
+  renderVisitStatsContent() {
+    const container = document.getElementById("visits-content");
+    if (!container) return;
+
+    if (!this.visitStats) {
+      container.innerHTML = `
+        <div class="card" style="padding: 20px;">
+          <strong>Данните не можаха да се заредят.</strong>
+          <div class="text-muted font-xs" style="margin-top: 6px;">${this.escapeHtml(String(this.visitStatsError || ""))}</div>
+        </div>
+      `;
+      return;
+    }
+
+    const days = Array.isArray(this.visitStats.days) ? this.visitStats.days : [];
+    const today = this.visitStats.today;
+    const todayRow = days.find(d => d.day === today) || { visitors: 0, views: 0 };
+
+    const totalVisitors = days.reduce((sum, d) => sum + d.visitors, 0);
+    const totalViews = days.reduce((sum, d) => sum + d.views, 0);
+    const average = days.length > 0 ? Math.round(totalVisitors / days.length) : 0;
+    const peak = days.reduce((best, d) => (!best || d.visitors > best.visitors ? d : best), null);
+    const maxVisitors = peak ? peak.visitors : 0;
+
+    const formatDay = value => {
+      const parts = String(value).split("-");
+      return parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : value;
+    };
+
+    const rows = days.length === 0
+      ? `<tr><td colspan="3" class="text-center text-muted" style="padding: 25px;">Още няма записани посещения.</td></tr>`
+      : days.map(d => {
+          const width = maxVisitors > 0 ? Math.round((d.visitors / maxVisitors) * 100) : 0;
+          const isToday = d.day === today;
+          return `
+            <tr class="admin-table-row">
+              <td data-label="Ден"><strong>${formatDay(d.day)}</strong>${isToday ? ` <span class="admin-badge admin-badge-success">днес</span>` : ""}</td>
+              <td data-label="Посетители">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="flex: 1; min-width: 80px; background: #f1f5f9; border-radius: 999px; height: 10px; overflow: hidden;">
+                    <div style="width: ${width}%; height: 100%; background: var(--primary, #0091ff);"></div>
+                  </div>
+                  <strong style="min-width: 34px; text-align: right;">${d.visitors}</strong>
+                </div>
+              </td>
+              <td data-label="Прегледи">${d.views}</td>
+            </tr>
+          `;
+        }).join("");
+
+    container.innerHTML = `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px;">
+        <div class="card" style="padding: 18px;">
+          <div class="text-muted font-xs" style="font-weight: 700; text-transform: uppercase;">Днес</div>
+          <div style="font-size: 2rem; font-weight: 800; color: var(--primary, #0091ff);">${todayRow.visitors}</div>
+          <div class="text-muted font-xs">посетители / ${todayRow.views} прегледа</div>
+        </div>
+        <div class="card" style="padding: 18px;">
+          <div class="text-muted font-xs" style="font-weight: 700; text-transform: uppercase;">Средно на ден</div>
+          <div style="font-size: 2rem; font-weight: 800;">${average}</div>
+          <div class="text-muted font-xs">за последните ${this.visitStatsDays} дни</div>
+        </div>
+        <div class="card" style="padding: 18px;">
+          <div class="text-muted font-xs" style="font-weight: 700; text-transform: uppercase;">Общо посетители</div>
+          <div style="font-size: 2rem; font-weight: 800;">${totalVisitors}</div>
+          <div class="text-muted font-xs">${totalViews} прегледа общо</div>
+        </div>
+        <div class="card" style="padding: 18px;">
+          <div class="text-muted font-xs" style="font-weight: 700; text-transform: uppercase;">Най-силен ден</div>
+          <div style="font-size: 2rem; font-weight: 800;">${peak ? peak.visitors : 0}</div>
+          <div class="text-muted font-xs">${peak ? formatDay(peak.day) : "—"}</div>
+        </div>
+      </div>
+
+      <div class="admin-table-responsive" style="max-width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid var(--border-light);">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Ден</th>
+              <th>Посетители</th>
+              <th>Прегледи</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+
+      <p class="text-muted font-xs" style="margin-top: 12px;">
+        Един посетител се брои веднъж на ден (по анонимен идентификатор в браузъра). Прегледите отчитат повторните посещения през деня. Отварянето на админ панела не се брои.
+      </p>
+    `;
   },
 
   // ==========================================================================

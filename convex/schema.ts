@@ -90,6 +90,16 @@ export default defineSchema({
     expiresAt: v.optional(v.number()),
   }).index("by_token", ["token"]),
 
+  // Дневни посещения: по един ред на посетител за ден (Europe/Sofia).
+  // Уникални посетители за деня = броят редове; прегледи = сборът от views.
+  siteVisits: defineTable({
+    day: v.string(),        // "YYYY-MM-DD"
+    visitorId: v.string(),
+    views: v.number(),
+    firstSeen: v.number(),
+    lastSeen: v.number(),
+  }).index("by_day", ["day"]).index("by_day_visitor", ["day", "visitorId"]),
+
   // Generic fixed-window rate-limit counters keyed by "<bucket>:<ip>"
   rateLimits: defineTable({
     key: v.string(),

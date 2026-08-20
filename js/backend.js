@@ -156,6 +156,30 @@ const HydroluxBackend = {
     });
   },
 
+  // Постоянен, анонимен идентификатор на браузъра — служи само за да не се
+  // брои един и същ посетител по няколко пъти на ден.
+  getVisitorId() {
+    const key = `${this.storagePrefix}visitor_id`;
+    let visitorId = localStorage.getItem(key);
+    if (!visitorId) {
+      visitorId = `v_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem(key, visitorId);
+    }
+    return visitorId;
+  },
+
+  async recordVisit() {
+    return await this.request("/api/visit", {
+      method: "POST",
+      body: { visitorId: this.getVisitorId() },
+      authToken: "",
+    });
+  },
+
+  async getVisitStats(days = 30) {
+    return await this.request(`/api/admin/visits?days=${days}`, { method: "GET" });
+  },
+
   getCartId() {
     const key = `${this.storagePrefix}cart_id`;
     let cartId = localStorage.getItem(key);

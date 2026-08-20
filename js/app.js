@@ -34,6 +34,34 @@ const App = {
       });
     }
     this.startHeartbeat();
+    this.trackVisit();
+  },
+
+  // Анонимно броене на посещенията за таблото в админа. Изпраща се веднъж на
+  // всеки 30 минути на браузър, след зареждане на страницата, и никога не
+  // блокира интерфейса при грешка.
+  trackVisit() {
+    if (typeof HydroluxBackend === "undefined") return;
+    if (window.location.pathname.startsWith("/admin")) return;
+
+    const key = "hydrolux_last_visit_ping";
+    const THROTTLE_MS = 30 * 60 * 1000;
+    try {
+      const last = parseInt(localStorage.getItem(key) || "0", 10);
+      if (last && Date.now() - last < THROTTLE_MS) return;
+      localStorage.setItem(key, String(Date.now()));
+    } catch (e) {
+      // Липсващ localStorage не бива да спира броенето.
+    }
+
+    const send = () => {
+      HydroluxBackend.recordVisit().catch(() => {});
+    };
+    if (document.readyState === "complete") {
+      setTimeout(send, 1200);
+    } else {
+      window.addEventListener("load", () => setTimeout(send, 1200), { once: true });
+    }
   },
 
   startHeartbeat() {

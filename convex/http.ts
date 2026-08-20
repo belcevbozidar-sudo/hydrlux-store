@@ -18,6 +18,22 @@ const noCacheHeaders = {
   "Expires": "0",
 };
 
+// Днешната дата по българско време ("YYYY-MM-DD"). Броенето на посещения по
+// календарен ден трябва да следва часовата зона на магазина, не UTC.
+function sofiaDay(ts: number): string {
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Sofia",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date(ts));
+  } catch (e) {
+    // Резерва, ако средата няма пълна поддръжка на часови зони: UTC+2.
+    return new Date(ts + 2 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  }
+}
+
 // CORS preflight handler helper
 const handlePreflight = () => {
   return new Response(null, {
@@ -669,6 +685,81 @@ http.route({
     return new Response(JSON.stringify(res), {
       status: 200,
       headers: corsHeaders,
+    });
+  }),
+});
+
+// ==========================================================================
+// SITE VISIT COUNTER
+// ==========================================================================
+http.route({
+  path: "/api/visit",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/visit",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    // Публичен, затова е ограничен по IP — броячът не бива да става вектор за спам.
+    if (!(await rateLimitOk(ctx, request, "visit", 60, 60 * 1000))) {
+      return new Response(JSON.stringify({ ok: false, error: "Too many requests" }), {
+        status: 429,
+        headers: corsHeaders,
+      });
+    }
+
+    try {
+      const body = await request.json();
+      const visitorId = String(body?.visitorId || "").slice(0, 64);
+      if (!visitorId) {
+        return new Response(JSON.stringify({ ok: false, error: "Missing visitorId" }), {
+          status: 400,
+          headers: corsHeaders,
+        });
+      }
+
+      const res = await ctx.runMutation(internal.visits.recordVisit, {
+        visitorId,
+        day: sofiaDay(Date.now()),
+      });
+      return new Response(JSON.stringify(res), { status: 200, headers: corsHeaders });
+    } catch (err: any) {
+      return new Response(JSON.stringify({ ok: false, error: err.message }), {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
+  }),
+});
+
+http.route({
+  path: "/api/admin/visits",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/admin/visits",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
+
+    const url = new URL(request.url);
+    const requested = parseInt(url.searchParams.get("days") || "30", 10);
+    const days = Math.min(Math.max(isNaN(requested) ? 30 : requested, 1), 365);
+    const fromDay = sofiaDay(Date.now() - (days - 1) * 24 * 60 * 60 * 1000);
+
+    const res = await ctx.runQuery(internal.visits.getDailyStats, { fromDay });
+    return new Response(JSON.stringify({ ...res, today: sofiaDay(Date.now()) }), {
+      status: 200,
+      headers: noCacheHeaders,
     });
   }),
 });

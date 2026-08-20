@@ -17,6 +17,7 @@ import type * as migrateWayback from "../migrateWayback.js";
 import type * as orders from "../orders.js";
 import type * as rateLimit from "../rateLimit.js";
 import type * as state from "../state.js";
+import type * as visits from "../visits.js";
 
 import type {
   ApiFromModules,
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   orders: typeof orders;
   rateLimit: typeof rateLimit;
   state: typeof state;
+  visits: typeof visits;
 }>;
 
 /**
