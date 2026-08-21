@@ -4642,6 +4642,29 @@ td .admin-actions-cell {
 .desc-lightbox-close:active {
   transform: scale(0.95);
 }
+.desc-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.7);
+  color: #ffffff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s, transform 0.15s;
+}
+.desc-lightbox-nav:hover {
+  background: rgba(15, 23, 42, 0.92);
+  transform: translateY(-50%) scale(1.08);
+}
+.desc-lightbox-nav.prev { left: 16px; }
+.desc-lightbox-nav.next { right: 16px; }
 @media (max-width: 768px) {
   .desc-lightbox-close {
     top: -50px;
@@ -4651,6 +4674,13 @@ td .admin-actions-cell {
   .desc-lightbox-overlay.open .desc-lightbox-content {
     transform: scale(1) translateY(-20px);
   }
+  .desc-lightbox-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.7rem;
+  }
+  .desc-lightbox-nav.prev { left: 8px; }
+  .desc-lightbox-nav.next { right: 8px; }
 }
 
 /* ==========================================================================

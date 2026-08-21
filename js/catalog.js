@@ -933,7 +933,7 @@ const Catalog = {
     thumbsContainer.innerHTML = product.images.map((img, idx) => `
       <img src="${img}" alt="${product.name} - детайлно изображение ${idx + 1}" class="thumb-img ${idx === 0 ? 'active' : ''}" 
            onerror="this.src='assets/logo.webp'"
-           onclick="Catalog.openProductImage('${img}', ${idx})">
+           onclick="Catalog.changeMainImage('${img}', this)">
     `).join("");
 
     // 🔥 Dynamic Variants Table strictly in EUR €
@@ -1068,17 +1068,11 @@ const Catalog = {
     }
   },
 
-  // Product gallery images open in the same full-screen viewer used by images
-  // inside descriptions. Keep the gallery state in sync when a thumbnail is
-  // opened so gallery arrows continue from the selected image after closing.
+  // Only the main gallery image opens the full-screen viewer. Thumbnails keep
+  // their usual role of selecting the image shown in the main gallery.
   openProductImage(src, index) {
     if (!src) return;
-    const thumbnails = document.querySelectorAll(".thumb-img");
-    const thumb = Number.isInteger(index) ? thumbnails[index] : null;
-    if (thumb) {
-      this.changeMainImage(src, thumb);
-    }
-    this.openLightbox(src);
+    this.openLightbox(src, this.currentProductImages, index);
   },
 
   navigateGallery(direction) {
@@ -1210,7 +1204,7 @@ const Catalog = {
     }
   },
 
-  openLightbox(src) {
+  openLightbox(src, galleryImages = null, galleryIndex = 0) {
     let overlay = document.getElementById("desc-lightbox");
     if (!overlay) {
       overlay = document.createElement("div");
@@ -1219,13 +1213,17 @@ const Catalog = {
       overlay.innerHTML = `
         <div class="desc-lightbox-content">
           <button type="button" class="desc-lightbox-close">&times;</button>
+          <button type="button" class="desc-lightbox-nav prev" aria-label="Предишна снимка">‹</button>
           <img src="" class="desc-lightbox-img" alt="Детайлно изображение">
+          <button type="button" class="desc-lightbox-nav next" aria-label="Следваща снимка">›</button>
         </div>
       `;
       document.body.appendChild(overlay);
 
       // Close handlers
       overlay.querySelector(".desc-lightbox-close").addEventListener("click", () => this.closeLightbox());
+      overlay.querySelector(".desc-lightbox-nav.prev").addEventListener("click", () => this.navigateLightbox(-1));
+      overlay.querySelector(".desc-lightbox-nav.next").addEventListener("click", () => this.navigateLightbox(1));
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) this.closeLightbox();
       });
@@ -1234,8 +1232,16 @@ const Catalog = {
       });
     }
 
+    this.lightboxImages = Array.isArray(galleryImages) ? galleryImages.filter(Boolean) : [];
+    const imageIndex = this.lightboxImages.indexOf(src);
+    this.lightboxIndex = imageIndex >= 0 ? imageIndex : Math.max(0, galleryIndex || 0);
+
     const img = overlay.querySelector(".desc-lightbox-img");
     img.src = src;
+    const hasGalleryNavigation = this.lightboxImages.length > 1;
+    overlay.querySelectorAll(".desc-lightbox-nav").forEach(button => {
+      button.style.display = hasGalleryNavigation ? "flex" : "none";
+    });
     
     // Add open class to trigger transition
     requestAnimationFrame(() => {
@@ -1248,6 +1254,19 @@ const Catalog = {
     if (overlay) {
       overlay.classList.remove("open");
     }
+  },
+
+  navigateLightbox(direction) {
+    if (!this.lightboxImages || this.lightboxImages.length <= 1) return;
+    this.lightboxIndex = (this.lightboxIndex + direction + this.lightboxImages.length) % this.lightboxImages.length;
+    const src = this.lightboxImages[this.lightboxIndex];
+    const overlay = document.getElementById("desc-lightbox");
+    const image = overlay && overlay.querySelector(".desc-lightbox-img");
+    if (image) image.src = src;
+
+    // Keep the product page gallery on the same image once the viewer closes.
+    const thumbnail = document.querySelectorAll(".thumb-img")[this.lightboxIndex];
+    if (thumbnail) this.changeMainImage(src, thumbnail);
   },
 
   async submitInquiry(event) {
