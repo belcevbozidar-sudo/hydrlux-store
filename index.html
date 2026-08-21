@@ -1579,6 +1579,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  cursor: zoom-in;
 }
 
 .gallery-nav-btn {
@@ -4597,8 +4598,8 @@ td .admin-actions-cell {
 }
 .desc-lightbox-content {
   position: relative;
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 96vw;
+  max-height: 96vh;
   transform: scale(0.9);
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
@@ -4610,7 +4611,7 @@ td .admin-actions-cell {
 }
 .desc-lightbox-img {
   max-width: 100%;
-  max-height: 85vh;
+  max-height: 92vh;
   border-radius: 12px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   border: 4px solid #ffffff;
@@ -6305,7 +6306,7 @@ td .admin-actions-cell {
         <div class="gallery-panel">
           <div class="main-image-wrapper">
             <button type="button" class="gallery-nav-btn prev" onclick="Catalog.navigateGallery(-1)" aria-label="Previous image">‹</button>
-            <img src="" id="prod-main-image" width="500" height="500" alt="Product Image">
+            <img src="" id="prod-main-image" width="500" height="500" alt="Product Image" tabindex="0" role="button" aria-label="Отвори изображението в пълен размер" onclick="Catalog.openProductImage(this.currentSrc || this.src, Catalog.currentProductImageIndex)" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); Catalog.openProductImage(this.currentSrc || this.src, Catalog.currentProductImageIndex); }">
             <button type="button" class="gallery-nav-btn next" onclick="Catalog.navigateGallery(1)" aria-label="Next image">›</button>
           </div>
           <div class="thumbnails-list" id="prod-thumbnails">

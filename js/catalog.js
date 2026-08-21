@@ -933,7 +933,7 @@ const Catalog = {
     thumbsContainer.innerHTML = product.images.map((img, idx) => `
       <img src="${img}" alt="${product.name} - детайлно изображение ${idx + 1}" class="thumb-img ${idx === 0 ? 'active' : ''}" 
            onerror="this.src='assets/logo.webp'"
-           onclick="Catalog.changeMainImage('${img}', this)">
+           onclick="Catalog.openProductImage('${img}', ${idx})">
     `).join("");
 
     // 🔥 Dynamic Variants Table strictly in EUR €
@@ -1066,6 +1066,19 @@ const Catalog = {
         this.currentProductImageIndex = idx;
       }
     }
+  },
+
+  // Product gallery images open in the same full-screen viewer used by images
+  // inside descriptions. Keep the gallery state in sync when a thumbnail is
+  // opened so gallery arrows continue from the selected image after closing.
+  openProductImage(src, index) {
+    if (!src) return;
+    const thumbnails = document.querySelectorAll(".thumb-img");
+    const thumb = Number.isInteger(index) ? thumbnails[index] : null;
+    if (thumb) {
+      this.changeMainImage(src, thumb);
+    }
+    this.openLightbox(src);
   },
 
   navigateGallery(direction) {
