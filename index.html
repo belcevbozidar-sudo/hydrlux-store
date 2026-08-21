@@ -6301,6 +6301,15 @@ td .admin-actions-cell {
                 <option value="name_asc">Име: А-Я</option>
               </select>
             </div>
+            <div id="catalog-per-page-container" style="display: none; align-items: center; gap: 8px;">
+              <label for="catalog-per-page-select" class="text-muted font-small" style="font-weight: 600;">На страница:</label>
+              <select id="catalog-per-page-select" onchange="Catalog.setProductsPerPage(this.value)" style="height: 34px; padding: 4px 8px; font-size: 0.85rem; border: 1px solid #cbd5e1; border-radius: 6px; background-color: white; font-weight: 800; color: var(--primary); outline: none; cursor: pointer;">
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
             <div class="text-muted font-small" id="catalog-count-container" style="margin-left: 10px;">Намерени решения: <strong class="text-dark" id="catalog-count">8</strong></div>
           </div>
           

@@ -10,7 +10,8 @@ const Catalog = {
   filterTemp: "",
   sortBy: "default",
   productsLimit: 24,
-  productsPerPage: 24,
+  productsPerPage: 20,
+  productsPerPageInitialized: false,
   currentPage: 1,
   pendingPage: null,
   searchTimeout: null,
@@ -117,6 +118,33 @@ const Catalog = {
   changeSort(val) {
     this.sortBy = val;
     this.applyFiltersAndRender();
+  },
+
+  setProductsPerPage(value) {
+    const amount = parseInt(value, 10);
+    if (![20, 30, 50, 100].includes(amount)) return;
+    this.productsPerPage = amount;
+    this.productsPerPageInitialized = true;
+    this.currentPage = 1;
+    this.pendingPage = null;
+    try {
+      localStorage.setItem("hydrolux_products_per_page", String(amount));
+    } catch (e) {
+      // The selector should still work when browser storage is unavailable.
+    }
+    if (window.location.search) history.pushState(null, "", window.location.pathname);
+    this.applyFiltersAndRender();
+  },
+
+  restoreProductsPerPage() {
+    if (this.productsPerPageInitialized) return;
+    this.productsPerPageInitialized = true;
+    try {
+      const saved = parseInt(localStorage.getItem("hydrolux_products_per_page"), 10);
+      if ([20, 30, 50, 100].includes(saved)) this.productsPerPage = saved;
+    } catch (e) {
+      // Use the default of 20 when browser storage is unavailable.
+    }
   },
 
   // Render product categories inside the top collapsible dropdown menu
@@ -373,6 +401,7 @@ const Catalog = {
   },
 
   applyFiltersAndRender(isLoadMore = false) {
+    this.restoreProductsPerPage();
     if (!isLoadMore) {
       // При смяна на категория/филтър се връщаме на първа страница, освен ако
       // адресът изрично носи номер на страница (напр. при "Назад" в браузъра).
@@ -392,11 +421,15 @@ const Catalog = {
     grid.className = "products-grid full-width";
 
     const sortContainer = document.getElementById("catalog-sort-container");
+    const perPageContainer = document.getElementById("catalog-per-page-container");
+    const perPageSelect = document.getElementById("catalog-per-page-select");
     const countContainer = document.getElementById("catalog-count-container");
+    if (perPageSelect) perPageSelect.value = String(this.productsPerPage);
 
     // If no category and no other filter/search is active, render category card grid
     if (!this.filterWishlist && !this.activeCategory && !this.searchQuery && !this.filterBrand && !this.filterSize && !this.filterPressure && !this.filterTemp) {
       if (sortContainer) sortContainer.style.display = "none";
+      if (perPageContainer) perPageContainer.style.display = "none";
       if (countContainer) countContainer.style.marginLeft = "auto";
 
       const titleEl = document.getElementById("catalog-active-title");
@@ -508,6 +541,7 @@ const Catalog = {
       sortContainer.style.display = "flex";
       sortContainer.style.marginLeft = "auto";
     }
+    if (perPageContainer) perPageContainer.style.display = "flex";
     if (countContainer) countContainer.style.marginLeft = "10px";
 
     // Apply sorting
