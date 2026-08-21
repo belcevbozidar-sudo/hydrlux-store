@@ -91,39 +91,27 @@ const Catalog = {
   },
 
   selectSubcategoryClick(catId, subId) {
+    // Keep the selected subcategory in the URL. This makes it survive opening
+    // a product and returning with the browser's Back button.
+    const nextSubId = this.activeCategory === catId && this.activeSubcategory === subId
+      ? null
+      : subId;
     this.activeCategory = catId || null;
-    
-    // Toggle subcategory if clicked again
-    if (this.activeSubcategory === subId) {
-      this.activeSubcategory = null;
-    } else {
-      this.activeSubcategory = subId || null;
-    }
-    
+    this.activeSubcategory = nextSubId;
     this.activeSubSubcategory = null;
-    if (App.currentView !== "catalog") {
-      App.navigate("catalog");
-    }
-    this.renderSidebar();
-    this.applyFiltersAndRender();
+    this.selectSubcategory(nextSubId);
   },
 
   selectSubSubcategoryClick(catId, subId, subsubId) {
+    const nextSubSubId = this.activeCategory === catId &&
+      this.activeSubcategory === subId &&
+      this.activeSubSubcategory === subsubId
+      ? null
+      : subsubId;
     this.activeCategory = catId || null;
     this.activeSubcategory = subId || null;
-    
-    // Toggle sub-subcategory if clicked again
-    if (this.activeSubSubcategory === subsubId) {
-      this.activeSubSubcategory = null;
-    } else {
-      this.activeSubSubcategory = subsubId || null;
-    }
-    
-    if (App.currentView !== "catalog") {
-      App.navigate("catalog");
-    }
-    this.renderSidebar();
-    this.applyFiltersAndRender();
+    this.activeSubSubcategory = nextSubSubId;
+    this.selectSubSubcategory(nextSubSubId);
   },
 
   changeSort(val) {
@@ -350,6 +338,16 @@ const Catalog = {
       App.navigate(`catalog/${catId}`);
     } else {
       App.navigate("catalog");
+    }
+  },
+
+  // A product card is a link, but selecting its title must not follow that
+  // link on mouse-up. A regular click on the title still opens the product.
+  handleProductTitleClick(event) {
+    const selection = window.getSelection();
+    if (selection && !selection.isCollapsed && selection.toString().trim()) {
+      event.preventDefault();
+      event.stopPropagation();
     }
   },
 
@@ -616,7 +614,7 @@ const Catalog = {
           </div>
           <div class="product-card-body">
             <div class="product-card-brand">${p.brand}</div>
-            <h4 class="product-card-title">${p.name}</h4>
+            <h4 class="product-card-title" onclick="Catalog.handleProductTitleClick(event)">${p.name}</h4>
             <div class="product-card-rating">
               <span class="stars">★★★★★</span>
               <span class="rating-val">${p.rating.toFixed(1)}</span>
