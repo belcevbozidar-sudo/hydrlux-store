@@ -7,6 +7,7 @@ export const chatbot = internalAction({
     catalog: v.string(),
   },
   handler: async (ctx, args) => {
+    const openrouterKey = process.env.OPENROUTER_API_KEY;
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
 
@@ -38,6 +39,45 @@ If the user is asking for product recommendations, match their request against t
 
 Catalog context:
 ${args.catalog}`;
+
+    // OpenRouter е с предимство пред Gemini/OpenAI, ако е конфигуриран —
+    // ползва един акаунт/баланс, независимо кой модел стои зад него.
+    if (openrouterKey) {
+      try {
+        const messages = [
+          { role: "system", content: systemPrompt },
+          ...args.messages.map(m => ({ role: m.role, content: m.content }))
+        ];
+
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openrouterKey}`,
+            // Препоръчани от OpenRouter — идентифицират източника на заявките
+            // в техния dashboard, не са задължителни за да работи заявката.
+            "HTTP-Referer": "https://www.hydrolux.bg",
+            "X-Title": "Hydrolux Group",
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-4o-mini",
+            messages,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const answer = data.choices?.[0]?.message?.content;
+          if (answer) {
+            return { ok: true, answer };
+          }
+        } else {
+          console.error("OpenRouter API error", response.status, await response.text());
+        }
+      } catch (err) {
+        console.error("OpenRouter API call failed", err);
+      }
+    }
 
     if (geminiKey) {
       try {

@@ -1320,6 +1320,15 @@ CONFIG.saveState = async function() {
   }
 
   const result = await HydroluxBackend.saveState(values);
+  if (result && result.ok === false) {
+    // The server refused the write (e.g. someone else saved in the meantime —
+    // see the optimistic-concurrency check in convex/state.ts). Throwing here
+    // routes this into every caller's existing catch block instead of being
+    // silently swallowed as a "successful" save.
+    const err = new Error(result.message || "Записът е отхвърлен от сървъра.");
+    err.code = result.error || "save_failed";
+    throw err;
+  }
   if (result && result.ok && result.updatedAt) {
     CONFIG.productsUpdatedAt = result.updatedAt;
     CONFIG.categoriesUpdatedAt = result.updatedAt;

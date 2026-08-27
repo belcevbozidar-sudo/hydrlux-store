@@ -1449,6 +1449,9 @@ const Admin = {
               <li class="admin-menu-item ${this.activeTab === 'archive' ? 'active' : ''}" onclick="Admin.switchTab('archive')">
                 🗄️ Архив (изтрити)
               </li>
+              <li class="admin-menu-item ${this.activeTab === 'backups' ? 'active' : ''}" onclick="Admin.switchTab('backups')">
+                🕓 Резервни копия
+              </li>
               <li class="admin-menu-item" onclick="Admin.logout()" style="color: #ef4444; margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 15px;">
                 🚪 Изход
               </li>
@@ -1477,6 +1480,9 @@ const Admin = {
       if (this.activeTab === "archive") {
         this.loadArchive();
       }
+      if (this.activeTab === "backups") {
+        this.loadBackups();
+      }
       if (this.activeTab === "visits") {
         this.loadVisitStats();
       }
@@ -1499,6 +1505,8 @@ const Admin = {
         return this.renderVisitsWorkspace();
       case "archive":
         return this.renderArchiveWorkspace();
+      case "backups":
+        return this.renderBackupsWorkspace();
       default:
         return "Няма намерен работен панел.";
     }
@@ -1746,6 +1754,91 @@ const Admin = {
     this.propagateStateChanges();
     Admin.notify("Продуктът е възстановен и отново е на сайта!");
     this.loadArchive();
+  },
+
+  // ==========================================================================
+  // BACKUPS WORKSPACE (автоматични резервни копия на целия каталог)
+  // ==========================================================================
+  renderBackupsWorkspace() {
+    return `
+      <div class="admin-workspace-header">
+        <h2 style="margin: 0 0 6px;">🕓 Резервни копия</h2>
+        <p class="text-muted font-xs" style="margin: 0 0 18px; max-width: 720px;">
+          Преди всеки запис системата автоматично пази копие на целия каталог
+          (продукти и категории) отпреди тази промяна. Ако нещо се обърка, можете
+          да върнете каталога към някое от тези копия. Връщането само по себе си
+          също пази копие на текущото състояние — така връщането назад никога не
+          е без връщане назад.
+        </p>
+      </div>
+      <div id="admin-backups-list">
+        <p class="text-muted">Зареждане на резервните копия…</p>
+      </div>
+    `;
+  },
+
+  async loadBackups() {
+    const container = document.getElementById("admin-backups-list");
+    if (!container) return;
+    if (typeof HydroluxBackend === "undefined") {
+      container.innerHTML = `<p class="text-muted">Резервните копия не са налични (няма връзка с Convex).</p>`;
+      return;
+    }
+    try {
+      const backups = await HydroluxBackend.getStateBackups();
+      this.stateBackups = backups;
+
+      if (!backups.length) {
+        container.innerHTML = `<p class="text-muted">Все още няма запазени резервни копия — те се създават автоматично при следващия запис в панела.</p>`;
+        return;
+      }
+
+      const fmtDate = (ts) => {
+        try { return new Date(ts).toLocaleString("bg-BG"); } catch { return "—"; }
+      };
+
+      const rows = backups.map(b => `
+        <tr class="admin-table-row">
+          <td><strong>${fmtDate(b.createdAt)}</strong></td>
+          <td class="text-muted font-xs">${b.productCount === null ? "—" : b.productCount + " продукта"}</td>
+          <td>
+            <button class="btn-admin-action" style="background:#2563eb;color:#fff;" onclick="Admin.restoreStateBackup('${b.id}')">↩ Възстанови</button>
+          </td>
+        </tr>`).join("");
+
+      container.innerHTML = `
+        <table class="admin-table">
+          <thead>
+            <tr><th>Създадено на</th><th>Продукти в копието</th><th>Действие</th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    } catch (err) {
+      console.error("Грешка при зареждане на резервните копия", err);
+      container.innerHTML = `<p class="text-muted">Грешка при зареждане на резервните копия.</p>`;
+    }
+  },
+
+  async restoreStateBackup(backupId) {
+    const confirmed = await this.confirmDialog(
+      "Да върна ли целия каталог (продукти и категории) към това резервно копие? " +
+      "Текущото състояние ще бъде запазено като ново резервно копие, преди да бъде заменено.",
+      { confirmText: "Да, възстанови", danger: true }
+    );
+    if (!confirmed) return;
+
+    try {
+      const result = await HydroluxBackend.restoreStateBackup(backupId);
+      if (!result || result.ok === false) {
+        Admin.notify((result && result.message) || "Възстановяването не бе успешно.");
+        return;
+      }
+      Admin.notify("Каталогът е възстановен успешно! Страницата ще се презареди, за да покаже актуалните данни.");
+      setTimeout(() => window.location.reload(), 1200);
+    } catch (err) {
+      console.error("Failed to restore state backup", err);
+      Admin.notify("Възстановяването не бе успешно. Проверете интернет връзката и опитайте отново.");
+    }
   },
 
   // ==========================================================================
@@ -3202,7 +3295,9 @@ const Admin = {
       }
 
       console.error("Could not save product changes", err);
-      Admin.notify("Продуктът не беше записан в Convex. Моля проверете интернет връзката и опитайте отново.");
+      Admin.notify(err && err.code === "conflict"
+        ? err.message
+        : "Продуктът не беше записан в Convex. Моля проверете интернет връзката и опитайте отново.");
       return false;
     }
   },

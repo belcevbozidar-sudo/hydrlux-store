@@ -122,6 +122,18 @@ const HydroluxBackend = {
     });
   },
 
+  async getStateBackups() {
+    const result = await this.request("/api/state-backups", { method: "GET" });
+    return (result && result.backups) || [];
+  },
+
+  async restoreStateBackup(backupId) {
+    return await this.request("/api/state-backups/restore", {
+      method: "POST",
+      body: { backupId },
+    });
+  },
+
   async adminLogin(password, clientId, rememberMe) {
     return await this.request("/api/admin/login", {
       method: "POST",

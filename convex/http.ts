@@ -269,6 +269,57 @@ http.route({
   }),
 });
 
+http.route({
+  path: "/api/state-backups",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/state-backups",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    // SECURED — the backup list can rebuild the whole catalog, admin-only.
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
+    const res = await ctx.runQuery(internal.state.listBackups, {});
+    return new Response(JSON.stringify(res), {
+      status: 200,
+      headers: noCacheHeaders,
+    });
+  }),
+});
+
+http.route({
+  path: "/api/state-backups/restore",
+  method: "OPTIONS",
+  handler: httpAction(async () => handlePreflight()),
+});
+
+http.route({
+  path: "/api/state-backups/restore",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    // SECURED WRITE endpoint
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: corsHeaders,
+      });
+    }
+    const body = await request.json();
+    const res = await ctx.runMutation(internal.state.restoreBackup, { backupId: body.backupId });
+    return new Response(JSON.stringify(res), {
+      status: 200,
+      headers: corsHeaders,
+    });
+  }),
+});
+
 // ==========================================================================
 // ORDER ENDPOINTS
 // ==========================================================================

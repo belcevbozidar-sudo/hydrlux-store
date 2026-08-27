@@ -57,6 +57,19 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_email", ["email"]),
 
+  // Automatic snapshots of `state`, taken right before every overwrite (and
+  // before every restore). Gives the admin panel something to roll back to
+  // and a timeline of when the catalog actually changed.
+  stateBackups: defineTable({
+    products: v.any(),
+    categories: v.any(),
+    builderOptions: v.any(),
+    tableTemplates: v.any(),
+    productsUpdatedAt: v.optional(v.number()),
+    categoriesUpdatedAt: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_createdAt", ["createdAt"]),
+
   // Archived products log
   productArchive: defineTable({
     productId: v.string(),
