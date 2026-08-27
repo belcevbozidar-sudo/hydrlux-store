@@ -4118,20 +4118,25 @@ const Admin = {
 
     const templateRows = this.cloneRows(tpl.rows);
 
-    // Ако шаблонът носи готови редове, те заместват таблицата. Когато в нея
-    // вече има попълнено нещо, първо питаме — за да не се изтрие чужда работа.
+    // Шаблонът може да носи не само колони, а и готови попълнени редове —
+    // с реални кодове, размери и цени, взети от какъвто продукт е бил
+    // отворен при запазването му. Винаги питаме, преди да ги заредим —
+    // включително върху празна таблица на нов продукт — иначе кодовете и
+    // цените на друг продукт се озовават тук без администраторът изобщо да
+    // разбере откъде са дошли (виж находките за ANSI 300/600 и 591AE/Vinylfrut).
     if (templateRows.length > 0) {
-      if (this.hasFilledVariantRows()) {
-        const replace = await this.confirmDialog(
-          `Шаблонът "${tpl.name}" съдържа ${templateRows.length} ${templateRows.length === 1 ? "ред" : "реда"}. Да заменя ли текущата таблица с тях?`
-        );
-        if (!replace) {
-          // Само колоните, редовете остават както са.
-          this.currentColumns = this.cloneColumns(tpl.columns);
-          this.templatesPanelOpen = true;
-          this.refreshVariantsTable(this.collectVariantsFromDOM() || []);
-          return;
-        }
+      const currentlyFilled = this.hasFilledVariantRows();
+      const rowWord = templateRows.length === 1 ? "ред" : "реда";
+      const confirmMsg = currentlyFilled
+        ? `Шаблонът "${tpl.name}" съдържа ${templateRows.length} ${rowWord}. Да заменя ли текущата таблица с тях?`
+        : `Шаблонът "${tpl.name}" съдържа ${templateRows.length} готови ${rowWord} с попълнени кодове, размери и цени — от продукта, при чието запазване е направен шаблонът. Да ги заредя ли в тази таблица?`;
+      const replace = await this.confirmDialog(confirmMsg);
+      if (!replace) {
+        // Само колоните, редовете остават както са.
+        this.currentColumns = this.cloneColumns(tpl.columns);
+        this.templatesPanelOpen = true;
+        this.refreshVariantsTable(this.collectVariantsFromDOM() || []);
+        return;
       }
       this.currentColumns = this.cloneColumns(tpl.columns);
       this.templatesPanelOpen = true;
