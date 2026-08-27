@@ -816,8 +816,16 @@ const Catalog = {
 
   openProductDetails(productId, shouldNavigate = true) {
     const product = CONFIG.products.find(p => p.id === productId);
-    if (!product) return;
+    if (!product) {
+      this.showProductNotFound(productId, shouldNavigate);
+      return;
+    }
     this.currentProduct = product;
+
+    const notFoundPanel = document.getElementById("product-not-found");
+    const contentPanel = document.getElementById("product-detail-content");
+    if (notFoundPanel) notFoundPanel.classList.add("hidden");
+    if (contentPanel) contentPanel.classList.remove("hidden");
 
     // Търсенето си е свършило работата — продуктът е намерен и отворен.
     this.clearSearch();
@@ -1076,6 +1084,32 @@ const Catalog = {
         ? App.getCategoryBreadcrumbSchema(primaryCatId, primarySubId, primarySubSubId, product.name)
         : null;
       App.updateSchema(breadcrumbSchema ? [productSchema, breadcrumbSchema] : productSchema);
+    }
+  },
+
+  // A product id that no longer exists (deleted, or a mistyped/stale link) —
+  // show a clear message instead of leaving the previous product's gallery,
+  // price and table frozen on screen, and tell search engines not to index it.
+  showProductNotFound(productId, shouldNavigate) {
+    if (shouldNavigate) {
+      App.navigate("product-detail/" + productId);
+      return;
+    }
+    this.currentProduct = null;
+
+    const notFoundPanel = document.getElementById("product-not-found");
+    const contentPanel = document.getElementById("product-detail-content");
+    if (notFoundPanel) notFoundPanel.classList.remove("hidden");
+    if (contentPanel) contentPanel.classList.add("hidden");
+
+    if (typeof App !== "undefined" && typeof App.updateSEO === "function") {
+      App.updateSEO(
+        "Продуктът не е наличен | Хидролукс Груп",
+        "Този продукт вече не съществува в нашия каталог.",
+        "product/" + productId,
+        true
+      );
+      App.updateSchema(null);
     }
   },
 

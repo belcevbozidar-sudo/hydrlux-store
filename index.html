@@ -6336,6 +6336,13 @@ td .admin-actions-cell {
 
     <!-- 3. PRODUCT DETAIL VIEW -->
     <section id="product-detail-view" class="spa-view container mt-20">
+      <div id="product-not-found" class="hidden" style="text-align: center; padding: 100px 20px; max-width: 520px; margin: 0 auto;">
+        <h2 style="margin-bottom: 12px;">Продуктът вече не е наличен</h2>
+        <p class="text-muted" style="margin-bottom: 24px;">Възможно е да е бил премахнат от каталога, или адресът е грешен.</p>
+        <a href="/catalog" class="btn btn-primary" onclick="event.preventDefault(); App.navigate('catalog');">← Към каталога</a>
+      </div>
+
+      <div id="product-detail-content">
       <div class="breadcrumb" id="product-detail-breadcrumb">
         <!-- Breadcrumbs -->
       </div>
@@ -6445,6 +6452,7 @@ td .admin-actions-cell {
           </div>
           <button class="btn btn-primary btn-large" id="prod-bulk-add-btn">📥 Добави избраните размери в количката</button>
         </div>
+      </div>
       </div>
     </section>
 

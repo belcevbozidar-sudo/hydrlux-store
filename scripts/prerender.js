@@ -73,12 +73,13 @@ async function fetchCatalogState() {
   const { state } = await res.json();
   const products = decompressField(state.products);
   const categories = decompressField(state.categories);
-  return { products, categories };
+  const deletedProductIds = Array.isArray(state.deletedProductIds) ? state.deletedProductIds : [];
+  return { products, categories, deletedProductIds };
 }
 
 // ---- <head> meta/canonical/OG/JSON-LD patching --------------------------
 
-function patchHead(html, { title, description, canonicalPath, ogImage, schemaObj }) {
+function patchHead(html, { title, description, canonicalPath, ogImage, schemaObj, noindex }) {
   const canonicalUrl = canonicalPath ? `${SITE_ORIGIN}/${canonicalPath}` : `${SITE_ORIGIN}/`;
   let out = html;
   out = out.replace(/<title>[^<]*<\/title>/, () => `<title>${escapeHtml(title)}</title>`);
@@ -106,10 +107,18 @@ function patchHead(html, { title, description, canonicalPath, ogImage, schemaObj
     /(<link rel="canonical" id="canonical-link" href=")[^"]*(")/,
     (_, a, b) => `${a}${escapeHtml(canonicalUrl)}${b}`
   );
-  out = out.replace(
-    /(<script type="application\/ld\+json" id="schema-jsonld">)[\s\S]*?(<\/script>)/,
-    (_, a, b) => `${a}${JSON.stringify(schemaObj)}${b}`
-  );
+  if (noindex) {
+    out = out.replace(
+      /(<meta name="robots" id="robots-meta" content=")[^"]*(")/,
+      (_, a, b) => `${a}noindex, nofollow${b}`
+    );
+  }
+  if (schemaObj) {
+    out = out.replace(
+      /(<script type="application\/ld\+json" id="schema-jsonld">)[\s\S]*?(<\/script>)/,
+      (_, a, b) => `${a}${JSON.stringify(schemaObj)}${b}`
+    );
+  }
   return out;
 }
 
@@ -242,6 +251,32 @@ function buildProductHtml(baseHtml, product, categories) {
   return html;
 }
 
+// A product that has been deleted from the catalog. Vercel serves this static
+// site with no server-side logic, so a deleted id can't return a real HTTP
+// 404 -- the closest available signal is a noindex page with a clear message,
+// generated for every tombstoned id on each build so Google drops the old URL
+// from its index instead of re-crawling stale price/SKU data forever.
+function buildDeletedProductHtml(baseHtml, productId) {
+  let html = patchHead(baseHtml, {
+    title: 'Продуктът не е наличен | Хидролукс Груп',
+    description: 'Този продукт вече не съществува в нашия каталог.',
+    canonicalPath: `product/${productId}`,
+    ogImage: `${SITE_ORIGIN}/assets/logo.webp`,
+    schemaObj: null,
+    noindex: true
+  });
+  html = activateView(html, 'product-detail-view');
+  html = html.replace(
+    'id="product-not-found" class="hidden"',
+    'id="product-not-found"'
+  );
+  html = html.replace(
+    'id="product-detail-content">',
+    'id="product-detail-content" class="hidden">'
+  );
+  return html;
+}
+
 // ---- Category page ---------------------------------------------------------
 
 function buildCategorySchema(category, products) {
@@ -361,7 +396,7 @@ async function main() {
   const baseHtml = fs.readFileSync(path.join(DIST, 'index.html'), 'utf-8');
 
   console.log('Prerender: fetching live catalog from Convex...');
-  const { products, categories } = await fetchCatalogState();
+  const { products, categories, deletedProductIds } = await fetchCatalogState();
   if (!products.length || !categories.length) {
     throw new Error(
       `Prerender aborted: fetched ${products.length} products / ${categories.length} categories -- refusing to build with empty catalog data.`
@@ -370,8 +405,10 @@ async function main() {
   console.log(`Prerender: got ${products.length} products, ${categories.length} categories.`);
 
   let productCount = 0;
+  const liveIds = new Set();
   for (const product of products) {
     if (!product || !product.id) continue;
+    liveIds.add(product.id);
     const html = buildProductHtml(baseHtml, product, categories);
     const outDir = path.join(DIST, 'product', product.id);
     fs.mkdirSync(outDir, { recursive: true });
@@ -382,6 +419,20 @@ async function main() {
   if (productCount === 0) {
     throw new Error('Prerender aborted: generated 0 product pages.');
   }
+
+  // Every previously-deleted product id gets a noindex "not available" page
+  // instead of falling through to the raw SPA shell (which used to show the
+  // first product's leftover placeholder data under someone else's URL).
+  let deletedCount = 0;
+  for (const productId of deletedProductIds) {
+    if (!productId || liveIds.has(productId)) continue;
+    const html = buildDeletedProductHtml(baseHtml, String(productId));
+    const outDir = path.join(DIST, 'product', String(productId));
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'index.html'), html);
+    deletedCount++;
+  }
+  console.log(`Prerender: generated ${deletedCount} "no longer available" pages for deleted products.`);
 
   let categoryCount = 0;
   for (const category of categories) {

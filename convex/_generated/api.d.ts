@@ -9,6 +9,7 @@
  */
 
 import type * as adminAuth from "../adminAuth.js";
+import type * as adminTools from "../adminTools.js";
 import type * as auth from "../auth.js";
 import type * as chatbot from "../chatbot.js";
 import type * as http from "../http.js";
@@ -27,6 +28,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   adminAuth: typeof adminAuth;
+  adminTools: typeof adminTools;
   auth: typeof auth;
   chatbot: typeof chatbot;
   http: typeof http;
