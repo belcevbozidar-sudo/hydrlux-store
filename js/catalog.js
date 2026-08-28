@@ -390,13 +390,26 @@ const Catalog = {
     this.filterTemp = "";
     this.filterWishlist = false;
     this.sortBy = "default";
-    
+
+    // A debounced handleSearchInput() from the last keystroke can still be
+    // pending here (e.g. the user clicked "Продукти" right after typing,
+    // without picking a suggestion from the dropdown). Left uncancelled, it
+    // fires ~150ms later, restores the old searchQuery and re-renders the
+    // search results right back over the category grid this just reset to.
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+      this.searchTimeout = null;
+    }
+
     const select = document.getElementById("catalog-sort-select");
     if (select) select.value = "default";
-    
+
     const searchInput = document.getElementById("search-input-blue");
     if (searchInput) searchInput.value = "";
-    
+
+    const dropdown = document.getElementById("search-suggestions-dropdown");
+    if (dropdown) dropdown.style.display = "none";
+
     App.navigate("catalog");
   },
 
