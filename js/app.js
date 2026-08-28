@@ -601,8 +601,15 @@ const App = {
       path = "";
     }
     path = "/" + path;
-    if (window.location.pathname === path) return;
-    history.pushState(null, "", path);
+    // Only skip pushState (not the re-route) when the path is unchanged --
+    // otherwise clicking a nav link while already on that path (e.g. "Продукти"
+    // after a search left the catalog view showing filtered results, still at
+    // /catalog) silently did nothing: resetFilters() had already cleared every
+    // filter in memory, but with route() never called nothing re-rendered to
+    // show it.
+    if (window.location.pathname !== path) {
+      history.pushState(null, "", path);
+    }
     this.route();
   },
 
