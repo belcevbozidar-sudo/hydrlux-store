@@ -2,11 +2,16 @@ import { internalQuery, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 // How many automatic snapshots to keep. Each one carries the full (compressed)
-// products + categories blob, so this is capped rather than kept forever.
-const MAX_BACKUPS = 40;
+// products + categories blob -- currently several hundred KB apiece -- so this
+// must stay small enough that reading MAX_BACKUPS+1 of them in one function
+// call comfortably clears Convex's 16MB-per-execution read limit even as the
+// catalog grows. 15 was chosen with that headroom in mind; raising it without
+// moving the payload out of this table risks the exact "Too many bytes read"
+// failure this comment replaces.
+const MAX_BACKUPS = 15;
 
 // Copies the CURRENT state document into stateBackups before it gets
-// overwritten, then trims the oldest snapshots beyond MAX_BACKUPS. Called
+// overwritten, then trims at most one snapshot beyond MAX_BACKUPS. Called
 // right before every save and every restore, so there is always a snapshot
 // of "what it looked like a moment ago" — and a trail of when each change
 // happened.
@@ -23,12 +28,14 @@ async function backupCurrentState(ctx: any, existing: any) {
     createdAt: Date.now(),
   });
 
-  const all = await ctx.db.query("stateBackups").withIndex("by_createdAt").order("asc").collect();
-  const excess = all.length - MAX_BACKUPS;
-  if (excess > 0) {
-    for (const doc of all.slice(0, excess)) {
-      await ctx.db.delete(doc._id);
-    }
+  // Bounded to MAX_BACKUPS+1 whole documents -- reading everything via
+  // .collect() here is what previously blew the 16MB read cap once enough
+  // backups had piled up, failing every save with an opaque Convex error.
+  // Deleting only the single oldest one per save keeps each call's read
+  // small and self-corrects within a few saves if the count ever gets ahead.
+  const recent = await ctx.db.query("stateBackups").withIndex("by_createdAt").order("desc").take(MAX_BACKUPS + 1);
+  if (recent.length > MAX_BACKUPS) {
+    await ctx.db.delete(recent[recent.length - 1]._id);
   }
 }
 
