@@ -1917,9 +1917,13 @@ const Admin = {
       const thumb = p.images && p.images[0] ? p.images[0] : "assets/logo.webp";
 
       return `
-        <tr class="admin-table-row ${this.filterCategory ? 'product-draggable-row' : ''}" ${this.filterCategory ? 'draggable="true"' : ''} data-id="${p.id}">
-          <td style="text-align: center; vertical-align: middle; width: 40px; ${this.filterCategory ? 'cursor: grab;' : 'cursor: not-allowed;'}" ${this.filterCategory ? '' : 'title="Изберете категория за подредба"'}>
-            <span style="color: ${this.filterCategory ? '#94a3b8' : '#cbd5e1'}; font-size: 1.15rem; user-select: none;">⠿</span>
+        <tr class="admin-table-row product-draggable-row" draggable="true" data-id="${p.id}">
+          <td style="text-align: center; vertical-align: middle; width: 32px;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1px;">
+              <button type="button" onclick="Admin.moveProductToTop('${p.id}')" title="Премести най-отгоре" style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; color: #94a3b8; font-size: 0.75rem; line-height: 1;">▲</button>
+              <span style="color: #94a3b8; font-size: 1.15rem; cursor: grab; user-select: none;" title="Плъзни за преместване">⠿</span>
+              <button type="button" onclick="Admin.moveProductToBottom('${p.id}')" title="Премести най-отдолу" style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; color: #94a3b8; font-size: 0.75rem; line-height: 1;">▼</button>
+            </div>
           </td>
           <td data-label="Продукт">
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -1942,8 +1946,6 @@ const Admin = {
           <td data-label="Действия">
             <div class="admin-actions-cell">
               <button class="btn-admin-action" onclick="Admin.toggleFeaturedHome('${p.id}')" title="${p.isFeaturedHome ? 'Премахни от Популярни продукти' : 'Покажи в Популярни продукти'}" style="background-color: ${p.isFeaturedHome ? '#fef3c7' : ''}; color: ${p.isFeaturedHome ? '#b45309' : ''};">${p.isFeaturedHome ? '⭐ Популярен' : '☆ Направи популярен'}</button>
-              <button class="btn-admin-action" onclick="Admin.moveProductToTop('${p.id}')" ${this.filterCategory ? '' : 'disabled'} title="${this.filterCategory ? 'Премести най-отгоре' : 'Изберете категория за подредба'}">⤒ Отгоре</button>
-              <button class="btn-admin-action" onclick="Admin.moveProductToBottom('${p.id}')" ${this.filterCategory ? '' : 'disabled'} title="${this.filterCategory ? 'Премести най-отдолу' : 'Изберете категория за подредба'}">⤓ Отдолу</button>
               <button class="btn-admin-action btn-admin-edit" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
               <button class="btn-admin-action btn-admin-danger" onclick="Admin.deleteProduct('${p.id}')">✕ Изтрий</button>
             </div>
@@ -2268,9 +2270,13 @@ const Admin = {
       const thumb = p.images && p.images[0] ? p.images[0] : "assets/logo.webp";
 
       return `
-        <tr class="admin-table-row ${catId ? 'product-draggable-row' : ''}" ${catId ? 'draggable="true"' : ''} data-id="${p.id}">
-          <td style="text-align: center; vertical-align: middle; width: 40px; ${catId ? 'cursor: grab;' : 'cursor: not-allowed;'}" ${catId ? '' : 'title="Изберете категория за подредба"'}>
-            <span style="color: ${catId ? '#94a3b8' : '#cbd5e1'}; font-size: 1.15rem; user-select: none;">⠿</span>
+        <tr class="admin-table-row product-draggable-row" draggable="true" data-id="${p.id}">
+          <td style="text-align: center; vertical-align: middle; width: 32px;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1px;">
+              <button type="button" onclick="Admin.moveProductToTop('${p.id}')" title="Премести най-отгоре" style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; color: #94a3b8; font-size: 0.75rem; line-height: 1;">▲</button>
+              <span style="color: #94a3b8; font-size: 1.15rem; cursor: grab; user-select: none;" title="Плъзни за преместване">⠿</span>
+              <button type="button" onclick="Admin.moveProductToBottom('${p.id}')" title="Премести най-отдолу" style="background: none; border: none; padding: 0; margin: 0; cursor: pointer; color: #94a3b8; font-size: 0.75rem; line-height: 1;">▼</button>
+            </div>
           </td>
           <td data-label="Продукт">
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -2293,8 +2299,6 @@ const Admin = {
           <td data-label="Действия">
             <div class="admin-actions-cell">
               <button class="btn-admin-action" type="button" onclick="Admin.toggleFeaturedHome('${p.id}')" title="${p.isFeaturedHome ? 'Премахни от Популярни продукти' : 'Покажи в Популярни продукти'}" style="background-color: ${p.isFeaturedHome ? '#fef3c7' : ''}; color: ${p.isFeaturedHome ? '#b45309' : ''};">${p.isFeaturedHome ? '⭐ Популярен' : '☆ Направи популярен'}</button>
-              <button class="btn-admin-action" type="button" onclick="Admin.moveProductToTop('${p.id}')" ${catId ? '' : 'disabled'} title="${catId ? 'Премести най-отгоре' : 'Изберете категория за подредба'}">⤒ Отгоре</button>
-              <button class="btn-admin-action" type="button" onclick="Admin.moveProductToBottom('${p.id}')" ${catId ? '' : 'disabled'} title="${catId ? 'Премести най-отдолу' : 'Изберете категория за подредба'}">⤓ Отдолу</button>
               <button class="btn-admin-action btn-admin-edit" type="button" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
               <button class="btn-admin-action btn-admin-danger" type="button" onclick="Admin.deleteProduct('${p.id}')">✕ Изтрий</button>
             </div>
