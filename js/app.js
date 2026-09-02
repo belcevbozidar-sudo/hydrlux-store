@@ -175,7 +175,7 @@ const App = {
       const isFav = wishlist.includes(p.id);
 
       return `
-        <a href="/product/${p.id}" class="product-card card">
+        <a href="/product/${p.id}" class="product-card card" draggable="false">
           <div class="product-badge ${badgeClass}">${badgeText}</div>
           
           <button class="wishlist-btn ${isFav ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); App.toggleFavorite('${p.id}', this)" title="Любими" aria-label="Добави в любими">
@@ -188,7 +188,7 @@ const App = {
             <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='assets/cat_air_hoses.webp'" width="240" height="240" loading="lazy">
           </div>
           <div class="product-card-body">
-            <h4 class="product-card-title">${p.name}</h4>
+            <h4 class="product-card-title" onclick="Catalog.handleProductTitleClick(event)">${p.name}</h4>
             
             ${(p.homeSpecs && p.homeSpecs.length > 0) ? `
             <div class="product-card-specs">
@@ -232,7 +232,7 @@ const App = {
           const isFav = wishlist.includes(p.id);
 
           return `
-            <a href="/product/${p.id}" class="product-card card">
+            <a href="/product/${p.id}" class="product-card card" draggable="false">
               <div class="product-badge badge-orange">${badgeText}</div>
               
               <button class="wishlist-btn ${isFav ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); App.toggleFavorite('${p.id}', this)" title="Любими" aria-label="Добави в любими">
@@ -245,7 +245,7 @@ const App = {
                 <img src="${p.images[0]}" alt="${p.name} - ${p.brand} | Хидролукс Груп" class="product-card-img" onerror="this.src='assets/cat_air_hoses.webp'" width="240" height="240" loading="lazy">
               </div>
               <div class="product-card-body">
-                <h4 class="product-card-title">${p.name}</h4>
+                <h4 class="product-card-title" onclick="Catalog.handleProductTitleClick(event)">${p.name}</h4>
                 
                 ${(p.homeSpecs && p.homeSpecs.length > 0) ? `
                 <div class="product-card-specs">

@@ -1942,6 +1942,8 @@ const Admin = {
           <td data-label="Действия">
             <div class="admin-actions-cell">
               <button class="btn-admin-action" onclick="Admin.toggleFeaturedHome('${p.id}')" title="${p.isFeaturedHome ? 'Премахни от Популярни продукти' : 'Покажи в Популярни продукти'}" style="background-color: ${p.isFeaturedHome ? '#fef3c7' : ''}; color: ${p.isFeaturedHome ? '#b45309' : ''};">${p.isFeaturedHome ? '⭐ Популярен' : '☆ Направи популярен'}</button>
+              <button class="btn-admin-action" onclick="Admin.moveProductToTop('${p.id}')" ${this.filterCategory ? '' : 'disabled'} title="${this.filterCategory ? 'Премести най-отгоре' : 'Изберете категория за подредба'}">⤒ Отгоре</button>
+              <button class="btn-admin-action" onclick="Admin.moveProductToBottom('${p.id}')" ${this.filterCategory ? '' : 'disabled'} title="${this.filterCategory ? 'Премести най-отдолу' : 'Изберете категория за подредба'}">⤓ Отдолу</button>
               <button class="btn-admin-action btn-admin-edit" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
               <button class="btn-admin-action btn-admin-danger" onclick="Admin.deleteProduct('${p.id}')">✕ Изтрий</button>
             </div>
@@ -2291,6 +2293,8 @@ const Admin = {
           <td data-label="Действия">
             <div class="admin-actions-cell">
               <button class="btn-admin-action" type="button" onclick="Admin.toggleFeaturedHome('${p.id}')" title="${p.isFeaturedHome ? 'Премахни от Популярни продукти' : 'Покажи в Популярни продукти'}" style="background-color: ${p.isFeaturedHome ? '#fef3c7' : ''}; color: ${p.isFeaturedHome ? '#b45309' : ''};">${p.isFeaturedHome ? '⭐ Популярен' : '☆ Направи популярен'}</button>
+              <button class="btn-admin-action" type="button" onclick="Admin.moveProductToTop('${p.id}')" ${catId ? '' : 'disabled'} title="${catId ? 'Премести най-отгоре' : 'Изберете категория за подредба'}">⤒ Отгоре</button>
+              <button class="btn-admin-action" type="button" onclick="Admin.moveProductToBottom('${p.id}')" ${catId ? '' : 'disabled'} title="${catId ? 'Премести най-отдолу' : 'Изберете категория за подредба'}">⤓ Отдолу</button>
               <button class="btn-admin-action btn-admin-edit" type="button" onclick="Admin.startEditProduct('${p.id}')">✏️ Редактирай</button>
               <button class="btn-admin-action btn-admin-danger" type="button" onclick="Admin.deleteProduct('${p.id}')">✕ Изтрий</button>
             </div>
@@ -4513,6 +4517,24 @@ const Admin = {
         this.syncProductOrder(tableBody);
       });
     });
+  },
+
+  moveProductToTop(id) {
+    const tableBody = document.querySelector("#admin-products-list-table tbody");
+    if (!tableBody) return;
+    const row = tableBody.querySelector(`tr[data-id="${id}"]`);
+    if (!row || !row.classList.contains("product-draggable-row")) return;
+    tableBody.insertBefore(row, tableBody.firstChild);
+    this.syncProductOrder(tableBody);
+  },
+
+  moveProductToBottom(id) {
+    const tableBody = document.querySelector("#admin-products-list-table tbody");
+    if (!tableBody) return;
+    const row = tableBody.querySelector(`tr[data-id="${id}"]`);
+    if (!row || !row.classList.contains("product-draggable-row")) return;
+    tableBody.appendChild(row);
+    this.syncProductOrder(tableBody);
   },
 
   syncProductOrder(tableBody) {
