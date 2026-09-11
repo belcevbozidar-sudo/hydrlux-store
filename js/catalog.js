@@ -1229,7 +1229,22 @@ const Catalog = {
     this.searchQuery = tag;
     document.getElementById("search-input-blue").value = tag;
     App.navigate("catalog");
+    this.syncSearchToURL(tag);
     this.applyFiltersAndRender();
+  },
+
+  // Записва/маха ?q= в текущия URL (replaceState — не добавя нов запис в
+  // историята) така че при "Назад" от продуктова страница route() да може
+  // да възстанови searchQuery от адреса, вместо от паметта (която вече е
+  // изчистена от clearSearch() при отваряне на продукта).
+  syncSearchToURL(query) {
+    const url = new URL(window.location.href);
+    if (query) {
+      url.searchParams.set("q", query);
+    } else {
+      url.searchParams.delete("q");
+    }
+    history.replaceState(null, "", url.pathname + url.search);
   },
 
   // Изчиства търсенето — и полето, и активния филтър. Без това една стара
@@ -1255,6 +1270,7 @@ const Catalog = {
       if (typeof App !== "undefined" && App.currentView !== "catalog") {
         App.navigate("catalog");
       }
+      this.syncSearchToURL(val);
       this.applyFiltersAndRender();
     }, 150);
   },

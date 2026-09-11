@@ -485,6 +485,7 @@ const App = {
       // Keep main Catalog search query in sync
       Catalog.searchQuery = e.target.value;
       if (this.currentView === "catalog") {
+        Catalog.syncSearchToURL(e.target.value);
         Catalog.applyFiltersAndRender();
       }
 
@@ -772,6 +773,13 @@ const App = {
           Catalog.activeCategory = null;
           Catalog.activeSubcategory = null;
           Catalog.activeSubSubcategory = null;
+          // Търсенето не се пази в паметта през навигация към продуктова
+          // страница, а се чете обратно от адреса (?q=...), за да се
+          // възстанови при "Назад" вместо да показва всички категории.
+          const qParam = new URLSearchParams(window.location.search).get("q");
+          Catalog.searchQuery = qParam || "";
+          const searchInput = document.getElementById("search-input-blue");
+          if (searchInput) searchInput.value = qParam || "";
         }
         Catalog.renderSidebar();
         Catalog.applyFiltersAndRender();
