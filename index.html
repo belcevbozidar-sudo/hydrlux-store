@@ -1551,7 +1551,7 @@ p {
 
 .product-detail-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 30px;
   margin-bottom: 40px;
 }
@@ -1561,6 +1561,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
 }
 
 .main-image-wrapper {
@@ -1626,12 +1627,19 @@ p {
 
 .thumbnails-list {
   display: flex;
+  flex-wrap: nowrap;
   gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+  scroll-behavior: smooth;
 }
 
 .thumb-img {
   width: 60px;
   height: 60px;
+  flex: 0 0 60px;
   object-fit: contain;
   border-radius: var(--radius-sm);
   border: 2px solid transparent;
