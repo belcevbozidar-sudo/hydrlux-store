@@ -482,12 +482,11 @@ const App = {
     searchInput.addEventListener("input", (e) => {
       const query = e.target.value.trim().toLowerCase();
       
-      // Keep main Catalog search query in sync
-      Catalog.searchQuery = e.target.value;
-      if (this.currentView === "catalog") {
-        Catalog.syncSearchToURL(e.target.value);
-        Catalog.applyFiltersAndRender();
-      }
+      // The header field is a global search.  A category/subcategory selected
+      // behind it must never turn its results into an implicit AND filter.
+      // Centralising this here also avoids the former duplicate input handler
+      // (inline HTML + this listener), which rendered once with stale filters.
+      Catalog.handleGlobalSearch(e.target.value);
 
       if (query.length < 2) {
         dropdown.style.display = "none";

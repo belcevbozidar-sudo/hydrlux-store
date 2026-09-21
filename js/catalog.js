@@ -1247,6 +1247,40 @@ const Catalog = {
     history.replaceState(null, "", url.pathname + url.search);
   },
 
+  // The search field in the header deliberately searches the whole catalogue,
+  // rather than only the category currently visible behind it.  Switching the
+  // path before App.route() makes the reset explicit in both memory and URL,
+  // so refreshing or returning from a product cannot revive an old category.
+  handleGlobalSearch(value) {
+    const query = String(value || "");
+    const hasQuery = query.trim().length > 0;
+    const hasCategoryScope = this.activeCategory || this.activeSubcategory || this.activeSubSubcategory;
+
+    if (hasQuery && (hasCategoryScope || (typeof App !== "undefined" && App.currentView !== "catalog"))) {
+      this.activeCategory = null;
+      this.activeSubcategory = null;
+      this.activeSubSubcategory = null;
+      this.filterBrand = "";
+      this.filterSize = "";
+      this.filterPressure = "";
+      this.filterTemp = "";
+
+      const url = new URL(window.location.href);
+      url.pathname = "/catalog";
+      url.search = "";
+      url.searchParams.set("q", query);
+      history.replaceState(null, "", url.pathname + url.search);
+      App.route();
+      return;
+    }
+
+    this.searchQuery = query;
+    if (typeof App !== "undefined" && App.currentView === "catalog") {
+      this.syncSearchToURL(query);
+      this.applyFiltersAndRender();
+    }
+  },
+
   // Изчиства търсенето — и полето, и активния филтър. Без това една стара
   // заявка остава да се комбинира с избраната категория и тя излиза празна.
   clearSearch() {
@@ -1266,12 +1300,7 @@ const Catalog = {
       clearTimeout(this.searchTimeout);
     }
     this.searchTimeout = setTimeout(() => {
-      this.searchQuery = val;
-      if (typeof App !== "undefined" && App.currentView !== "catalog") {
-        App.navigate("catalog");
-      }
-      this.syncSearchToURL(val);
-      this.applyFiltersAndRender();
+      this.handleGlobalSearch(val);
     }, 150);
   },
 
