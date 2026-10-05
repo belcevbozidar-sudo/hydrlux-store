@@ -2056,6 +2056,13 @@ const Admin = {
               </select>
               <input type="text" id="prod-brand-custom-input" class="form-control" value="${selectValue === '__NEW_BRAND__' ? this.escapeAttr(currentBrand) : ''}" placeholder="Въведете нова марка..." style="margin-top: 8px; display: ${showCustomInput ? 'block' : 'none'};">
             </div>
+            <div class="form-group">
+              <label>Цената е за</label>
+              <select id="prod-unit-select" class="form-control">
+                <option value="м" ${isEditing && this.editingProduct.unit === 'м' ? 'selected' : ''}>Метър (€/м)</option>
+                <option value="бр." ${!isEditing || this.editingProduct.unit !== 'м' ? 'selected' : ''}>Брой (€)</option>
+              </select>
+            </div>
           </div>
 
           <div class="form-group">
@@ -3356,6 +3363,8 @@ const Admin = {
         }
       }
 
+      const unit = document.getElementById("prod-unit-select")?.value === "м" ? "м" : "бр.";
+
       // JS-based validation for required core fields (replaces silent HTML5 blocks)
       if (!name) { Admin.notify("Моля въведете Име на продукта!"); document.getElementById("prod-name")?.focus(); return; }
       if (!code) { Admin.notify("Моля въведете Код / Артикулен номер!"); document.getElementById("prod-code")?.focus(); return; }
@@ -3423,6 +3432,7 @@ const Admin = {
             target.subsubcategory = subsubcategory;
             target.subsubcategories = subsubcategories;
             target.brand = brand;
+            target.unit = unit;
             target.description = description;
             target.tags = tags;
             target.isFeaturedHome = isFeaturedHome;
@@ -3483,6 +3493,7 @@ const Admin = {
           subsubcategory,
           subsubcategories,
           brand,
+          unit,
           rating: 5.0,
           reviewsCount: 1,
           views: 12,

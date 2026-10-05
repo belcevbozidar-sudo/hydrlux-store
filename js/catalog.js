@@ -1496,7 +1496,7 @@ const Catalog = {
           <img src="${img}" alt="${this.currentProduct.name} - бърза поръчка" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0;">
           <div>
             <strong style="display: block; font-weight: 700; color: #0f172a; font-size: 0.95rem;">${this.currentProduct.name}</strong>
-            <span style="font-size: 0.85rem; color: #ea580c; font-weight: 700;" id="quick-order-price-display">Цена: ${priceText} / ${this.currentProduct.unit || 'м'}</span>
+            <span style="font-size: 0.85rem; color: #ea580c; font-weight: 700;" id="quick-order-price-display">Цена: ${priceText} / ${this.currentProduct.unit === 'м' ? 'м' : 'бр.'}</span>
           </div>
         `;
       }
@@ -1512,13 +1512,13 @@ const Catalog = {
         const variant = this.currentProduct.variants[parseInt(idx)];
         if (variant) {
           const priceText = formatPrice(variant.priceEur).eur;
-          priceDisplay.textContent = `Цена: ${priceText} / ${this.currentProduct.unit || 'м'}`;
+          priceDisplay.textContent = `Цена: ${priceText} / ${this.currentProduct.unit === 'м' ? 'м' : 'бр.'}`;
         }
       } else {
         const hasVariants = this.currentProduct.variants && this.currentProduct.variants.length > 0;
         const defaultPrice = hasVariants ? this.currentProduct.variants[0]?.priceEur || 0 : this.currentProduct.priceEur || 0;
         const priceText = formatPrice(defaultPrice).eur;
-        priceDisplay.textContent = `Цена: ${priceText} / ${this.currentProduct.unit || 'м'}`;
+        priceDisplay.textContent = `Цена: ${priceText} / ${this.currentProduct.unit === 'м' ? 'м' : 'бр.'}`;
       }
     }
   },
