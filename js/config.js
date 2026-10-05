@@ -6,10 +6,10 @@ const CONFIG = {
     yearFounded: 2019,
     address: "Град Монтана, ул. „Индустриална“ 32г",
     addressShort: "ул. „Индустриална“ 32г, Монтана",
-    phone: "+359 89 248 4337",
-    phoneDisplay: "089 248 4337",
+    phone: "+359 892 484 337",
+    phoneDisplay: "0892 484 337",
     email: "info@hydrolux.bg",
-    workingHours: "Понеделник - Петък: 08:30 - 17:30 | Събота: 09:00 - 13:00"
+    workingHours: "Понеделник - Петък: 08:00 - 17:30 | Събота: 08:00 - 13:00"
   },
   
   eurToBgn: 1.0, // Strictly EUR now
