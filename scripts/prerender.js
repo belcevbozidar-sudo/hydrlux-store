@@ -420,6 +420,46 @@ async function main() {
     throw new Error('Prerender aborted: generated 0 product pages.');
   }
 
+  // Static info pages: same title/description as App.route() sets in JS,
+  // but present in the raw HTML so the canonical is correct before any JS runs.
+  const staticPages = [
+    {
+      path: 'services', view: 'services-view',
+      title: 'Сервиз, услуги и техническа консултация в Монтана | Хидролукс Груп',
+      description: 'Професионално запресоване на маркучи, ремонт на хидравлични цилиндри и пневматични системи в нашия специализиран сервиз в град Монтана на ул. Индустриална 32г.'
+    },
+    {
+      path: 'about', view: 'about-view',
+      title: 'За нас | Хидролукс Груп - Лидер в Хидравликата & Пневматиката',
+      description: 'Научете повече за историята, мисията и екипа от професионалисти на Хидролукс Груп. Работим с водещи световни марки от 2019 г.'
+    },
+    {
+      path: 'contacts', view: 'contacts-view',
+      title: 'Контакти | Свържете се с нас | Хидролукс Груп Монтана',
+      description: 'Свържете се с екипа на Хидролукс Груп в Монтана. Телефон: 0892 484 337, имейл: info@hydrolux.bg, адрес: ул. Индустриална 32Г.'
+    },
+    {
+      path: 'builder', view: 'builder-view',
+      title: 'Интерактивен конфигуратор на маркучи | Хидролукс Груп',
+      description: 'Конфигурирайте и поръчайте маркучи за високо налягане по индивидуален размер. Лесен избор на накрайници и спирали с изчисляване на цена в реално време.'
+    }
+  ];
+  for (const page of staticPages) {
+    let html = patchHead(baseHtml, {
+      title: page.title,
+      description: page.description,
+      canonicalPath: page.path,
+      ogImage: `${SITE_ORIGIN}/assets/logo.webp`,
+      schemaObj: null,
+      noindex: false
+    });
+    html = activateView(html, page.view);
+    const outDir = path.join(DIST, page.path);
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'index.html'), html);
+  }
+  console.log(`Prerender: generated ${staticPages.length} static info pages.`);
+
   // Every previously-deleted product id gets a noindex "not available" page
   // instead of falling through to the raw SPA shell (which used to show the
   // first product's leftover placeholder data under someone else's URL).
