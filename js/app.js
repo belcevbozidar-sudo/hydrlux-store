@@ -26,11 +26,15 @@ const App = {
     // 4. Background revalidate after Convex resolves
     if (CONFIG.ready) {
       CONFIG.ready.then(() => {
+        CONFIG.loaded = true;
         // Re-render UI with latest synced server state in the background
         this.renderAllUI();
         this.updateWishlistCount();
       }).catch(err => {
+        CONFIG.loaded = true;
         console.error("Error waiting for server config load:", err);
+        const m = window.location.pathname.match(/^\/(?:product|product-detail)\/([^\/]+)/);
+        if (m && typeof Catalog !== "undefined") Catalog.openProductDetails(decodeURIComponent(m[1]), false);
       });
     }
     this.startHeartbeat();

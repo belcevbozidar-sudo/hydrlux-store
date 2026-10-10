@@ -830,6 +830,11 @@ const Catalog = {
   openProductDetails(productId, shouldNavigate = true) {
     const product = CONFIG.products.find(p => p.id === productId);
     if (!product) {
+      // The fresh catalog is still loading; the first lookup may hit a stale
+      // or partial list. Keep what is on screen (the prerendered product) and
+      // let App.renderAllUI() retry once the data arrives, instead of
+      // flashing "product no longer available".
+      if (!shouldNavigate && CONFIG.ready && !CONFIG.loaded) return;
       this.showProductNotFound(productId, shouldNavigate);
       return;
     }
