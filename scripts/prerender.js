@@ -135,6 +135,22 @@ function activateView(html, viewId) {
   return out;
 }
 
+// The browser builds this schema in App.getLocalBusinessSchema(); reuse the
+// exact same object here so the raw HTML carries it without duplicating data.
+function loadLocalBusinessSchema() {
+  try {
+    const src = fs.readFileSync(path.join(ROOT, 'js', 'app.js'), 'utf-8');
+    const start = src.indexOf('getLocalBusinessSchema() {');
+    const end = src.indexOf('\n  },', start);
+    if (start < 0 || end < 0) return null;
+    const body = src.slice(start + 'getLocalBusinessSchema() {'.length, end);
+    return new Function(body)();
+  } catch (e) {
+    console.warn('Prerender: could not load LocalBusiness schema:', e.message);
+    return null;
+  }
+}
+
 // ---- Product page ---------------------------------------------------------
 
 function buildProductSchema(product) {
@@ -422,9 +438,10 @@ async function main() {
 
   // Static info pages: same title/description as App.route() sets in JS,
   // but present in the raw HTML so the canonical is correct before any JS runs.
+  const localBusinessSchema = loadLocalBusinessSchema();
   const staticPages = [
     {
-      path: 'services', view: 'services-view',
+      path: 'services', view: 'services-view', schema: true,
       title: 'Сервиз, услуги и техническа консултация в Монтана | Хидролукс Груп',
       description: 'Професионално запресоване на маркучи, ремонт на хидравлични цилиндри и пневматични системи в нашия специализиран сервиз в град Монтана на ул. Индустриална 32г.'
     },
@@ -434,7 +451,7 @@ async function main() {
       description: 'Научете повече за историята, мисията и екипа от професионалисти на Хидролукс Груп. Работим с водещи световни марки от 2019 г.'
     },
     {
-      path: 'contacts', view: 'contacts-view',
+      path: 'contacts', view: 'contacts-view', schema: true,
       title: 'Контакти | Свържете се с нас | Хидролукс Груп Монтана',
       description: 'Свържете се с екипа на Хидролукс Груп в Монтана. Телефон: 0892 484 337, имейл: info@hydrolux.bg, адрес: ул. Индустриална 32Г.'
     },
@@ -450,7 +467,7 @@ async function main() {
       description: page.description,
       canonicalPath: page.path,
       ogImage: `${SITE_ORIGIN}/assets/logo.webp`,
-      schemaObj: null,
+      schemaObj: page.schema ? localBusinessSchema : null,
       noindex: false
     });
     html = activateView(html, page.view);
@@ -486,6 +503,18 @@ async function main() {
   console.log(`Prerender: generated ${categoryCount} category pages.`);
   if (categoryCount === 0) {
     throw new Error('Prerender aborted: generated 0 category pages.');
+  }
+
+  if (localBusinessSchema) {
+    const homeHtml = patchHead(baseHtml, {
+      title: 'Хидролукс Груп | Маркучи за високо налягане, Хидравлика и Пневматика Монтана',
+      description: 'Хидролукс Груп град Монтана предлага производство и запресоване на маркучи за високо налягане, хидравлика, пневматика, фитинги и уплътнения. Професионален сервиз от 2019 г.',
+      canonicalPath: '',
+      ogImage: `${SITE_ORIGIN}/assets/logo.webp`,
+      schemaObj: localBusinessSchema,
+      noindex: false
+    });
+    fs.writeFileSync(path.join(DIST, 'index.html'), homeHtml);
   }
 
   fs.writeFileSync(path.join(DIST, 'robots.txt'), buildRobotsTxt());
