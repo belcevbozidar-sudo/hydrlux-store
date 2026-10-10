@@ -853,6 +853,15 @@ const CONFIG = {
 };
 
 // Helper function to format prices (EUR + BGN Dual Currency)
+// How a product's price should be labelled: "м" -> per metre, "бр." -> per
+// piece (explicit suffix), anything else (legacy products) -> plain price.
+function unitMode(product) {
+  if (!product) return false;
+  if (product.unit === "м") return true;
+  if (product.unit === "бр.") return "бр.";
+  return false;
+}
+
 function formatPrice(price, isPerMeter = false) {
   price = parseFloat(price) || 0;
   if (price <= 0) {
@@ -864,8 +873,9 @@ function formatPrice(price, isPerMeter = false) {
     };
   }
   const bgnPrice = price * 1.95583;
-  const suffixEur = isPerMeter ? " €/м" : " €";
-  const suffixBgn = isPerMeter ? " лв./м" : " лв.";
+  const perPiece = isPerMeter === "бр.";
+  const suffixEur = perPiece ? " €/бр." : isPerMeter ? " €/м" : " €";
+  const suffixBgn = perPiece ? " лв./бр." : isPerMeter ? " лв./м" : " лв.";
   const formatted = price.toFixed(2) + suffixEur + " (" + bgnPrice.toFixed(2) + suffixBgn + ")";
   return {
     eur: formatted,

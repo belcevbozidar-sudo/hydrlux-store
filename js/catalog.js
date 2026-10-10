@@ -644,13 +644,13 @@ const Catalog = {
       if (positivePrices.length === 0) {
         priceText = "По запитване";
       } else if (positivePrices.length === 1) {
-        priceText = `${formatPrice(positivePrices[0], p.unit === 'м').eur}`;
+        priceText = `${formatPrice(positivePrices[0], unitMode(p)).eur}`;
       } else {
         const minPrice = Math.min(...positivePrices);
         const maxPrice = Math.max(...positivePrices);
         priceText = minPrice === maxPrice
-          ? `${formatPrice(minPrice, p.unit === 'м').eur}`
-          : `от ${formatPrice(minPrice, p.unit === 'м').eur} до ${formatPrice(maxPrice, p.unit === 'м').eur}`;
+          ? `${formatPrice(minPrice, unitMode(p)).eur}`
+          : `от ${formatPrice(minPrice, unitMode(p)).eur} до ${formatPrice(maxPrice, unitMode(p)).eur}`;
       }
 
       return `
@@ -1014,6 +1014,12 @@ const Catalog = {
         { key: "priceEur", label: "Цена" }
       ]).filter(c => !c.check || product.variants.some(v => c.check(v)));
 
+      const introEl = document.getElementById("prod-variants-intro");
+      if (introEl) {
+        const unitText = product.unit === "м" ? "за линеен метър" : product.unit === "бр." ? "за брой" : "за линеен метър или брой";
+        introEl.textContent = `Всички размери се поддържат в наличност. Цените са ${unitText}.`;
+      }
+
       tableContainer.innerHTML = `
         <table class="table">
           <thead>
@@ -1033,7 +1039,7 @@ const Catalog = {
                   ${cols.map(c => {
                     const val = v[c.key] !== undefined ? v[c.key] : '';
                     if (c.key === 'priceEur') {
-                      return `<td class="text-center"><div class="table-price-bgn">${formatPrice(priceVal, product.unit === 'м').eur}</div></td>`;
+                      return `<td class="text-center"><div class="table-price-bgn">${formatPrice(priceVal, unitMode(product)).eur}</div></td>`;
                     }
                     if (c.key === 'code') {
                       return `<td class="text-center font-bold text-primary font-xs">${val}</td>`;

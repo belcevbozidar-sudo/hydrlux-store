@@ -204,7 +204,7 @@ const App = {
             
             <div class="product-card-price-row">
               <span class="price-bgn font-medium text-primary font-bold">
-                ${formatPrice(minPrice, p.unit === "м").eur}
+                ${formatPrice(minPrice, unitMode(p)).eur}
               </span>
             </div>
             
@@ -271,7 +271,7 @@ const App = {
                 
                 <div class="product-card-price-row">
                   <span class="price-bgn font-medium text-primary font-bold">
-                    ${formatPrice(minPrice, p.unit === "м").eur}
+                    ${formatPrice(minPrice, unitMode(p)).eur}
                   </span>
                 </div>
                 
@@ -551,7 +551,7 @@ const App = {
                     <span class="search-suggestion-name">${p.name}</span>
                     <span class="search-suggestion-meta">${subText}</span>
                   </div>
-                  <div class="search-suggestion-price">${formatPrice(minPrice, p.unit === "м").eur}</div>
+                  <div class="search-suggestion-price">${formatPrice(minPrice, unitMode(p)).eur}</div>
                 </div>
               `;
             }).join("")}
