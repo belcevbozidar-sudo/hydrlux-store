@@ -1251,12 +1251,26 @@ const Catalog = {
   // rather than only the category currently visible behind it.  Switching the
   // path before App.route() makes the reset explicit in both memory and URL,
   // so refreshing or returning from a product cannot revive an old category.
-  handleGlobalSearch(value) {
+  handleGlobalSearch(value, force = false) {
     const query = String(value || "");
     const hasQuery = query.trim().length > 0;
     const hasCategoryScope = this.activeCategory || this.activeSubcategory || this.activeSubSubcategory;
+    const onCatalog = typeof App !== "undefined" && App.currentView === "catalog";
 
-    if (hasQuery && (hasCategoryScope || (typeof App !== "undefined" && App.currentView !== "catalog"))) {
+    // Извън каталога (напр. началната страница) пишенето само показва
+    // падащите предложения; страницата с резултати се отваря с Enter.
+    if (!onCatalog && !force) return;
+
+    // Изтрито търсене, започнато от началната страница -> обратно към нея.
+    if (!hasQuery && onCatalog && App.searchOrigin === "home" && !hasCategoryScope) {
+      App.searchOrigin = null;
+      this.searchQuery = "";
+      App.navigate("home");
+      return;
+    }
+
+    if (hasQuery && (hasCategoryScope || !onCatalog)) {
+      if (!onCatalog && App.currentView === "home") App.searchOrigin = "home";
       this.activeCategory = null;
       this.activeSubcategory = null;
       this.activeSubSubcategory = null;

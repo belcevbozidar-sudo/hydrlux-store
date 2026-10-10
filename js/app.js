@@ -563,6 +563,15 @@ const App = {
       dropdown.style.display = "block";
     });
 
+    // Enter отваря резултатите (и на заден план) от всяка страница.
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      if (!searchInput.value.trim()) return;
+      dropdown.style.display = "none";
+      Catalog.handleGlobalSearch(searchInput.value, true);
+    });
+
     // Close suggestions dropdown on click outside
     document.addEventListener("click", (e) => {
       if (!wrapper.contains(e.target)) {
@@ -705,6 +714,12 @@ const App = {
     Cart.closeDrawer();
     this.toggleMobileMenu(false);
 
+    // Търсенето от началната страница се помни само докато не се върнем там
+    // или не влезем в каталога без заявка.
+    if (mainView === "home" || (mainView === "catalog" && !new URLSearchParams(window.location.search).get("q"))) {
+      this.searchOrigin = null;
+    }
+
     // Show selected view
     let targetView = document.getElementById(`${mainView}-view`);
     if (mainView === "wishlist") {
@@ -762,6 +777,7 @@ const App = {
         const pageParam = parseInt(new URLSearchParams(window.location.search).get("page"), 10);
         Catalog.pendingPage = pageParam > 0 ? pageParam : null;
         if (viewParam) {
+          this.searchOrigin = null;
           // Влизане в конкретна категория: старата заявка от търсачката
           // трябва да отпадне, иначе категорията излиза "празна".
           Catalog.clearSearch();
