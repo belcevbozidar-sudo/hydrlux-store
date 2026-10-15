@@ -1938,7 +1938,11 @@ const Admin = {
             <span class="admin-badge admin-badge-category">${catDisplay}</span>
           </td>
           <td data-label="Цена EUR">
-            <strong class="text-primary">${minPrice.toFixed(2)} €</strong>
+            <strong class="text-primary">${minPrice.toFixed(2)} €${p.unit === 'м' ? ' / м' : ''}</strong>
+            <div class="unit-toggle" style="display: inline-flex; margin-top: 6px; border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden;" title="Цената е за брой или за метър">
+              <button type="button" onclick="Admin.setProductUnit('${p.id}', 'бр.')" style="border: none; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; background: ${p.unit !== 'м' ? '#1e40af' : '#f1f5f9'}; color: ${p.unit !== 'м' ? '#fff' : '#64748b'};">бр.</button>
+              <button type="button" onclick="Admin.setProductUnit('${p.id}', 'м')" style="border: none; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; background: ${p.unit === 'м' ? '#1e40af' : '#f1f5f9'}; color: ${p.unit === 'м' ? '#fff' : '#64748b'};">метър</button>
+            </div>
           </td>
           <td data-label="Вариации">
             <span class="admin-badge admin-badge-success">${p.variants ? p.variants.length : 0} размери</span>
@@ -2298,7 +2302,11 @@ const Admin = {
             <span class="admin-badge admin-badge-category">${catDisplay}</span>
           </td>
           <td data-label="Цена EUR">
-            <strong class="text-primary">${minPrice.toFixed(2)} €</strong>
+            <strong class="text-primary">${minPrice.toFixed(2)} €${p.unit === 'м' ? ' / м' : ''}</strong>
+            <div class="unit-toggle" style="display: inline-flex; margin-top: 6px; border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden;" title="Цената е за брой или за метър">
+              <button type="button" onclick="Admin.setProductUnit('${p.id}', 'бр.')" style="border: none; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; background: ${p.unit !== 'м' ? '#1e40af' : '#f1f5f9'}; color: ${p.unit !== 'м' ? '#fff' : '#64748b'};">бр.</button>
+              <button type="button" onclick="Admin.setProductUnit('${p.id}', 'м')" style="border: none; padding: 3px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; background: ${p.unit === 'м' ? '#1e40af' : '#f1f5f9'}; color: ${p.unit === 'м' ? '#fff' : '#64748b'};">метър</button>
+            </div>
           </td>
           <td data-label="Вариации">
             <span class="admin-badge admin-badge-success">${p.variants ? p.variants.length : 0} размери</span>
@@ -3546,6 +3554,23 @@ const Admin = {
 
     this.propagateStateChanges();
     Admin.notify(nextValue ? "Продуктът вече се показва в Популярни продукти." : "Продуктът е премахнат от Популярни продукти.");
+    this.render();
+  },
+
+  async setProductUnit(productId, unit) {
+    const product = CONFIG.products.find(p => p.id === productId);
+    if (!product) return;
+    const nextUnit = unit === "м" ? "м" : "бр.";
+    if ((product.unit === "м" ? "м" : "бр.") === nextUnit) return;
+
+    const saved = await this.persistProductChanges(() => {
+      const target = CONFIG.products.find(p => p.id === productId);
+      if (target) target.unit = nextUnit;
+    });
+    if (!saved) return;
+
+    this.propagateStateChanges();
+    Admin.notify(nextUnit === "м" ? "Цената вече е за метър." : "Цената вече е за брой.");
     this.render();
   },
 
