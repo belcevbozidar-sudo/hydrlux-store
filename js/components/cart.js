@@ -393,18 +393,6 @@ const Cart = {
       helper.style.borderColor = "#bbf7d0";
       helper.style.color = "#166534";
       helper.textContent = "💵 Ще платите на куриера при доставка в брой или с карта.";
-    } else if (value === "bank") {
-      helper.style.display = "block";
-      helper.style.backgroundColor = "#eff6ff";
-      helper.style.borderColor = "#bfdbfe";
-      helper.style.color = "#1e40af";
-      helper.textContent = "🏦 Ще получите проформа фактура по имейл с банковите ни детайли за банков превод.";
-    } else if (value === "card") {
-      helper.style.display = "block";
-      helper.style.backgroundColor = "#fdf2f8";
-      helper.style.borderColor = "#fbcfe8";
-      helper.style.color = "#9d174d";
-      helper.textContent = "💳 Сигурно плащане в реално време чрез myPOS Secure Checkout.";
     }
   },
 
@@ -430,43 +418,6 @@ const Cart = {
       molInput.removeAttribute("required");
       addressInput.removeAttribute("required");
     }
-  },
-
-  // myPOS Checkout execution states
-  myposPaid: false,
-  currentPendingOrder: null,
-
-  cancelMyPOSPayment() {
-    const modal = document.getElementById("mypos-modal");
-    if (modal) modal.classList.remove("open");
-    document.body.classList.remove("no-scroll");
-    this.currentPendingOrder = null;
-    this.myposPaid = false;
-  },
-
-  runSimulatedRedirect() {
-    const statusText = document.getElementById("mypos-status-text");
-    if (!statusText) return;
-
-    statusText.textContent = "Пренасочване към защитения портал на myPOS...";
-    
-    setTimeout(() => {
-      statusText.textContent = "Изчакване на плащането в портала на myPOS...";
-      setTimeout(() => {
-        statusText.textContent = "Плащането е успешно авторизирано!";
-        setTimeout(() => {
-          this.myposPaid = true;
-          const modal = document.getElementById("mypos-modal");
-          if (modal) modal.classList.remove("open");
-          document.body.classList.remove("no-scroll");
-
-          if (this.currentPendingOrder) {
-            this.currentPendingOrder.status = "paid";
-            this.finalizeSubmit(this.currentPendingOrder);
-          }
-        }, 1200);
-      }, 2000);
-    }, 2000);
   },
 
   closeCheckout() {
@@ -524,25 +475,9 @@ const Cart = {
       paymentMethod,
       invoiceDetails,
       notes,
-      status: paymentMethod === "card" ? "paid" : "new",
+      status: "new",
       createdAt: Date.now(),
     };
-
-    if (paymentMethod === "card" && !this.myposPaid) {
-      // Prompt myPOS simulated window
-      this.currentPendingOrder = order;
-      const modal = document.getElementById("mypos-modal");
-      if (modal) {
-        const bgnTotal = totals.eur * 1.95583;
-        document.getElementById("mypos-pay-amount").textContent = `${totals.eur.toFixed(2)} € (${bgnTotal.toFixed(2)} лв.)`;
-        modal.classList.add("open");
-        document.body.classList.add("no-scroll");
-        
-        // Trigger automated simulation of external myPOS hosted redirect
-        this.runSimulatedRedirect();
-      }
-      return;
-    }
 
     this.finalizeSubmit(order);
   },
@@ -564,8 +499,6 @@ const Cart = {
     localStorage.setItem("hydrolux_last_order", JSON.stringify(order));
     
     this.clear();
-    this.myposPaid = false;
-    this.currentPendingOrder = null;
 
     // Redirect to the new thank you route
     window.location.href = "/thank-you";
