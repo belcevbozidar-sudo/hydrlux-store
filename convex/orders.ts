@@ -1,5 +1,6 @@
 import { internalQuery, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
+import { checkPromo, round2 } from "./promos";
 
 // ---------------------------------------------------------------------------
 // Input-sanitisation helpers. The /api/order endpoint is public and
@@ -32,6 +33,9 @@ export const saveOrder = internalMutation({
     // Resolved server-side from the session token (never trusted from the client
     // body). Present only when the customer was logged in at checkout.
     userId: v.optional(v.id("users")),
+    // Текстът на промо кода от количката. Процентът НЕ идва от клиента — смята
+    // се тук от записа в базата.
+    promoCode: v.optional(v.string()),
     order: v.object({
       orderNumber: v.string(),
       customer: v.object({
@@ -115,11 +119,37 @@ export const saveOrder = internalMutation({
       createdAt: Date.now(),
     };
 
+    // Промо код: проверяваме го наново (клиентът може да е изпратил стар/
+    // подправен код) и пресмятаме отстъпката от сървърните данни.
+    if (args.promoCode && args.promoCode.trim() !== "") {
+      const subtotal = round2(
+        sanitized.items.reduce(
+          (sum: number, it: any) => sum + (Number(it.priceEur) || 0) * (Number(it.quantity) || 0),
+          0
+        )
+      );
+      const check = await checkPromo(ctx, args.promoCode, subtotal);
+      if (!check.ok) {
+        return { ok: false, promoError: true, error: check.error };
+      }
+      const promo = check.promo;
+      const discountEur = round2((subtotal * promo.percent) / 100);
+      const finalEur = round2(subtotal - discountEur);
+      sanitized.totals = { eur: finalEur, bgn: finalEur };
+      sanitized.promo = {
+        code: promo.code,
+        percent: promo.percent,
+        subtotalEur: subtotal,
+        discountEur,
+      };
+      await ctx.db.patch(promo._id, { usedCount: promo.usedCount + 1 });
+    }
+
     // Stamp the owning account when the checkout was authenticated.
     if (args.userId) sanitized.userId = args.userId;
 
     const id = await ctx.db.insert("orders", sanitized);
-    return { ok: true, orderId: id };
+    return { ok: true, orderId: id, totals: sanitized.totals, promo: sanitized.promo ?? null };
   },
 });
 

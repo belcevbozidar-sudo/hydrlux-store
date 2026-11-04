@@ -1,6 +1,9 @@
 // Shopping Cart & B2B/B2C Checkout Manager (Euro € Optimized)
 const Cart = {
   items: [],
+  // Приложен промо код: { code, percent } или null. Процентът идва от сървъра;
+  // при самата поръчка сървърът го проверява и смята наново.
+  promo: null,
 
   init() {
     const saved = localStorage.getItem("hydrolux_cart");
@@ -10,6 +13,12 @@ const Cart = {
       } catch (e) {
         this.items = [];
       }
+    }
+    try {
+      const savedPromo = JSON.parse(localStorage.getItem("hydrolux_promo") || "null");
+      if (savedPromo && savedPromo.code && savedPromo.percent > 0) this.promo = savedPromo;
+    } catch (e) {
+      this.promo = null;
     }
     this.updateCartBadge();
 
@@ -161,6 +170,7 @@ const Cart = {
 
   clear() {
     this.items = [];
+    this.setPromo(null);
     this.save();
     this.renderDrawer();
   },
@@ -176,6 +186,57 @@ const Cart = {
     };
   },
 
+  // Крайна сума за плащане след промо код (подредени по евро центове).
+  getPayable() {
+    const subtotal = this.getTotal().eur;
+    let discount = 0;
+    if (this.promo && this.promo.percent > 0) {
+      discount = Math.round(subtotal * this.promo.percent) / 100;
+    }
+    const eur = Math.round((subtotal - discount) * 100) / 100;
+    return { subtotal, discount, eur, bgn: eur };
+  },
+
+  setPromo(promo) {
+    this.promo = promo && promo.code ? { code: promo.code, percent: promo.percent } : null;
+    try {
+      if (this.promo) localStorage.setItem("hydrolux_promo", JSON.stringify(this.promo));
+      else localStorage.removeItem("hydrolux_promo");
+    } catch (e) { /* private mode */ }
+  },
+
+  async applyPromo(rawCode) {
+    const code = String(rawCode || "").trim().toUpperCase();
+    const msg = document.getElementById("promo-msg");
+    const setMsg = (text, ok) => {
+      if (!msg) return;
+      msg.textContent = text;
+      msg.style.color = ok ? "#166534" : "#b91c1c";
+    };
+    if (!code) { setMsg("Въведете промо код.", false); return; }
+    try {
+      const res = await HydroluxBackend.validatePromo(code, this.getTotal().eur);
+      if (res && res.ok) {
+        this.setPromo({ code: res.code, percent: res.percent });
+        this.renderCheckoutSummary();
+        this.updateCartBadge();
+        this.renderDrawer();
+        this.showToast(`Промо код ${res.code}: -${res.percent}%`);
+      } else {
+        setMsg((res && res.error) || "Невалиден промо код.", false);
+      }
+    } catch (e) {
+      setMsg("Не успяхме да проверим кода. Опитайте отново.", false);
+    }
+  },
+
+  removePromo() {
+    this.setPromo(null);
+    this.renderCheckoutSummary();
+    this.updateCartBadge();
+    this.renderDrawer();
+  },
+
   updateCartBadge() {
     const inlineBadges = document.querySelectorAll(".cart-count-badge-inline");
     const displayEur = document.getElementById("cart-display-eur");
@@ -189,7 +250,7 @@ const Cart = {
       b.textContent = totalItems;
     });
 
-    const totals = this.getTotal();
+    const totals = this.getPayable();
     if (displayEur) displayEur.textContent = totals.eur.toFixed(2) + " € (" + (totals.eur * 1.95583).toFixed(2) + " лв.)";
 
     // Pulse the cart button
@@ -235,7 +296,7 @@ const Cart = {
     }
 
     document.getElementById("cart-footer-panel").style.display = "block";
-    const totals = this.getTotal();
+    const totals = this.getPayable();
 
     container.innerHTML = this.items.map(item => {
       const cartKey = this.escapeJsString(item.cartKey);
@@ -292,7 +353,7 @@ const Cart = {
     const container = document.getElementById("checkout-summary-container");
     if (!container) return;
 
-    const totals = this.getTotal();
+    const totals = this.getPayable();
     const isUserLoggedIn = typeof Auth !== "undefined" && Auth.currentUser;
 
     let authPromptHtml = "";
@@ -310,6 +371,22 @@ const Cart = {
         </div>
       `;
     }
+
+    // Поле за промо код (или приложен код с бутон „Премахни")
+    const promoHtml = this.promo ? `
+        <div class="promo-box" style="padding: 10px 12px; margin-bottom: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <span class="font-small" style="color: #166534; font-weight: 700;">🏷️ Код ${this.promo.code} приложен: -${this.promo.percent}%</span>
+          <button type="button" class="btn btn-secondary font-xs" style="padding: 4px 10px;" onclick="Cart.removePromo()">Премахни</button>
+        </div>` : `
+        <div class="promo-box" style="margin-bottom: 12px;">
+          <label class="font-small" style="font-weight: 700; display: block; margin-bottom: 6px;">🏷️ Имате промо код?</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="promo-input" class="form-control" placeholder="Въведете код" autocomplete="off" autocapitalize="characters" maxlength="30" style="text-transform: uppercase;"
+                   onkeydown="if(event.key==='Enter'){event.preventDefault();Cart.applyPromo(this.value);}">
+            <button type="button" class="btn btn-secondary" style="white-space: nowrap; font-weight: 700;" onclick="Cart.applyPromo(document.getElementById('promo-input').value)">Приложи</button>
+          </div>
+          <div id="promo-msg" class="font-xs" style="margin-top: 6px; min-height: 1em;" role="status" aria-live="polite"></div>
+        </div>`;
 
     container.innerHTML = `
       <div class="checkout-summary-card">
@@ -340,7 +417,17 @@ const Cart = {
           }).join("")}
         </div>
         <div class="divider"></div>
+        ${promoHtml}
         <div class="checkout-summary-totals">
+          ${this.promo ? `
+          <div class="row font-small">
+            <span>Продукти:</span>
+            <span>${totals.subtotal.toFixed(2)} €</span>
+          </div>
+          <div class="row font-small" style="color: #166534; font-weight: 700;">
+            <span>Отстъпка (${this.promo.code}, -${this.promo.percent}%):</span>
+            <span>-${totals.discount.toFixed(2)} €</span>
+          </div>` : ""}
           <div class="row">
             <span>Общо (с ДДС):</span>
             <strong class="font-large text-primary">${totals.eur.toFixed(2)} € (${(totals.eur * 1.95583).toFixed(2)} лв.)</strong>
@@ -460,14 +547,15 @@ const Cart = {
     }
 
     const orderNumber = "HL-" + Math.floor(100000 + Math.random() * 900000);
-    const totals = this.getTotal();
+    const totals = this.getPayable();
     const orderedItems = [...this.items];
     
     const order = {
       orderNumber,
       customer: { name, phone, email },
       items: orderedItems,
-      totals,
+      totals: { eur: totals.eur, bgn: totals.bgn },
+      promoCode: this.promo ? this.promo.code : undefined,
       delivery,
       city,
       postcode,
@@ -485,7 +573,21 @@ const Cart = {
   async finalizeSubmit(order) {
     try {
       if (typeof HydroluxBackend !== "undefined") {
-        await HydroluxBackend.saveOrder(order);
+        const res = await HydroluxBackend.saveOrder(order);
+        // Кодът е отхвърлен от сървъра (изтекъл, изчерпан...) — поръчката НЕ е
+        // записана. Махаме кода и оставяме клиента да прегледа новата сума.
+        if (res && res.ok === false && res.promoError) {
+          this.setPromo(null);
+          this.renderCheckoutSummary();
+          this.updateCartBadge();
+          alert((res.error || "Промо кодът вече не е валиден.") + "\nСумата е преизчислена без отстъпка — моля, прегледайте и изпратете поръчката отново.");
+          return;
+        }
+        // Показваме това, което сървърът реално е записал.
+        if (res && res.ok && res.totals) {
+          order.totals = res.totals;
+          if (res.promo) order.promo = res.promo;
+        }
       }
     } catch (err) {
       console.warn("Convex order save failed", err);

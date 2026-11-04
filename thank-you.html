@@ -348,7 +348,23 @@
         const subtotalEur = eurTotal / 1.2;
         const ddsEur = eurTotal - subtotalEur;
 
+        // Промо код: показваме цената преди отстъпката и самата отстъпка.
+        let promoRows = "";
+        if (order.promo && Number(order.promo.discountEur) > 0) {
+          const safeCode = String(order.promo.code).replace(/[^A-Za-z0-9_-]/g, "");
+          promoRows = `
+          <div class="total-row">
+            <span>Продукти (с ДДС):</span>
+            <span>${Number(order.promo.subtotalEur).toFixed(2)} €</span>
+          </div>
+          <div class="total-row" style="color: #166534; font-weight: 700;">
+            <span>Отстъпка (код ${safeCode}, -${Number(order.promo.percent)}%):</span>
+            <span>-${Number(order.promo.discountEur).toFixed(2)} €</span>
+          </div>`;
+        }
+
         document.getElementById("invoice-totals").innerHTML = `
+          ${promoRows}
           <div class="total-row">
             <span>Междинна сума:</span>
             <span>${subtotalEur.toFixed(2)} €</span>

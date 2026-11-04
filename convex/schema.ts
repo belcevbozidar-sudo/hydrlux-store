@@ -43,9 +43,31 @@ export default defineSchema({
       address: v.string(),
     })),
     notes: v.string(),
+    // Приложен промо код (ако има). Пресметнат на сървъра, не взет от клиента.
+    promo: v.optional(v.object({
+      code: v.string(),
+      percent: v.number(),
+      subtotalEur: v.number(),
+      discountEur: v.number(),
+    })),
     status: v.string(), // "new", "paid", "processing", "completed", "cancelled"
     createdAt: v.number(),
   }).index("by_email", ["customer.email"]).index("by_userId", ["userId"]),
+
+  // Промо кодове за отстъпка (Черен петък и т.н.)
+  promoCodes: defineTable({
+    code: v.string(),            // главни букви, напр. "BF15"
+    percent: v.number(),         // 1–90
+    active: v.boolean(),
+    showBanner: v.boolean(),     // да се показва ли банер на сайта
+    bannerText: v.optional(v.string()),
+    startsAt: v.optional(v.number()),
+    expiresAt: v.optional(v.number()),
+    minOrderEur: v.optional(v.number()),
+    maxUses: v.optional(v.number()),
+    usedCount: v.number(),
+    createdAt: v.number(),
+  }).index("by_code", ["code"]),
 
   // User accounts
   users: defineTable({

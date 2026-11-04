@@ -342,14 +342,18 @@ http.route({
     // the verified session token, never from the client body, so it appears in
     // that customer's own order history and nowhere else.
     const userId = await getUserIdFromToken(ctx, request);
+    // promoCode не е част от схемата на поръчката — отделяме го и го пращаме
+    // като самостоятелен аргумент, за да се провери на сървъра.
+    const { promoCode, promo: _clientPromo, ...orderRest } = body.order || {};
     const res = await ctx.runMutation(internal.orders.saveOrder, {
-      order: body.order,
+      order: orderRest,
       userId,
+      promoCode: typeof promoCode === "string" ? promoCode : undefined,
     });
 
     if (res.ok) {
       try {
-        const order = body.order;
+        const order = { ...orderRest, totals: (res as any).totals ?? orderRest.totals };
         const isQuick = order.delivery === "quick_order";
         const title = isQuick 
           ? `⚡ Бърза поръчка ${order.orderNumber}`
@@ -376,6 +380,10 @@ http.route({
         }
         
         const totalEur = order.totals?.eur !== undefined ? Number(order.totals.eur).toFixed(2) : "0.00";
+        const appliedPromo = (res as any).promo;
+        if (appliedPromo) {
+          ntfyMessage += `\nПромо код: ${appliedPromo.code} (-${appliedPromo.percent}% = -${Number(appliedPromo.discountEur).toFixed(2)} EUR)`;
+        }
         ntfyMessage += `\nОбщо: ${totalEur} EUR`;
         if (order.notes) ntfyMessage += `\nБележка:\n${order.notes}`;
         
@@ -498,6 +506,91 @@ http.route({
       status: 200,
       headers: corsHeaders,
     });
+  }),
+});
+
+// ==========================================================================
+// PROMO CODE ENDPOINTS
+// ==========================================================================
+http.route({ path: "/api/promo/validate", method: "OPTIONS", handler: httpAction(async () => handlePreflight()) });
+http.route({ path: "/api/promo/banner", method: "OPTIONS", handler: httpAction(async () => handlePreflight()) });
+http.route({ path: "/api/admin/promos", method: "OPTIONS", handler: httpAction(async () => handlePreflight()) });
+http.route({ path: "/api/admin/promos/delete", method: "OPTIONS", handler: httpAction(async () => handlePreflight()) });
+
+// PUBLIC: проверка на код от количката. Rate-limited срещу налучкване на кодове.
+http.route({
+  path: "/api/promo/validate",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!(await rateLimitOk(ctx, request, "promo", 20, 60 * 1000))) {
+      return tooManyRequests();
+    }
+    let body: any = {};
+    try { body = await request.json(); } catch { /* празно тяло */ }
+    const res = await ctx.runQuery(internal.promos.validate, {
+      code: String(body?.code ?? "").slice(0, 60),
+      subtotalEur: Number(body?.subtotalEur) || 0,
+    });
+    return new Response(JSON.stringify(res), { status: 200, headers: noCacheHeaders });
+  }),
+});
+
+// PUBLIC: данни за банера (код + процент + текст), ако има активна промоция.
+http.route({
+  path: "/api/promo/banner",
+  method: "GET",
+  handler: httpAction(async (ctx) => {
+    const res = await ctx.runQuery(internal.promos.getBanner, {});
+    return new Response(JSON.stringify(res), { status: 200, headers: noCacheHeaders });
+  }),
+});
+
+http.route({
+  path: "/api/admin/promos",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
+    }
+    const res = await ctx.runQuery(internal.promos.listAll, {});
+    return new Response(JSON.stringify(res), { status: 200, headers: noCacheHeaders });
+  }),
+});
+
+http.route({
+  path: "/api/admin/promos",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
+    }
+    const b = await request.json();
+    const num = (x: any) => (x === null || x === undefined || x === "" ? undefined : Number(x));
+    const res = await ctx.runMutation(internal.promos.save, {
+      code: String(b.code ?? ""),
+      percent: Number(b.percent),
+      active: !!b.active,
+      showBanner: !!b.showBanner,
+      bannerText: b.bannerText ? String(b.bannerText) : undefined,
+      startsAt: num(b.startsAt),
+      expiresAt: num(b.expiresAt),
+      minOrderEur: num(b.minOrderEur),
+      maxUses: num(b.maxUses),
+    });
+    return new Response(JSON.stringify(res), { status: 200, headers: corsHeaders });
+  }),
+});
+
+http.route({
+  path: "/api/admin/promos/delete",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    if (!(await verifySessionToken(ctx, request))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
+    }
+    const b = await request.json();
+    const res = await ctx.runMutation(internal.promos.remove, { code: String(b.code ?? "") });
+    return new Response(JSON.stringify(res), { status: 200, headers: corsHeaders });
   }),
 });
 

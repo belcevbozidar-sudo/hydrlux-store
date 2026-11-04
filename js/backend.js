@@ -323,6 +323,31 @@ const HydroluxBackend = {
     });
   },
 
+  // ---- Промо кодове ----
+  async validatePromo(code, subtotalEur) {
+    return await this.request("/api/promo/validate", {
+      method: "POST",
+      body: { code, subtotalEur },
+      authToken: "",
+    });
+  },
+
+  async getPromoBanner() {
+    return await this.request("/api/promo/banner", { method: "GET", authToken: "" });
+  },
+
+  async getPromos() {
+    return await this.request("/api/admin/promos", { method: "GET" });
+  },
+
+  async savePromo(promo) {
+    return await this.request("/api/admin/promos", { method: "POST", body: promo });
+  },
+
+  async deletePromo(code) {
+    return await this.request("/api/admin/promos/delete", { method: "POST", body: { code } });
+  },
+
   async submitInquiry(inquiry) {
     return await this.request("/api/inquiry", {
       method: "POST",

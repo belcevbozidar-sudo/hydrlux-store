@@ -1440,6 +1440,9 @@ const Admin = {
               <li class="admin-menu-item ${this.activeTab === 'orders' ? 'active' : ''}" onclick="Admin.switchTab('orders')">
                 📋 Поръчки
               </li>
+              <li class="admin-menu-item ${this.activeTab === 'promos' ? 'active' : ''}" onclick="Admin.switchTab('promos')">
+                🏷️ Промо кодове
+              </li>
               <li class="admin-menu-item ${this.activeTab === 'crimping' ? 'active' : ''}" onclick="Admin.switchTab('crimping')">
                 ⚙️ Кримпване
               </li>
@@ -1486,6 +1489,9 @@ const Admin = {
       if (this.activeTab === "visits") {
         this.loadVisitStats();
       }
+      if (this.activeTab === "promos") {
+        this.loadPromos();
+      }
     } finally {
       this.isFullRender = false;
     }
@@ -1503,12 +1509,199 @@ const Admin = {
         return this.renderCrimpingWorkspace();
       case "visits":
         return this.renderVisitsWorkspace();
+      case "promos":
+        return this.renderPromosWorkspace();
       case "archive":
         return this.renderArchiveWorkspace();
       case "backups":
         return this.renderBackupsWorkspace();
       default:
         return "Няма намерен работен панел.";
+    }
+  },
+
+  // ==========================================================================
+  // PROMOS WORKSPACE (промо кодове за отстъпка + банер)
+  // ==========================================================================
+  promoList: [],
+
+  renderPromosWorkspace() {
+    return `
+      <div class="admin-header-row">
+        <h2 class="admin-workspace-title">🏷️ Промо кодове</h2>
+      </div>
+      <p class="text-muted font-xs" style="margin: 0 0 16px; max-width: 720px;">
+        Клиентът въвежда кода в завършването на поръчката. Процентът се проверява и смята на сървъра.
+        Ако включите „Банер", най-горе на сайта се показва лента с кода.
+      </p>
+
+      <div class="admin-form-card" style="padding: 20px; margin-bottom: 20px;">
+        <h3 style="margin: 0 0 14px; font-size: 1rem;">Нов / редакция на код</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Код (напр. BF15)</label>
+            <input type="text" id="promo-f-code" class="form-control" maxlength="30" style="text-transform: uppercase;" placeholder="BLACKFRIDAY">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Отстъпка %</label>
+            <input type="number" id="promo-f-percent" class="form-control" min="1" max="90" step="1" placeholder="15">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Важи от (по избор)</label>
+            <input type="datetime-local" id="promo-f-starts" class="form-control">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Важи до (по избор)</label>
+            <input type="datetime-local" id="promo-f-expires" class="form-control">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Мин. поръчка € (по избор)</label>
+            <input type="number" id="promo-f-min" class="form-control" min="0" step="1" placeholder="0">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Макс. използвания (по избор)</label>
+            <input type="number" id="promo-f-max" class="form-control" min="0" step="1" placeholder="без лимит">
+          </div>
+        </div>
+        <div class="form-group" style="margin: 14px 0 0;">
+          <label>Текст на банера (по избор — иначе се генерира автоматично)</label>
+          <input type="text" id="promo-f-banner-text" class="form-control" maxlength="200" placeholder="Черен петък: -15% на всичко! Код: BF15">
+        </div>
+        <div style="display: flex; gap: 22px; flex-wrap: wrap; margin-top: 14px; align-items: center;">
+          <label class="checkbox-container"><input type="checkbox" id="promo-f-active" checked><span>Активен</span></label>
+          <label class="checkbox-container"><input type="checkbox" id="promo-f-banner" checked><span>Показвай банер на сайта</span></label>
+          <button type="button" class="btn btn-primary" onclick="Admin.savePromoForm()" style="font-weight: 700;">💾 Запази</button>
+          <button type="button" class="btn btn-secondary" onclick="Admin.resetPromoForm()">Изчисти</button>
+        </div>
+      </div>
+
+      <div id="admin-promos-list"><p class="text-muted">Зареждане…</p></div>
+    `;
+  },
+
+  promoDateToInput(ts) {
+    if (!ts) return "";
+    const d = new Date(ts);
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  },
+
+  async loadPromos() {
+    const box = document.getElementById("admin-promos-list");
+    if (!box) return;
+    try {
+      const res = await HydroluxBackend.getPromos();
+      this.promoList = (res && res.promos) || [];
+      if (!this.promoList.length) {
+        box.innerHTML = `<p class="text-muted">Още няма промо кодове. Създайте първия по-горе.</p>`;
+        return;
+      }
+      const now = Date.now();
+      const fmt = (ts) => { try { return new Date(ts).toLocaleString("bg-BG", { dateStyle: "short", timeStyle: "short" }); } catch { return "—"; } };
+      const rows = this.promoList.map((p, i) => {
+        let status = "✅ Активен";
+        if (!p.active) status = "⏸️ Изключен";
+        else if (p.expiresAt && now > p.expiresAt) status = "⌛ Изтекъл";
+        else if (p.startsAt && now < p.startsAt) status = "🕒 Предстои";
+        else if (p.maxUses && p.usedCount >= p.maxUses) status = "🚫 Изчерпан";
+        return `
+          <tr class="admin-table-row">
+            <td><strong>${this.escapeHtml(p.code)}</strong></td>
+            <td>-${this.escapeHtml(p.percent)}%</td>
+            <td>${status}</td>
+            <td>${this.escapeHtml(p.usedCount)}${p.maxUses ? " / " + this.escapeHtml(p.maxUses) : ""}</td>
+            <td class="font-xs">${p.startsAt ? "от " + fmt(p.startsAt) + "<br>" : ""}${p.expiresAt ? "до " + fmt(p.expiresAt) : (p.startsAt ? "" : "—")}</td>
+            <td>${p.minOrderEur ? this.escapeHtml(p.minOrderEur) + " €" : "—"}</td>
+            <td>${p.showBanner ? "Да" : "Не"}</td>
+            <td style="white-space: nowrap;">
+              <button class="btn-admin-action" onclick="Admin.editPromo(${i})">✏️</button>
+              <button class="btn-admin-action" style="background:#ef4444;color:#fff;" onclick="Admin.deletePromo(${i})">🗑️</button>
+            </td>
+          </tr>`;
+      }).join("");
+      box.innerHTML = `
+        <div class="admin-table-responsive" style="overflow-x: auto;">
+          <table class="admin-table" style="min-width: 760px;">
+            <thead><tr><th>Код</th><th>Отстъпка</th><th>Статус</th><th>Използван</th><th>Период</th><th>Мин.</th><th>Банер</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+    } catch (err) {
+      console.error("Грешка при зареждане на промо кодовете", err);
+      box.innerHTML = `<p class="text-muted">Грешка при зареждане. Ако току-що е добавена функцията, бекендът (Convex) трябва да е деплойнат.</p>`;
+    }
+  },
+
+  editPromo(i) {
+    const p = this.promoList[i];
+    if (!p) return;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v ?? ""; };
+    set("promo-f-code", p.code);
+    set("promo-f-percent", p.percent);
+    set("promo-f-starts", this.promoDateToInput(p.startsAt));
+    set("promo-f-expires", this.promoDateToInput(p.expiresAt));
+    set("promo-f-min", p.minOrderEur || "");
+    set("promo-f-max", p.maxUses || "");
+    set("promo-f-banner-text", p.bannerText || "");
+    document.getElementById("promo-f-active").checked = !!p.active;
+    document.getElementById("promo-f-banner").checked = !!p.showBanner;
+    document.getElementById("promo-f-code").scrollIntoView({ behavior: "smooth", block: "center" });
+  },
+
+  resetPromoForm() {
+    ["promo-f-code", "promo-f-percent", "promo-f-starts", "promo-f-expires", "promo-f-min", "promo-f-max", "promo-f-banner-text"]
+      .forEach((id) => { const el = document.getElementById(id); if (el) el.value = ""; });
+    document.getElementById("promo-f-active").checked = true;
+    document.getElementById("promo-f-banner").checked = true;
+  },
+
+  async savePromoForm() {
+    const val = (id) => (document.getElementById(id) || {}).value || "";
+    const ts = (id) => { const v = val(id); return v ? new Date(v).getTime() : undefined; };
+    const payload = {
+      code: val("promo-f-code").trim().toUpperCase(),
+      percent: Number(val("promo-f-percent")),
+      active: document.getElementById("promo-f-active").checked,
+      showBanner: document.getElementById("promo-f-banner").checked,
+      bannerText: val("promo-f-banner-text").trim(),
+      startsAt: ts("promo-f-starts"),
+      expiresAt: ts("promo-f-expires"),
+      minOrderEur: val("promo-f-min") ? Number(val("promo-f-min")) : undefined,
+      maxUses: val("promo-f-max") ? Number(val("promo-f-max")) : undefined,
+    };
+    if (!payload.code || !payload.percent) {
+      this.notify("Въведете код и процент.", "error");
+      return;
+    }
+    try {
+      const res = await HydroluxBackend.savePromo(payload);
+      if (res && res.ok) {
+        this.notify(res.updated ? "Кодът е обновен." : "Кодът е създаден.", "success");
+        this.resetPromoForm();
+        this.loadPromos();
+      } else {
+        this.notify((res && res.error) || "Грешка при запис.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      this.notify("Грешка при запис на кода.", "error");
+    }
+  },
+
+  async deletePromo(i) {
+    const p = this.promoList[i];
+    if (!p) return;
+    if (!(await this.confirmDialog(`Да изтрия ли кода ${p.code}? Вече направените поръчки със него остават непроменени.`, { confirmText: "Да, изтрий", danger: true }))) return;
+    try {
+      const res = await HydroluxBackend.deletePromo(p.code);
+      if (res && res.ok) {
+        this.notify("Кодът е изтрит.", "success");
+        this.loadPromos();
+      } else {
+        this.notify((res && res.error) || "Грешка при изтриване.", "error");
+      }
+    } catch (err) {
+      this.notify("Грешка при изтриване.", "error");
     }
   },
 
@@ -5211,6 +5404,12 @@ const Admin = {
                 </tbody>
               </table>
               
+              ${order.promo ? `
+              <div style="margin-top: 12px; text-align: right; font-size: 0.85rem; color: #166534;">
+                🏷️ Промо код <strong>${this.escapeHtml(order.promo.code)}</strong> (-${this.escapeHtml(order.promo.percent)}%):
+                <strong>-${Number(order.promo.discountEur).toFixed(2)} €</strong>
+                <span style="color: #64748b;">(от ${Number(order.promo.subtotalEur).toFixed(2)} €)</span>
+              </div>` : ""}
               <div style="margin-top: 15px; text-align: right; font-size: 1.05rem;">
                 <span style="color: #64748b; font-size: 0.85rem;">ОБЩО С ДДС:</span>
                 <strong style="color: var(--primary); font-weight: 800;">

@@ -16,6 +16,7 @@ import type * as http from "../http.js";
 import type * as matches from "../matches.js";
 import type * as migrateWayback from "../migrateWayback.js";
 import type * as orders from "../orders.js";
+import type * as promos from "../promos.js";
 import type * as rateLimit from "../rateLimit.js";
 import type * as state from "../state.js";
 import type * as visits from "../visits.js";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   matches: typeof matches;
   migrateWayback: typeof migrateWayback;
   orders: typeof orders;
+  promos: typeof promos;
   rateLimit: typeof rateLimit;
   state: typeof state;
   visits: typeof visits;
