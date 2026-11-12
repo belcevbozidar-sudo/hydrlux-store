@@ -500,12 +500,17 @@ const Admin = {
       /* Responsive centring overrides for the entire admin view on mobile */
       @media (max-width: 992px) {
         .admin-container {
-          grid-template-columns: 1fr;
+          /* minmax(0, 1fr), не 1fr: иначе колоната не може да е по-тясна от
+             най-широкото си съдържание и целият панел излиза извън екрана. */
+          grid-template-columns: minmax(0, 1fr);
           gap: 15px;
           padding: 0 5px;
+          min-height: 0;
         }
         .admin-sidebar {
           width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
           text-align: center;
           background-color: #061c36;
           padding: 20px 15px;
@@ -519,17 +524,24 @@ const Admin = {
           padding-bottom: 12px;
           padding-left: 0;
         }
+        /* Менюто е мрежа от бутони (не един ред), за да се виждат всички раздели */
         .admin-menu-list {
-          flex-direction: row;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
           gap: 8px;
         }
         .admin-menu-item {
-          flex-grow: 1;
           justify-content: center;
-          padding: 10px 5px;
-          font-size: 0.85rem;
+          text-align: center;
+          padding: 10px 6px;
+          font-size: 0.82rem;
+          line-height: 1.25;
           border-radius: 8px;
+          min-width: 0;
+        }
+        .admin-menu-item[onclick*="logout"] {
+          grid-column: 1 / -1;
+          margin-top: 6px !important;
         }
         .admin-content {
           padding: 20px 15px;
@@ -558,6 +570,10 @@ const Admin = {
         /* Table to Card Conversions for mobile list */
         .admin-table {
           border: 0;
+          /* таблиците стават карти — вградените min-width (800/900px) ги
+             държаха по-широки от екрана */
+          min-width: 0 !important;
+          width: 100% !important;
         }
         .admin-table thead {
           display: none;
